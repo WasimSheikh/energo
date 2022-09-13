@@ -10,7 +10,13 @@ import Badge from '@mui/material/Badge';
 import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 
+function capitalizeFirstLetter(string:string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 const Header = (): JSX.Element => {
+  let urlElements = window.location.href.split('/')[3]
+ 
   const drawerWidth: number = 240;
   interface AppBarProps extends MuiAppBarProps {
     open?: boolean;
@@ -63,7 +69,7 @@ const Header = (): JSX.Element => {
               noWrap
               sx={{ flexGrow: 1 }}
             >
-              Dashboard
+            { capitalizeFirstLetter(urlElements) }
             </Typography>
             <IconButton color="inherit">
               <Badge badgeContent={4} color="secondary">

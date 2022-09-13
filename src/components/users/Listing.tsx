@@ -15,54 +15,30 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
+import Link from '@mui/material/Link';
+import Button from '@mui/material/Button';
 
 const mdTheme = createTheme();
 // Generate Order Data
 function createData(
   id: number,
-  date: string,
-  name: string,
-  shipTo: string,
-  paymentMethod: string,
-  amount: number,
+  companyName: string,
+  firstName:string,
+  lastName:string,
+  email: string,
+  phone: string,
+  country: string,
+  action: string,
 ) {
-  return { id, date, name, shipTo, paymentMethod, amount };
+return { id, companyName, firstName, lastName, email, phone, country, action };
 }
 
 const rows = [
-  createData(
-    0,
-    '16 Mar, 2019',
-    'Elvis Presley',
-    'Tupelo, MS',
-    'VISA ⠀•••• 3719',
-    312.44,
-  ),
-  createData(
-    1,
-    '16 Mar, 2019',
-    'Paul McCartney',
-    'London, UK',
-    'VISA ⠀•••• 2574',
-    866.99,
-  ),
-  createData(2, '16 Mar, 2019', 'Tom Scholz', 'Boston, MA', 'MC ⠀•••• 1253', 100.81),
-  createData(
-    3,
-    '16 Mar, 2019',
-    'Michael Jackson',
-    'Gary, IN',
-    'AMEX ⠀•••• 2000',
-    654.39,
-  ),
-  createData(
-    4,
-    '15 Mar, 2019',
-    'Bruce Springsteen',
-    'Long Branch, NJ',
-    'VISA ⠀•••• 5919',
-    212.79,
-  ),
+  createData(0, 'Company 1', 'First', 'Name 1', 'Company1gmail.com','1111111111', 'Country1','Edit/View'),
+  createData(1,'Company 2', 'First',  'Name 1', 'Company2gmail.com', '222222222', 'Country2','Edit/View'),
+  createData(2, 'Company 3', 'First', 'Name 1', 'Company3gmail.com', '333333333', 'Country3', 'Edit/View'),
+  createData(3, 'Company 4', 'First', 'Name 1', 'Company4gmail.com', '444444444', 'Country3', 'Edit/View'),
+  createData(4, 'Company 5', 'First', 'Name 1', 'Company5gmail.com', '555555555', 'Country5', 'Edit/View'),
 ];
 
 function UserList() {
@@ -89,29 +65,38 @@ function UserList() {
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                <Typography component="h2" variant="h6" color="primary" gutterBottom>
-                Users
-                </Typography>
+                <Box className="headingbutton" sx={{ mb: 1 }}>
+                  <Typography component="h2" variant="h6" color="primary" gutterBottom>
+                    Users 
+                    </Typography>
+                    <Button variant="contained" href="users/add">Add</Button>
+                </Box>
+               
                 <Divider />
                   <Table size="small">
                     <TableHead>
                       <TableRow>
-                        <TableCell>Date</TableCell>
-                        <TableCell>Company Name</TableCell>
-                        <TableCell>Ship To</TableCell>
-                        <TableCell>Payment Method</TableCell>
-                        <TableCell align="right">Sale Amount</TableCell>
+                          <TableCell>Company Name</TableCell>
+                          <TableCell>First Name</TableCell>
+                          <TableCell>Last Name</TableCell>
+                          <TableCell>Email</TableCell>
+                          <TableCell>Phone</TableCell>
+                          <TableCell>Country</TableCell>
+                          <TableCell align="right">Action</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
                       {rows.map((row) => (
-                        <TableRow key={row.id}>
-                          <TableCell>{row.date}</TableCell>
-                          <TableCell>{row.name}</TableCell>
-                          <TableCell>{row.shipTo}</TableCell>
-                          <TableCell>{row.paymentMethod}</TableCell>
-                          <TableCell align="right">{`$${row.amount}`}</TableCell>
-                        </TableRow>
+                       <TableRow key={row.id}>
+                          <TableCell>{row.companyName}</TableCell>
+                          <TableCell>{row.firstName}</TableCell>
+                          <TableCell>{row.lastName}</TableCell>
+                          <TableCell>{row.email}</TableCell>
+                          <TableCell>{row.phone}</TableCell>
+                          <TableCell>{row.country}</TableCell>
+                          <TableCell align="right">{row.action}</TableCell>
+                          
+                     </TableRow>
                       ))}
                     </TableBody>
                   </Table>

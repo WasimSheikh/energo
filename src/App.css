@@ -25,7 +25,11 @@
 .App-link {
   color: rgb(112, 76, 182);
 }
-
+.headingbutton{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 @keyframes App-logo-float {
   0% {
     transform: translateY(0);
