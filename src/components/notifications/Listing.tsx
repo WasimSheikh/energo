@@ -15,8 +15,6 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
-import Button from '@mui/material/Button';
-import { Link } from "react-router-dom";
 
 const mdTheme = createTheme();
 // Generate Order Data
@@ -70,8 +68,7 @@ const rows = [
     'Edit/View'
   ),
 ];
-
-function CompanyList() {
+function NotificationList() {
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>
@@ -90,16 +87,15 @@ function CompanyList() {
             overflow: 'auto',
           }}
         >
-          <Toolbar />
+        <Toolbar />
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
                 <Box className="headingbutton" sx={{ mb: 1 }}>
                   <Typography component="h2" variant="h6" color="primary" gutterBottom>
-                    Companies 
-                    </Typography>
-                    <Button variant="contained" component={Link} to="/companies/add">Add</Button>
+                  Notifications 
+                    </Typography> 
                 </Box>
                 <Divider />
                   <Table size="small">
@@ -137,5 +133,5 @@ function CompanyList() {
   );
 }
 export default function Listing() {
-  return <CompanyList />;
+  return <NotificationList />;
 }

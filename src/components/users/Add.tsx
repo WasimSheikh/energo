@@ -19,8 +19,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import * as React from 'react';
-import { OutlinedInput } from '@mui/material';
-import Tooltip from '@mui/material/Tooltip';
+import { Link } from "react-router-dom";
 
 const mdTheme = createTheme();
 const names = [
@@ -101,7 +100,7 @@ function UserAdd() {
                       </Grid>
                       <Grid item xs={2} sm={6} mt={2}>
                         <FormControlLabel
-                            control={<Checkbox name="headquater" value="yes" />}
+                            control={<Checkbox name="global_user" value="yes" />}
                             label="Global User"
                             sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
                         />   
@@ -196,7 +195,6 @@ function UserAdd() {
                            autoFocus
                         /> 
                         </Grid>
-                        
                         <Grid item xs={6} sm={6}>
                        </Grid>
                     </Grid>
@@ -206,19 +204,17 @@ function UserAdd() {
                     <Box>
                       Create login information for the user.
                     </Box>
-                    <Grid item xs={6} sm={6}>
-                        <TextField
+                    <Grid container spacing={2} rowSpacing={1} >
+                      <Grid item xs={6} >
+                      <TextField
                             margin="normal"
                             required
                             fullWidth
                             id="email"
                             label="Email"
-                            name="email"
-                            
+                            name="email"  
                         />
-                    </Grid>
-                    <Grid item xs={6} sm={6} sx={{ mb: 2}}>
-                      <TextField
+                        <TextField
                         margin="normal"
                         required
                         fullWidth
@@ -228,19 +224,38 @@ function UserAdd() {
                         id="password"
                         autoComplete="current-password"
                       />
-                    </Grid>
+                      </Grid>
+                      <Grid item xs={6} >
+                          <Typography component="h6" color="primary" variant="h6" sx={{ mt: 2 }}  gutterBottom>
+                            Roles/Permission
+                            </Typography>
+                            <Typography >
+                              <FormControlLabel
+                                      control={<Checkbox name="admin" value="yes" />}
+                                      label="Admin"
+                                      sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
+                              />  
+                            </Typography>
+                            <Typography >
+                              <FormControlLabel
+                                    control={<Checkbox name="auditor" value="yes" />}
+                                    label="Auditor"
+                                    sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
+                              />  
+                            </Typography> 
+                      </Grid>
+                     </Grid>
                     </Box>
                     <Divider />
-                      <Grid item xs={2} sm={2}>
-                        <Button
+                      <Toolbar  sx={{ ml: 0 ,pl:"0 !important"}}>
+                          <Button
                           type="submit"
-                          fullWidth
                           variant="contained"
-                          sx={{ mt: 2 }}
                         >
                         Submit
-                        </Button>
-                    </Grid>
+                          </Button>
+                        <Button variant="contained" component={Link} to="/users" sx={{ ml: 1 }} >Cancel </Button>
+                      </Toolbar> 
                 </Paper>
               </Grid>
             </Grid>

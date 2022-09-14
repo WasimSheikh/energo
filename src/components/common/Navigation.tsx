@@ -11,12 +11,13 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import PeopleIcon from '@mui/icons-material/People';
-import BarChartIcon from '@mui/icons-material/BarChart';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import SettingsIcon from '@mui/icons-material/Settings';
 import ContentPasteSearchIcon from '@mui/icons-material/ContentPasteSearch';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import { Link } from "react-router-dom";
+
 
 const Navigation = (): JSX.Element => {
   const drawerWidth: number = 240;
@@ -69,31 +70,32 @@ const Navigation = (): JSX.Element => {
           <Divider />
           <List component="nav">
           <React.Fragment>
-            <ListItemButton href="dashboard">
+          <ListItemButton component={Link} to="/dashboard" >
               <ListItemIcon>
                 <DashboardIcon />
               </ListItemIcon>
-              <ListItemText primary="Dashboard" />
+            <ListItemText primary="Dashboard" />
             </ListItemButton>
-            <ListItemButton href="companies">
+            <ListItemButton component={Link} to="/companies" >
               <ListItemIcon>
                 <ManageAccountsIcon />
               </ListItemIcon>
               <ListItemText primary="Companies"  />
             </ListItemButton>
-            <ListItemButton href="users">
+            <ListItemButton component={Link} to="/users" >
+           
               <ListItemIcon>
                 <PeopleIcon />
               </ListItemIcon>
               <ListItemText primary="Users" />
             </ListItemButton>
-            <ListItemButton>
+            <ListItemButton component={Link} to="/documents" >
               <ListItemIcon>
                 <FileCopyIcon />
               </ListItemIcon>
               <ListItemText primary="Documents" />
             </ListItemButton>
-            <ListItemButton>
+            <ListItemButton component={Link} to="/notifications" >
               <ListItemIcon>
                 <NotificationsIcon />
               </ListItemIcon>

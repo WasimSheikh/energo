@@ -14,6 +14,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import { Link } from "react-router-dom";
 
 const mdTheme = createTheme();
 
@@ -177,17 +178,15 @@ function CompanyAdd() {
                     
                   </Box>
                   <Divider />
-                        <Grid item xs={2} sm={2}>
+                      <Toolbar  sx={{ ml: 0 ,pl:"0 !important"}}>
                           <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            sx={{ mt: 2 }}
-                          >
-                          Submit
-                           </Button>
-                      </Grid>
-                    
+                          type="submit"
+                          variant="contained"
+                        >
+                        Submit
+                          </Button>
+                        <Button variant="contained" component={Link} to="/companies" sx={{ ml: 1 }} >Cancel </Button>
+                      </Toolbar> 
                 </Paper>
               </Grid>
             </Grid>

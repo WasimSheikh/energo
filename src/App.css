@@ -41,3 +41,16 @@
     transform: translateY(0px);
   }
 }
+.documentselect {
+  width: 100%;
+  position: absolute !important;
+  max-width: 59px;
+  opacity: 0;
+}
+.Active {
+  background-color: #0168d6 !important;
+}
+.Active h6 , .Active p ,.Active svg{
+  color: #fff;
+}
+

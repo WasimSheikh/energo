@@ -15,8 +15,8 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
-import Link from '@mui/material/Link';
 import Button from '@mui/material/Button';
+import { Link } from "react-router-dom";
 
 const mdTheme = createTheme();
 // Generate Order Data
@@ -69,9 +69,8 @@ function UserList() {
                   <Typography component="h2" variant="h6" color="primary" gutterBottom>
                     Users 
                     </Typography>
-                    <Button variant="contained" href="users/add">Add</Button>
+                    <Button variant="contained" component={Link} to="/users/add">Add</Button>
                 </Box>
-               
                 <Divider />
                   <Table size="small">
                     <TableHead>
