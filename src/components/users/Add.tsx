@@ -20,7 +20,10 @@ import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { Link } from "react-router-dom";
 import React, { useEffect, useState } from 'react';
-
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import { store } from '../../redux/store';
+import { createUser } from '../../redux/store/reducers/slices/UserSlice';
 
 const mdTheme = createTheme();
 const names = [
@@ -36,23 +39,46 @@ function UserAdd() {
   const [companyName,setCompanyName] = useState('');
   const [email,setEmail] = useState('');
   const [phone,setPhone] = useState('');
-  const [address1,setAddress1] = useState('');
+  const [address1,setAddress] = useState('');
   const [address2,setAddress2] = useState('');
   const [city,setCity] = useState('');
   const [country,setCountry] = useState('');
+  const [password,setPassword] = useState('');
   const [postalCode,setPostalCode] = useState('');
   const [firstName,setFirstName] = useState('');
-  const [lastName,setlastName] = useState('');
+  const [lastName,setLastName] = useState('');
+  const [permission, setPermission] = React.useState('');
 
-  const handleChange = (event: SelectChangeEvent) => {
+  const [dirtyFields, setDirtyFields] = useState({
+    companyName: false,
+  });
+
+  const selectChange = (event: SelectChangeEvent) => {
     setCompanyName(event.target.value);
   };
-  
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const formData = {email: data.get('email'),first_name: data.get('first_name'),last_name: data.get('last_name') }
-    console.log(formData);
+
+  const radioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPermission((event.target as HTMLInputElement).value);
+  };
+    
+  const handleSubmit = (e:any) => {
+    e.preventDefault();
+    const formData = {
+      companyName:companyName,
+      first_name: firstName,
+      last_name:lastName,
+      phone:phone,
+      email:email,
+      address1:address1,
+      address2:address2,
+      city:city,
+      country:country,
+      password:password,
+      permission: permission,
+    }     
+    store.dispatch(createUser(formData)).then((res: any) => {
+       
+    });                                     
   };
 
   return (
@@ -93,8 +119,13 @@ function UserAdd() {
                         id="company_name"
                         value={companyName}
                         label="Company Name"
-                        autoFocus
-                        onChange={handleChange}
+                        onChange={selectChange}
+                        onBlur={(e) =>{
+                          setDirtyFields((dirty) => ({
+                              ...dirty,
+                              companyName: false,
+                              }));
+                        }}
                       >
                        <MenuItem value="">-Select-</MenuItem>
                           {names.map((name) => (
@@ -124,6 +155,9 @@ function UserAdd() {
                             autoFocus
                             label="First Name"
                             fullWidth
+                            onChange={(e) => {
+                              setFirstName(e.target.value);
+                            }}
                           />
                       </Grid>
                       <Grid item xs={6} sm={6}>
@@ -135,6 +169,9 @@ function UserAdd() {
                             autoFocus
                             label="Last Name"
                             fullWidth
+                            onChange={(e) => {
+                              setLastName(e.target.value);
+                            }}
                           />
                       </Grid>
                       <Grid item xs={6} sm={6}>
@@ -145,7 +182,9 @@ function UserAdd() {
                             id="phone"
                             label="Phone"
                             name="phone"
-                           autoFocus
+                            onChange={(e) => {
+                             setPhone(e.target.value);
+                            }}
                         />
                       </Grid>
                       <Grid item xs={6} sm={6}> 
@@ -157,8 +196,11 @@ function UserAdd() {
                               fullWidth
                               id="address"
                               label="Address"
-                              name="address"
-                            autoFocus
+                              name="address1"
+                              onChange={(e) => {
+                                setAddress(e.target.value);
+                              }}
+                            
                           />
                       </Grid>
                       <Grid item xs={6} sm={6}>
@@ -168,8 +210,10 @@ function UserAdd() {
                               fullWidth
                               id="street 1"
                               label="Street"
-                              name="street"
-                            autoFocus
+                              name="address2"
+                              onChange={(e) => {
+                                setAddress2(e.target.value);
+                              }}
                           />
                       </Grid>
                       <Grid item xs={6} sm={6}>
@@ -180,7 +224,9 @@ function UserAdd() {
                               id="city"
                               label="City"
                               name="city"
-                              autoFocus
+                              onChange={(e) => {
+                                setCity(e.target.value);
+                              }}
                           />
                       </Grid>
                       <Grid item xs={6} sm={6}>
@@ -190,8 +236,10 @@ function UserAdd() {
                             fullWidth
                             id="zipcode"
                             label="Zipcode"
-                            name="zipcode"
-                            autoFocus
+                            name="postalcode"
+                            onChange={(e) => {
+                              setPostalCode(e.target.value);
+                            }}
                         />
                       </Grid>
                       <Grid item xs={6} sm={6}>
@@ -202,7 +250,9 @@ function UserAdd() {
                             id="country"
                             label="Country"
                             name="country"
-                           autoFocus
+                            onChange={(e) => {
+                              setCountry(e.target.value);
+                            }}
                         /> 
                         </Grid>
                         <Grid item xs={6} sm={6}>
@@ -222,7 +272,10 @@ function UserAdd() {
                             fullWidth
                             id="email"
                             label="Email"
-                            name="email"  
+                            name="email" 
+                            onChange={(e) => {
+                              setEmail(e.target.value);
+                            }} 
                         />
                         <TextField
                         margin="normal"
@@ -232,27 +285,27 @@ function UserAdd() {
                         label="Password"
                         type="password"
                         id="password"
-                        autoComplete="current-password"
+                        onChange={(e) => {
+                          setPassword(e.target.value);
+                        }} 
                       />
                       </Grid>
                       <Grid item xs={6} >
                           <Typography component="h6" color="primary" variant="h6" sx={{ mt: 2 }}  gutterBottom>
                             Roles/Permission
                             </Typography>
-                            <Typography >
-                              <FormControlLabel
-                                      control={<Checkbox name="admin" value="yes" />}
-                                      label="Admin"
-                                      sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
-                              />  
-                            </Typography>
-                            <Typography >
-                              <FormControlLabel
-                                    control={<Checkbox name="auditor" value="yes" />}
-                                    label="Auditor"
-                                    sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
-                              />  
-                            </Typography> 
+                            <FormControl>
+                                
+                                  <RadioGroup
+                                    aria-labelledby="demo-controlled-radio-buttons-group"
+                                    name="controlled-radio-buttons-group"
+                                    value={permission}
+                                    onChange={radioChange}
+                                  >
+                                    <FormControlLabel value="admin" control={<Radio />} label="Admin" />
+                                    <FormControlLabel value="author" control={<Radio />} label="Author" />
+                                  </RadioGroup>
+                                </FormControl>
                       </Grid>
                      </Grid>
                     

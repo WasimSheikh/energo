@@ -15,15 +15,11 @@ import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { Link } from "react-router-dom";
-import { UserMgmtSlice } from '../../redux/store/reducers/slices/UserSlice';
+import { createCompany } from '../../redux/store/reducers/slices/UserSlice';
 import { store } from '../../redux/store';
 import React, { useEffect, useState } from 'react';
 
 const mdTheme = createTheme();
-
-const updateAddress = (address: any) => {
-  store.dispatch(UserMgmtSlice.actions.setUserAddress(address));
-};
 
 function CompanyAdd() {
   const [companyName,setCompanyName] = useState('');
@@ -37,12 +33,24 @@ function CompanyAdd() {
   const [postalCode,setPostalCode] = useState('');
   const [logo,setLogo] = useState('');
   const [isHeadauator,setIsHeadauator] = useState('');
-  
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget); 
-    console.log(data.get('email'));
+  const handleSubmit = (e:any) => {
+    e.preventDefault();
+    const formData = {
+      company_name:companyName,
+      website: website,
+      phone:phone,
+      email:email,
+      address1:address1,
+      address2:address2,
+      city:city,
+      country:country,
+      logo:logo,
+      isHeadquater:isHeadauator,
+    }  
+    store.dispatch(createCompany(formData)).then((res: any) => {
+      
+    });           
   };
 
   return (
@@ -80,9 +88,11 @@ function CompanyAdd() {
                             id="company_name"
                             required
                             name="company_name"
-                            autoFocus
                             label="Company Name"
                             fullWidth
+                            onChange={(e) => {
+                              setCompanyName(e.target.value);
+                            }}
                           />
                       </Grid>
                       <Grid item xs={6} sm={6}>
@@ -91,9 +101,11 @@ function CompanyAdd() {
                             id="website"
                             required
                             name="website"
-                            autoFocus
                             label="Website"
                             fullWidth
+                            onChange={(e) => {
+                              setWebsite(e.target.value);
+                            }}
                           />
                       </Grid>
                       <Grid item xs={6} sm={6}>
@@ -104,7 +116,9 @@ function CompanyAdd() {
                             id="email"
                             label="Email"
                             name="email"
-                            autoFocus
+                            onChange={(e) => {
+                              setEmail(e.target.value);
+                            }}
                         />
                       </Grid>
                       
@@ -116,7 +130,9 @@ function CompanyAdd() {
                             id="phone"
                             label="Phone"
                             name="phone"
-                           autoFocus
+                            onChange={(e) => {
+                              setPhone(e.target.value);
+                            }}
                         />
                       </Grid>
                       <Grid item xs={6} sm={6}>
@@ -127,7 +143,9 @@ function CompanyAdd() {
                               id="address"
                               label="Address"
                               name="address"
-                            autoFocus
+                              onChange={(e) => {
+                                setAddress1(e.target.value);
+                              }}
                           />
                       </Grid>
                       <Grid item xs={6} sm={6}>
@@ -137,8 +155,10 @@ function CompanyAdd() {
                               fullWidth
                               id="street 1"
                               label="Street"
-                              name="street"
-                            autoFocus
+                              name="address2"
+                              onChange={(e) => {
+                                setAddress2(e.target.value);
+                              }}
                           />
                       </Grid>
                       <Grid item xs={6} sm={6}>
@@ -149,7 +169,9 @@ function CompanyAdd() {
                               id="city"
                               label="City"
                               name="city"
-                              autoFocus
+                              onChange={(e) => {
+                                setCity(e.target.value);
+                              }}
                           />
                       </Grid>
                       <Grid item xs={6} sm={6}>
@@ -159,8 +181,10 @@ function CompanyAdd() {
                             fullWidth
                             id="zipcode"
                             label="Zipcode"
-                            name="zipcode"
-                            autoFocus
+                            name="postalCode"
+                            onChange={(e) => {
+                              setPostalCode(e.target.value);
+                            }}
                         />
                       </Grid>
                       <Grid item xs={6} sm={6}>
@@ -171,12 +195,18 @@ function CompanyAdd() {
                             id="country"
                             label="Country"
                             name="country"
-                           autoFocus
+                            onChange={(e) => {
+                              setCountry(e.target.value);
+                            }}
                         /> </Grid>
                        
                         <Grid item xs={2} sm={6} mt={2}>
                         <FormControlLabel
-                            control={<Checkbox name="headquater" value="yes" />}
+                            control={<Checkbox  
+                            onChange={(e) => {
+                              setIsHeadauator(e.target.value);
+                            }} 
+                            name="headquater" value="1" />}
                             label="Company Headquater Office"
                             sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
                         />
@@ -185,7 +215,7 @@ function CompanyAdd() {
                         <Grid item xs={6} sm={6}>
                         <Button variant="contained" component="label"  sx={{ mb: 3 }}>
                             Upload Logo
-                            <input hidden accept="image/*" multiple type="file" />
+                            <input name='logo' hidden accept="image/*" multiple type="file"  />
                           </Button>
                         </Grid>
                         <Grid item xs={6} sm={6}>

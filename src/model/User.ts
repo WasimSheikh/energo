@@ -22,6 +22,11 @@ export interface User {
     isGlobal?:boolean;
     address?: Address;
     permission?:string;
+    address1?: string;
+    address2?: string;
+    country?:string;
+    city?:string;
+    zip?: string;
      
 }
 
@@ -33,6 +38,11 @@ export interface Comapny {
     IsHeadquater?:boolean;
     address?: Address;
     logo?:string;  
+    address1?: string;
+    address2?: string;
+    country?:string;
+    city?:string;
+    zip?: string;
 }
 
 export interface ShareDocument {

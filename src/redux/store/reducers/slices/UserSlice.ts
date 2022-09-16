@@ -8,120 +8,64 @@ const localEndPoint="http://localhost:8080";
 const buildEndPoint="/apis"
 const apiEndPoint='http://localhost:8080'//detectEnvURL();
 
-
-export const syncWM = createAsyncThunk('wealthManagement', async (req: any) => {
-    console.log("syncWM",req);
-    return await fetch(apiEndPoint.replace('/apis','') +'/wealthManagement/create', {
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
-        },
-        body: JSON.stringify(req)
-    }).then(res => {
-        return res.json()
-    });
-})
-
 export const createUser = createAsyncThunk('Create_user', async (user: User) => {
+    console.log(user);
     
-    return await fetch(apiEndPoint+'/user/create', {
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
-        },
-        body: JSON.stringify(user)
-    }).then(res => {
-        return res.json()
-    });
+    // return await fetch(apiEndPoint+'/user/create', {
+    //     method: 'POST',
+    //     headers: {
+    //         'Accept': 'application/json',
+    //         'Content-Type': 'application/json',
+    //         'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
+    //     },
+    //     body: JSON.stringify(user)
+    // }).then(res => {
+    //     return res.json()
+    // });
 })
 
-export const getVisitorApi = createAsyncThunk('getVisitorApi', async (req: any) => {
+export const createCompany = createAsyncThunk('Create_company', async (comapny: User) => {
+    console.log(comapny);
     
-    return await fetch(apiEndPoint+'/user/get/visitor', {
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
-        
-        },
-        body: JSON.stringify(req)
-    }).then(res => {
-        return res.json()
-    });
+    // return await fetch(apiEndPoint+'/user/create', {
+    //     method: 'POST',
+    //     headers: {
+    //         'Accept': 'application/json',
+    //         'Content-Type': 'application/json',
+    //         'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
+    //     },
+    //     body: JSON.stringify(user)
+    // }).then(res => {
+    //     return res.json()
+    // });
 })
 
-export const getContactInfo = createAsyncThunk('getContactInfo', async (req: any) => {
-    
-    return await fetch(apiEndPoint+'/user/validateContact', {
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
-        
-        },
-        body: JSON.stringify(req)
-    }).then(res => {
-        return res.json()
-    });
+export const getUsers = createAsyncThunk('get_Users', async () => {
+    const rows = [
+        { id: 1, companyName: 'Snow 1', firstName: 'Jon1', lastName: 'test1', email: 'Jon1@gmail.com',  phone: '1111111111',  country: 'country1', action: 'Edit/View'  },
+        { id: 2, companyName: 'Snow 2', firstName: 'Jon2', lastName: 'test2', email: 'Jon2@gmail.com',  phone: '2222222222',  country: 'country2', action: 'Edit/View'  },
+        { id: 3, companyName: 'Snow 3', firstName: 'Jon3', lastName: 'test3', email: 'Jon3@gmail.com',  phone: '3333333333',  country: 'country3', action: 'Edit/View'  },
+        { id: 4, companyName: 'Snow 4', firstName: 'Jon4', lastName: 'test4', email: 'Jon4@gmail.com',  phone: '4444444444',  country: 'country4', action: 'Edit/View'  },
+        { id: 5, companyName: 'Snow 5', firstName: 'Jon5', lastName: 'test5', email: 'Jon5@gmail.com',  phone: '5555555555',  country: 'country5', action: 'Edit/View'  },
+        { id: 6, companyName: 'Snow 6', firstName: 'Jon6', lastName: 'test6', email: 'Jon6@gmail.com',  phone: '6666666666',  country: 'country6', action: 'Edit/View'  },
+        { id: 7, companyName: 'Snow 7', firstName: 'Jon7', lastName: 'test7', email: 'Jon7@gmail.com',  phone: '7777777777',  country: 'country7', action: 'Edit/View'  },
+        { id: 8, companyName: 'Snow 8', firstName: 'Jon8', lastName: 'test8', email: 'Jon8@gmail.com',  phone: '8888888888',  country: 'country8', action: 'Edit/View'  },
+        { id: 9, companyName: 'Snow 9', firstName: 'Jon9', lastName: 'test9', email: 'Jon9@gmail.com',  phone: '9999999999',  country: 'country9', action: 'Edit/View'  },
+      ]    
+    return JSON.stringify(rows)
+    // return await fetch(apiEndPoint+'/user/create', {
+    //     method: 'POST',
+    //     headers: {
+    //         'Accept': 'application/json',
+    //         'Content-Type': 'application/json',
+    //         'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
+    //     },
+    //     body: JSON.stringify(user)
+    // }).then(res => {
+    //     return res.json()
+    // });
 })
 
-export const createDoc = createAsyncThunk('createDoc', async (req: any) => {
-      
-    return await fetch(apiEndPoint+'/user/create-document', {
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
-        
-        },
-        body: JSON.stringify(req)
-    }).then(res => {
-        return res.json()
-    });
-})
-
-
-export const sendOtp = createAsyncThunk('send_otp', async (phoneNum: String) => {
-    const reqData = {
-        "phoneNumber": "1" + phoneNum
-    }
-    return await fetch(apiEndPoint+'/user/sendOtp', {
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'bwf-secret': 'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis',
-        
-        },
-        body: JSON.stringify(reqData)
-    }).then(res => {
-        return res.json()
-    });;
-})
-
-export const createAccount = createAsyncThunk('create_account', async (user: User) => {
-  const reqObject={userName:user.email,password:user.password};
-  console.log(reqObject);
-    return await fetch(apiEndPoint+'/user/createAccount', {
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
-        
-        },
-        body: JSON.stringify(reqObject)
-    }).then(res => {
-        return res.json()
-    });;
-})
 
 
 const INIT_STATE: AppUser = {
@@ -214,27 +158,15 @@ export const UserMgmtSlice = createSlice({
         }
     },
     extraReducers: (builder) => {
-
         builder.addCase(createUser.fulfilled, (state, response) => {
-            if(response.payload.status !== "FAILED" && response.payload.msg && state.currUser){
-                //state.currUser.customerId=response.payload.msg;
-            }
+            // if(response.payload.status !== "FAILED" && response.payload.msg && state.currUser){
+            //     //state.currUser.customerId=response.payload.msg;
+            // }
             console.log('createUser success' + response.payload)
         })
         builder.addCase(createUser.rejected, (state, response) => {
             console.log('createUser failed' + response)
         })
-        
-        builder.addCase(getVisitorApi.fulfilled, (state, response) => {
-
-            if(response && response.payload && response.payload.status !== "FAILED" && response.payload.status!==500){
-                state.currUser=Object.assign(response.payload);
-                console.log('Current user'+state.currUser)
-                //state.currUser=Object.assign(response.payload.data);
-            }
-        })
-
-        
 
     }
 })
