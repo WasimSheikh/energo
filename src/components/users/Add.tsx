@@ -18,8 +18,9 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import * as React from 'react';
 import { Link } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+
 
 const mdTheme = createTheme();
 const names = [
@@ -32,17 +33,26 @@ const names = [
 
 function UserAdd() {
   const theme = useTheme();
-  const [companyName, setCompanyName] = React.useState('');
-  const handleChange = (event: SelectChangeEvent) => {
-    setCompanyName(event.target.value as string);
-  };
+  const [companyName,setCompanyName] = useState('');
+  const [email,setEmail] = useState('');
+  const [phone,setPhone] = useState('');
+  const [address1,setAddress1] = useState('');
+  const [address2,setAddress2] = useState('');
+  const [city,setCity] = useState('');
+  const [country,setCountry] = useState('');
+  const [postalCode,setPostalCode] = useState('');
+  const [firstName,setFirstName] = useState('');
+  const [lastName,setlastName] = useState('');
 
+  const handleChange = (event: SelectChangeEvent) => {
+    setCompanyName(event.target.value);
+  };
+  
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email')
-    });
+    const formData = {email: data.get('email'),first_name: data.get('first_name'),last_name: data.get('last_name') }
+    console.log(formData);
   };
 
   return (
@@ -245,7 +255,7 @@ function UserAdd() {
                             </Typography> 
                       </Grid>
                      </Grid>
-                    </Box>
+                    
                     <Divider />
                       <Toolbar  sx={{ ml: 0 ,pl:"0 !important"}}>
                           <Button
@@ -256,6 +266,7 @@ function UserAdd() {
                           </Button>
                         <Button variant="contained" component={Link} to="/users" sx={{ ml: 1 }} >Cancel </Button>
                       </Toolbar> 
+                      </Box>
                 </Paper>
               </Grid>
             </Grid>

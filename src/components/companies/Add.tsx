@@ -15,18 +15,34 @@ import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { Link } from "react-router-dom";
+import { UserMgmtSlice } from '../../redux/store/reducers/slices/UserSlice';
+import { store } from '../../redux/store';
+import React, { useEffect, useState } from 'react';
 
 const mdTheme = createTheme();
 
+const updateAddress = (address: any) => {
+  store.dispatch(UserMgmtSlice.actions.setUserAddress(address));
+};
 
 function CompanyAdd() {
+  const [companyName,setCompanyName] = useState('');
+  const [email,setEmail] = useState('');
+  const [phone,setPhone] = useState('');
+  const [website,setWebsite] = useState('');
+  const [address1,setAddress1] = useState('');
+  const [address2,setAddress2] = useState('');
+  const [city,setCity] = useState('');
+  const [country,setCountry] = useState('');
+  const [postalCode,setPostalCode] = useState('');
+  const [logo,setLogo] = useState('');
+  const [isHeadauator,setIsHeadauator] = useState('');
+  
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email')
-    });
+    const data = new FormData(event.currentTarget); 
+    console.log(data.get('email'));
   };
 
   return (
@@ -176,7 +192,7 @@ function CompanyAdd() {
                        </Grid>
                     </Grid>
                     
-                  </Box>
+                  
                   <Divider />
                       <Toolbar  sx={{ ml: 0 ,pl:"0 !important"}}>
                           <Button
@@ -187,6 +203,7 @@ function CompanyAdd() {
                           </Button>
                         <Button variant="contained" component={Link} to="/companies" sx={{ ml: 1 }} >Cancel </Button>
                       </Toolbar> 
+                      </Box>
                 </Paper>
               </Grid>
             </Grid>
