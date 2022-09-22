@@ -48,6 +48,8 @@ function UserAdd() {
   const [firstName,setFirstName] = useState('');
   const [lastName,setLastName] = useState('');
   const [permission, setPermission] = React.useState('');
+  const [globalUser, setGlobalUser] = React.useState('');
+  
 
   const [dirtyFields, setDirtyFields] = useState({
     companyName: false,
@@ -67,6 +69,7 @@ function UserAdd() {
       companyName:companyName,
       first_name: firstName,
       last_name:lastName,
+      global_user:globalUser,
       phone:phone,
       email:email,
       address1:address1,
@@ -140,11 +143,15 @@ function UserAdd() {
                     </FormControl>
                       </Grid>
                       <Grid item xs={2} sm={6} mt={2}>
-                        <FormControlLabel
-                            control={<Checkbox name="global_user" value="yes" />}
+                      <FormControlLabel
+                            control={<Checkbox  
+                            onChange={(e) => {
+                              setGlobalUser(e.target.value);
+                            }} 
+                            name="global_user" value="yes" />}
                             label="Global User"
                             sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
-                        />   
+                        />
                       </Grid>
                       <Grid item xs={6} sm={6}>
                           <TextField
@@ -295,8 +302,7 @@ function UserAdd() {
                             Roles/Permission
                             </Typography>
                             <FormControl>
-                                
-                                  <RadioGroup
+                                <RadioGroup
                                     aria-labelledby="demo-controlled-radio-buttons-group"
                                     name="controlled-radio-buttons-group"
                                     value={permission}

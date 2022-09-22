@@ -1,7 +1,5 @@
 import * as React from 'react';
 import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import MuiDrawer from '@mui/material/Drawer';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -16,7 +14,6 @@ function capitalizeFirstLetter(string:string) {
 
 const Header = (): JSX.Element => {
   let urlElements = window.location.href.split('/')[3]
- 
   const drawerWidth: number = 240;
   interface AppBarProps extends MuiAppBarProps {
     open?: boolean;
@@ -60,7 +57,7 @@ const Header = (): JSX.Element => {
                 ...(open && { display: 'none' }),
               }}
             >
-              <MenuIcon />
+            <MenuIcon />
             </IconButton>
             <Typography
               component="h1"

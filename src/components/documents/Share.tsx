@@ -16,16 +16,36 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import PermMediaIcon from '@mui/icons-material/PermMedia';
 import { Link } from "react-router-dom";
+import { store } from '../../redux/store';
+import { shareDocuments } from '../../redux/store/reducers/slices/UserSlice';
+import { useEffect, useState } from 'react';
 
 const mdTheme = createTheme();
 function ShareAdd() {
+  const [email,setEmail] = useState('');
+  const [name,setName] = useState('');
+  const [description,setDescription] = useState('');
+  const [documents,setDocuments] = useState([]);
+
+  const [errorMessages, setErrorMessages] = useState('');
+
   const cards = [1, 2];
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event:any) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email')
-    });
+    const formData = {
+      name:name,
+      email:email,
+      description:description,
+      documents:documents
+    } 
+    store.dispatch(shareDocuments(formData)).then((res: any) => {
+      if (res.payload.status == true) {
+        setErrorMessages('');
+        //const that = this.context.router.history.push("/dashboard");  
+      } else {
+        setErrorMessages(res.payload?.message);
+      }
+    }); 
   };
   return (
     <ThemeProvider theme={mdTheme}>
@@ -71,9 +91,7 @@ function ShareAdd() {
                                         Uploaded 2022-02-02 
                                       </Typography>
                                       </Typography>
-                                      
                                       </Toolbar>
-                                    
                                   </CardContent>
                                 </Card>
                               </Grid>
@@ -100,16 +118,16 @@ function ShareAdd() {
                             name="email"
                             autoFocus
                         />
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            multiline
-                            rows={4}
-                            id="description"
-                            label="Reason for sharing/Requesting"
-                            name="description"
-                        />
+                          <TextField
+                              margin="normal"
+                              required
+                              fullWidth
+                              multiline
+                              rows={4}
+                              id="description"
+                              label="Reason for sharing/Requesting"
+                              name="description"
+                          />
                       </Grid>
                      </Grid>
                    </Box>
