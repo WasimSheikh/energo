@@ -84,6 +84,36 @@ export const createCompany = createAsyncThunk('Create_company', async (comapny: 
     // });
 })
 
+export const updateCompany = createAsyncThunk('Update_company', async (comapny: User) => {
+    console.log(comapny);
+    // return await fetch(apiEndPoint+'/user/create', {
+    //     method: 'POST',
+    //     headers: {
+    //         'Accept': 'application/json',
+    //         'Content-Type': 'application/json',
+    //         'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
+    //     },
+    //     body: JSON.stringify(user)
+    // }).then(res => {
+    //     return res.json()
+    // });
+})
+
+export const updateUser = createAsyncThunk('Update_user', async (user: User) => {
+    console.log(user);
+    // return await fetch(apiEndPoint+'/user/create', {
+    //     method: 'POST',
+    //     headers: {
+    //         'Accept': 'application/json',
+    //         'Content-Type': 'application/json',
+    //         'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
+    //     },
+    //     body: JSON.stringify(user)
+    // }).then(res => {
+    //     return res.json()
+    // });
+})
+
 export const getUsers = createAsyncThunk('get_Users', async () => {
     const rows = [
         { id: 1, companyName: 'Snow 1', firstName: 'Jon1', lastName: 'test1', email: 'Jon1@gmail.com',  phone: '1111111111'},
@@ -137,7 +167,7 @@ export const getCompanies = createAsyncThunk('get_Companies', async () => {
 })
 
 export const getCompany = createAsyncThunk('get_Company', async () => {
-    const rows = { id: 1, companyName: 'Snow 1', email: 'Jon1@gmail.com',  phone: '1111111111', website: 'test1.com',address1:'anoop nagar' ,address2 :'apartment ',logo:"",isHeadauator:'Yes',city:'indore',country:'usa', postalCode:'452201'}; 
+    const rows = { id: 1, companyName: 'Van Henry', email: 'Jon1@gmail.com',  phone: '1111111111', website: 'test1.com',address1:'anoop nagar' ,address2 :'apartment ',logo:"",isHeadauator:'Yes',city:'indore',country:'usa', postalCode:'452201'}; 
     return rows;
     // return await fetch(apiEndPoint+'/user/create', {
     //     method: 'POST',
@@ -153,7 +183,7 @@ export const getCompany = createAsyncThunk('get_Company', async () => {
 })
 
 export const getUser = createAsyncThunk('get_User', async () => {
-    const rows = { id: 1, companyName: 'Snow 1', email: 'Jon1@gmail.com',  phone: '1111111111', website: 'test1.com',address1:'anoop nagar' ,address2 :'apartment ',logo:"",globalUser:'Yes',city:'indore',country:'usa', postalCode:'452201',firstName:'testing',lastName:'last',password:'*********',permission:'Admin'}; 
+    const rows = { id: 1, companyName: 'Van Henry', email: 'Jon1@gmail.com',  phone: '1111111111', website: 'test1.com',address1:'anoop nagar' ,address2 :'apartment ',logo:"",globalUser:'Yes',city:'indore',country:'usa', postalCode:'452201',firstName:'testing',lastName:'last',password:'*********',permission:'Admin'}; 
     return rows;
     // return await fetch(apiEndPoint+'/user/create', {
     //     method: 'POST',

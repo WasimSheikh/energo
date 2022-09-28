@@ -43,7 +43,7 @@ function DashboardContent() {
                     height: 240,
                   }}
                 >
-                  <Typography component="h2" variant="h6" color="primary" gutterBottom>
+                  {/* <Typography component="h2" variant="h6" color="primary" gutterBottom>
                     Recent Deposits
                   </Typography>
                   <Typography component="p" variant="h4">
@@ -51,7 +51,7 @@ function DashboardContent() {
                   </Typography>
                   <Typography color="text.secondary" sx={{ flex: 1 }}>
                     on 15 March, 2019
-                  </Typography>
+                  </Typography> */}
                 </Paper>
               </Grid>
               <Grid item xs={12} md={4} lg={4}>
@@ -63,7 +63,7 @@ function DashboardContent() {
                     height: 240,
                   }}
                 >
-                  <Typography component="h2" variant="h6" color="primary" gutterBottom>
+                  {/* <Typography component="h2" variant="h6" color="primary" gutterBottom>
                     Recent Deposits
                   </Typography>
                   <Typography component="p" variant="h4">
@@ -71,7 +71,7 @@ function DashboardContent() {
                   </Typography>
                   <Typography color="text.secondary" sx={{ flex: 1 }}>
                     on 15 March, 2019
-                  </Typography>
+                  </Typography> */}
                 </Paper>
               </Grid>
               <Grid item xs={12} md={4} lg={4}>
@@ -83,7 +83,7 @@ function DashboardContent() {
                     height: 240,
                   }}
                 >
-                  <Typography component="h2" variant="h6" color="primary" gutterBottom>
+                  {/* <Typography component="h2" variant="h6" color="primary" gutterBottom>
                     Recent Deposits
                   </Typography>
                   <Typography component="p" variant="h4">
@@ -91,7 +91,7 @@ function DashboardContent() {
                   </Typography>
                   <Typography color="text.secondary" sx={{ flex: 1 }}>
                     on 15 March, 2019
-                  </Typography>
+                  </Typography> */}
                 </Paper>
               </Grid>
             </Grid>

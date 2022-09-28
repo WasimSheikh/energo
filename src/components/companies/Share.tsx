@@ -18,7 +18,7 @@ import PermMediaIcon from '@mui/icons-material/PermMedia';
 import { Link } from "react-router-dom";
 import { store } from '../../redux/store';
 import { shareDocuments } from '../../redux/store/reducers/slices/UserSlice';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const mdTheme = createTheme();
 function ShareAdd() {
@@ -28,6 +28,7 @@ function ShareAdd() {
   const [documents,setDocuments] = useState([]);
 
   const [errorMessages, setErrorMessages] = useState('');
+
   const cards = [1, 2];
   const handleSubmit = (event:any) => {
     event.preventDefault();
@@ -38,10 +39,10 @@ function ShareAdd() {
       documents:documents
     } 
     store.dispatch(shareDocuments(formData)).then((res: any) => {
-      if(res.payload.status == true) {
+      if (res.payload.status == true) {
         setErrorMessages('');
         //const that = this.context.router.history.push("/dashboard");  
-      }else {
+      } else {
         setErrorMessages(res.payload?.message);
       }
     }); 
@@ -70,7 +71,7 @@ function ShareAdd() {
               <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
                 <Typography component="h2" variant="h6" color="primary" gutterBottom>
-               Share Files
+               Documents / Share Files
                 </Typography>
                 <Divider />
                   <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
@@ -117,7 +118,7 @@ function ShareAdd() {
                             name="email"
                             autoFocus
                         />
-                         <TextField
+                          <TextField
                               margin="normal"
                               required
                               fullWidth
@@ -132,10 +133,17 @@ function ShareAdd() {
                    </Box>
                   <Divider />
                   <Toolbar  sx={{ ml: 0 ,pl:"0 !important"}}>
-                    <Button type="submit" variant="contained">Submit</Button>
-                    <Button variant="contained" component={Link} to="/companies/document/1" sx={{ ml: 1 }} >Cancel </Button>
-                  </Toolbar>
-                  </Paper>
+                          <Button
+                          type="submit"
+                          variant="contained"
+                        >
+                        Submit
+                          </Button>
+                        <Button variant="contained" component={Link} to="/companies/document/1" sx={{ ml: 1 }} >Cancel </Button>
+                      </Toolbar>
+                       
+                    
+                </Paper>
               </Grid>
             </Grid>
            <Footer />

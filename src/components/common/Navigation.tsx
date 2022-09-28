@@ -89,12 +89,12 @@ const Navigation = (): JSX.Element => {
               </ListItemIcon>
               <ListItemText primary="Users" />
             </ListItemButton>
-            <ListItemButton component={Link} to="/documents" >
+            {/* <ListItemButton component={Link} to="/documents" >
               <ListItemIcon>
                 <FileCopyIcon />
               </ListItemIcon>
               <ListItemText primary="Documents" />
-            </ListItemButton>
+            </ListItemButton> */}
             <ListItemButton component={Link} to="/notifications" >
               <ListItemIcon>
                 <NotificationsIcon />

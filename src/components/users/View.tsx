@@ -35,10 +35,12 @@ function UserView() {
   const [lastName,setLastName] = useState('');
   const [permission, setPermission] = React.useState('');
   const [globalUser, setGlobalUser] = React.useState('');
+  const [onload,setOnload] = useState(false);
 
   useEffect(() => {
-    // if(id!=''){
+     if(onload==false){
        store.dispatch(getUser()).then((res: any) => {
+        setOnload(true);
            if (res && res.payload) {
                setId(res.payload.id);
                setCompanyName(res.payload.companyName);
@@ -56,7 +58,7 @@ function UserView() {
                setGlobalUser(res.payload.globalUser)
            } 
        }); 
-    // }
+    }
    });
 
   return (

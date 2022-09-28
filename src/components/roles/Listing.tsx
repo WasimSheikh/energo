@@ -1,4 +1,4 @@
-import {createTheme, makeStyles, styled, ThemeProvider } from '@mui/material/styles';
+import {createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -19,7 +19,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { getCompanies } from '../../redux/store/reducers/slices/UserSlice';
 import React, { useEffect , useState } from 'react';
 import { store } from '../../redux/store';
-import FileCopyIcon from '@mui/icons-material/FileCopy';
+import ListItemButton from '@mui/material/ListItemButton';
 
 const mdTheme = createTheme();
 const columns: GridColDef[] = [
@@ -30,7 +30,7 @@ const columns: GridColDef[] = [
   {
     field: 'companyName',
     headerName: 'Company Name',
-    width: 190,
+    width: 200,
   },
   {
     field: 'email',
@@ -45,14 +45,14 @@ const columns: GridColDef[] = [
   {
     field: 'website',
     headerName: 'Website',
-    width: 180,
+    width: 200,
     //valueGetter: (params: GridValueGetterParams) =>
     //`${params.row.firstName || ''} ${params.row.lastName || ''}`,
   },
   {
     field: 'action',
     headerName: 'Action',
-    width: 180,
+    width: 150,
     sortable: false,
     renderCell: (params) => {
       return (
@@ -60,16 +60,14 @@ const columns: GridColDef[] = [
         <Button  sx={{ minWidth: 40 }}  component={Link} to="/companies/edit/1" > <EditIcon  /> </Button>
         <Button  sx={{ minWidth: 40 }}   component={Link} to="/companies/view/1" > <VisibilityIcon  /> </Button>
         <Button  sx={{ minWidth: 40 }}   component={Link} to="/companies/view/1" > <DeleteIcon  /> </Button>
-        <Button  sx={{ minWidth: 40 }}   component={Link} to="/companies/document/1" > <FileCopyIcon  /> </Button>
-       
         </>
       );
    }
   },
 ];
 
-function CompanyList() {
 
+function CompanyList() {
   const [companies,setCompanies] = useState([]);
   useEffect(() => {
     if(companies.length == 0){
@@ -121,7 +119,7 @@ function CompanyList() {
                 </Box>
                 </Paper>
               </Grid>
-            </Grid> 
+            </Grid>
            <Footer />
           </Container>
         </Box>
@@ -129,10 +127,6 @@ function CompanyList() {
     </ThemeProvider>
   );
 }
-
-
-
-
 export default function Listing() {
   return <CompanyList />;
 }

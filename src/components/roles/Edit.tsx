@@ -14,25 +14,29 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import { Link } from "react-router-dom";
-import { createCompany } from '../../redux/store/reducers/slices/UserSlice';
+import { Link, useParams } from "react-router-dom";
+import { updateCompany, getCompany } from '../../redux/store/reducers/slices/UserSlice';
 import { store } from '../../redux/store';
 import React, { useEffect, useState } from 'react';
 
 const mdTheme = createTheme();
 
-function CompanyAdd() {
-  const [companyName,setCompanyName] = useState('');
-  const [email,setEmail] = useState('');
-  const [phone,setPhone] = useState('');
-  const [website,setWebsite] = useState('');
-  const [address1,setAddress1] = useState('');
-  const [address2,setAddress2] = useState('');
-  const [city,setCity] = useState('');
-  const [country,setCountry] = useState('');
-  const [postalCode,setPostalCode] = useState('');
-  const [logo,setLogo] = useState('');
-  const [isHeadauator,setIsHeadauator] = useState('');
+function CompanyEdit() {
+
+    const params = useParams();
+    const [id,setId] = useState('');
+    const [companyName,setCompanyName] = useState('');
+    const [email,setEmail] = useState('');
+    const [phone,setPhone] = useState('');
+    const [website,setWebsite] = useState('');
+    const [address1,setAddress1] = useState('');
+    const [address2,setAddress2] = useState('');
+    const [city,setCity] = useState('');
+    const [country,setCountry] = useState('');
+    const [postalCode,setPostalCode] = useState('');
+    const [logo,setLogo] = useState('');
+    const [isHeadauator,setIsHeadauator] = useState('');
+    const [onload,setOnload] = useState(false);
 
   const handleSubmit = (e:any) => {
     e.preventDefault();
@@ -43,15 +47,39 @@ function CompanyAdd() {
       email:email,
       address1:address1,
       address2:address2,
+      postalCode:postalCode,
       city:city,
       country:country,
       logo:logo,
       isHeadquater:isHeadauator,
     }  
-    store.dispatch(createCompany(formData)).then((res: any) => {
+    store.dispatch(updateCompany(formData)).then((res: any) => {
       
     });           
   };
+
+  useEffect(() => {
+    if(onload==false){
+      setOnload(true);
+       store.dispatch(getCompany()).then((res: any) => {
+        
+           if (res && res.payload) {
+               setId(res.payload.id);
+               setCompanyName(res.payload.companyName);
+               setEmail(res.payload.email);
+               setPhone(res.payload.phone);
+               setWebsite(res.payload.website);
+               setAddress1(res.payload.address1);
+               setAddress2(res.payload.address2);
+               setCity(res.payload.city);
+               setCountry(res.payload.country);
+               setPostalCode(res.payload.postalCode);
+               setLogo(res.payload.logo);
+               setIsHeadauator(res.payload.isHeadauator);
+           } 
+       }); 
+    }
+   });
 
   return (
     <ThemeProvider theme={mdTheme}>
@@ -77,7 +105,7 @@ function CompanyAdd() {
               <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
                 <Typography component="h2" variant="h6" color="primary" gutterBottom>
-                Add Company
+                Edit Company
                 </Typography>
                 <Divider />
                   <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
@@ -90,6 +118,7 @@ function CompanyAdd() {
                             name="company_name"
                             label="Company Name"
                             fullWidth
+                            value={companyName}
                             onChange={(e) => {
                               setCompanyName(e.target.value);
                             }}
@@ -103,6 +132,7 @@ function CompanyAdd() {
                             name="website"
                             label="Website"
                             fullWidth
+                            value={website}
                             onChange={(e) => {
                               setWebsite(e.target.value);
                             }}
@@ -113,6 +143,7 @@ function CompanyAdd() {
                             margin="normal"
                             required
                             fullWidth
+                            value={email}
                             id="email"
                             label="Email"
                             name="email"
@@ -121,12 +152,14 @@ function CompanyAdd() {
                             }}
                         />
                       </Grid>
+                      
                       <Grid item xs={6} sm={6}>
                         <TextField
                             margin="normal"
                             required
                             fullWidth
                             id="phone"
+                            value={phone}
                             label="Phone"
                             name="phone"
                             onChange={(e) => {
@@ -139,6 +172,7 @@ function CompanyAdd() {
                               margin="normal"
                               required
                               fullWidth
+                              value={address1}
                               id="address"
                               label="Address"
                               name="address"
@@ -152,6 +186,7 @@ function CompanyAdd() {
                               margin="normal"
                               required
                               fullWidth
+                              value={address2}
                               id="street 1"
                               label="Street"
                               name="address2"
@@ -166,6 +201,7 @@ function CompanyAdd() {
                               required
                               fullWidth
                               id="city"
+                              value={city}
                               label="City"
                               name="city"
                               onChange={(e) => {
@@ -178,6 +214,7 @@ function CompanyAdd() {
                             margin="normal"
                             required
                             fullWidth
+                            value={postalCode}
                             id="zipcode"
                             label="Zipcode"
                             name="postalCode"
@@ -191,14 +228,15 @@ function CompanyAdd() {
                             margin="normal"
                             required
                             fullWidth
+                            value={country}
                             id="country"
                             label="Country"
                             name="country"
                             onChange={(e) => {
                               setCountry(e.target.value);
                             }}
-                        /> 
-                        </Grid>
+                        /> </Grid>
+                       
                         <Grid item xs={2} sm={6} mt={2}>
                         <FormControlLabel
                             control={<Checkbox  
@@ -209,16 +247,17 @@ function CompanyAdd() {
                             label="Company Headquater Office"
                             sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
                         />
+                           
                         </Grid>
                         <Grid item xs={6} sm={6}>
-                          <Button variant="contained" component="label"  sx={{ mb: 3 }}>
+                        <Button variant="contained" component="label"  sx={{ mb: 3 }}>
                             Upload Logo
                             <input name='logo' hidden accept="image/*" multiple type="file"  />
                           </Button>
                         </Grid>
                         <Grid item xs={6} sm={6}>
-                      </Grid>
-                  </Grid>
+                       </Grid>
+                    </Grid>
                     
                   
                   <Divider />
@@ -227,8 +266,8 @@ function CompanyAdd() {
                           type="submit"
                           variant="contained"
                         >
-                        Submit
-                          </Button>
+                        Update
+                        </Button>
                         <Button variant="contained" component={Link} to="/companies" sx={{ ml: 1 }} >Cancel </Button>
                       </Toolbar> 
                       </Box>
@@ -242,6 +281,6 @@ function CompanyAdd() {
     </ThemeProvider>
   );
 }
-export default function Add() {
-  return <CompanyAdd />;
+export default function Edit() {
+  return <CompanyEdit />;
 }

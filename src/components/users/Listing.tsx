@@ -61,7 +61,7 @@ const columns: GridColDef[] = [
     return (
         <>
          <>
-        <Button  sx={{ minWidth: 40 }}  component={Link} to="/users/view/1" > <EditIcon  /> </Button>
+        <Button  sx={{ minWidth: 40 }}  component={Link} to="/users/edit/1" > <EditIcon  /> </Button>
         <Button  sx={{ minWidth: 40 }}   component={Link} to="/users/view/1" > <VisibilityIcon  /> </Button>
         <Button  sx={{ minWidth: 40 }}   component={Link} to="/users/view/1" > <DeleteIcon  /> </Button>
         </>

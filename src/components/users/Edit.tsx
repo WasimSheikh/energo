@@ -18,12 +18,12 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { Link } from "react-router-dom";
+import { Link , useParams } from "react-router-dom";
 import React, { useEffect, useState } from 'react';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import { store } from '../../redux/store';
-import { createUser } from '../../redux/store/reducers/slices/UserSlice';
+import { updateUser, getUser } from '../../redux/store/reducers/slices/UserSlice';
 
 const mdTheme = createTheme();
 const names = [
@@ -34,9 +34,11 @@ const names = [
   'Omar Alexander'
 ];
 
-
-function UserAdd() {
+function UserEdit() {
+  const mdTheme = createTheme();
   const theme = useTheme();
+  const params = useParams();
+  const [id,setId] = useState('');
   const [companyName,setCompanyName] = useState('');
   const [email,setEmail] = useState('');
   const [phone,setPhone] = useState('');
@@ -50,8 +52,8 @@ function UserAdd() {
   const [lastName,setLastName] = useState('');
   const [permission, setPermission] = React.useState('');
   const [globalUser, setGlobalUser] = React.useState('');
+  const [onload,setOnload] = useState(false);
   
-
   const [dirtyFields, setDirtyFields] = useState({
     companyName: false,
   });
@@ -80,10 +82,34 @@ function UserAdd() {
       password:password,
       permission: permission,
     }     
-    store.dispatch(createUser(formData)).then((res: any) => {
+    store.dispatch(updateUser(formData)).then((res: any) => {
        
     });                                     
   };
+
+  useEffect(() => {
+     if(onload==false){
+       store.dispatch(getUser()).then((res: any) => {
+        setOnload(true);
+           if (res && res.payload) {
+               setId(res.payload.id);
+               setCompanyName(res.payload.companyName);
+               setEmail(res.payload.email);
+               setPhone(res.payload.phone);
+               setAddress(res.payload.address1);
+               setAddress2(res.payload.address2);
+               setFirstName(res.payload.firstName);
+               setLastName(res.payload.lastName);
+               setCity(res.payload.city);
+               setCountry(res.payload.country);
+               setPostalCode(res.payload.postalCode);
+               setPermission(res.payload.permission);
+               setPassword(res.payload.password);
+               setGlobalUser(res.payload.globalUser)
+           } 
+       }); 
+    }
+   });
 
   return (
     <ThemeProvider theme={mdTheme}>
@@ -109,7 +135,7 @@ function UserAdd() {
               <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
                 <Typography component="h2" variant="h6" color="primary" gutterBottom>
-                 Add User
+                 Edit User
                 </Typography>
                 <Divider />
                   <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
@@ -124,6 +150,7 @@ function UserAdd() {
                         value={companyName}
                         label="Company Name"
                         onChange={selectChange}
+                       
                         onBlur={(e) =>{
                           setDirtyFields((dirty) => ({
                               ...dirty,
@@ -159,6 +186,7 @@ function UserAdd() {
                             margin="normal"
                             id="first_name"
                             required
+                            value={firstName}
                             name="first_name"
                             autoFocus
                             label="First Name"
@@ -174,6 +202,7 @@ function UserAdd() {
                             id="last_name"
                             required
                             name="last_name"
+                            value={lastName}
                             autoFocus
                             label="Last Name"
                             fullWidth
@@ -188,6 +217,7 @@ function UserAdd() {
                             required
                             fullWidth
                             id="phone"
+                            value={phone}
                             label="Phone"
                             name="phone"
                             onChange={(e) => {
@@ -203,6 +233,7 @@ function UserAdd() {
                               required
                               fullWidth
                               id="address"
+                              value={address1}
                               label="Address"
                               name="address1"
                               onChange={(e) => {
@@ -216,6 +247,7 @@ function UserAdd() {
                               margin="normal"
                               required
                               fullWidth
+                              value={address2}
                               id="street 1"
                               label="Street"
                               name="address2"
@@ -229,6 +261,7 @@ function UserAdd() {
                               margin="normal"
                               required
                               fullWidth
+                              value={city}
                               id="city"
                               label="City"
                               name="city"
@@ -243,6 +276,7 @@ function UserAdd() {
                             required
                             fullWidth
                             id="zipcode"
+                            value={postalCode}
                             label="Zipcode"
                             name="postalcode"
                             onChange={(e) => {
@@ -256,6 +290,7 @@ function UserAdd() {
                             required
                             fullWidth
                             id="country"
+                            value={country}
                             label="Country"
                             name="country"
                             onChange={(e) => {
@@ -279,6 +314,7 @@ function UserAdd() {
                             required
                             fullWidth
                             id="email"
+                            value={email}
                             label="Email"
                             name="email" 
                             onChange={(e) => {
@@ -290,6 +326,7 @@ function UserAdd() {
                         required
                         fullWidth
                         name="password"
+                        value={password}
                         label="Password"
                         type="password"
                         id="password"
@@ -322,7 +359,7 @@ function UserAdd() {
                           type="submit"
                           variant="contained"
                         >
-                        Submit
+                        Update
                           </Button>
                         <Button variant="contained" component={Link} to="/users" sx={{ ml: 1 }} >Cancel </Button>
                       </Toolbar> 
@@ -337,6 +374,6 @@ function UserAdd() {
     </ThemeProvider>
   );
 }
-export default function Add() {
-  return <UserAdd />;
+export default function Edit() {
+  return <UserEdit />;
 }
