@@ -16,50 +16,34 @@ import EditIcon from '@mui/icons-material/Edit';
 import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { getCompanies } from '../../redux/store/reducers/slices/UserSlice';
+import { getCompanies, getRoles } from '../../redux/store/reducers/slices/UserSlice';
 import React, { useEffect , useState } from 'react';
 import { store } from '../../redux/store';
-import ListItemButton from '@mui/material/ListItemButton';
+
 
 const mdTheme = createTheme();
 const columns: GridColDef[] = [
   { field: 'id',
    headerName: 'Id',
-    width: 90
+    width: 126
   },
   {
-    field: 'companyName',
-    headerName: 'Company Name',
-    width: 200,
+    field: 'name',
+    headerName: 'Title',
+    width: 470,
   },
   {
-    field: 'email',
-    headerName: 'Email',
-    width: 190,
-  },
-  {
-    field: 'phone',
-    headerName: 'Phone',
-    width: 197,
-  },
-  {
-    field: 'website',
-    headerName: 'Website',
-    width: 200,
-    //valueGetter: (params: GridValueGetterParams) =>
-    //`${params.row.firstName || ''} ${params.row.lastName || ''}`,
-  },
-  {
+
     field: 'action',
     headerName: 'Action',
-    width: 150,
+    width: 400,
     sortable: false,
     renderCell: (params) => {
       return (
         <>
-        <Button  sx={{ minWidth: 40 }}  component={Link} to="/companies/edit/1" > <EditIcon  /> </Button>
-        <Button  sx={{ minWidth: 40 }}   component={Link} to="/companies/view/1" > <VisibilityIcon  /> </Button>
-        <Button  sx={{ minWidth: 40 }}   component={Link} to="/companies/view/1" > <DeleteIcon  /> </Button>
+        <Button  sx={{ minWidth: 40 }}  component={Link} to={'/roles/edit/'+params.row.id} > <EditIcon  /> </Button>
+        <Button  sx={{ minWidth: 40 }}   component={Link} to={'/roles/view/'+params.row.id} > <VisibilityIcon  /> </Button>
+        {/* <Button  sx={{ minWidth: 40 }}   component={Link} to="/roles/view/1" > <DeleteIcon  /> </Button> */}
         </>
       );
    }
@@ -67,13 +51,14 @@ const columns: GridColDef[] = [
 ];
 
 
-function CompanyList() {
-  const [companies,setCompanies] = useState([]);
+function RoleList() {
+  const [roles,setRoles] = useState([]);
+
   useEffect(() => {
-    if(companies.length == 0){
-      store.dispatch(getCompanies()).then((res: any) => {
-        if (res && res.payload) {
-          setCompanies(res.payload);
+    if(roles.length == 0){
+      store.dispatch(getRoles()).then((res: any) => {
+        if (res && res.payload?.roles) {
+          setRoles(res.payload?.roles);
         } 
       }); 
     }
@@ -104,14 +89,14 @@ function CompanyList() {
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
                 <Box className="headingbutton" sx={{ mb: 1 }}>
                   <Typography component="h2" variant="h6" color="primary" gutterBottom>
-                    Companies 
+                    Roles 
                     </Typography>
-                    <Button variant="contained" component={Link} to="/companies/add">Add</Button>
+                    <Button variant="contained" component={Link} to="/roles/add">Add</Button>
                 </Box>
                 <Divider />
                 <Box sx={{ height: 400, width: '100%' }}>
                   <DataGrid
-                    rows={companies}
+                    rows={roles}
                     columns={columns}
                     pageSize={5}
                     rowsPerPageOptions={[5]}
@@ -128,5 +113,5 @@ function CompanyList() {
   );
 }
 export default function Listing() {
-  return <CompanyList />;
+  return <RoleList />;
 }

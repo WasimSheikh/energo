@@ -12,52 +12,34 @@ import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import Button from '@mui/material/Button';
 import { Link } from "react-router-dom";
-import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
-import { store } from '../../redux/store';
-import { getUsers } from '../../redux/store/reducers/slices/UserSlice';
-import React, { useEffect , useState } from 'react';
 import EditIcon from '@mui/icons-material/Edit';
-import VisibilityIcon from '@mui/icons-material/Visibility';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import DeleteIcon from '@mui/icons-material/Delete';
-
+import { getPermissions } from '../../redux/store/reducers/slices/UserSlice';
+import React, { useEffect , useState } from 'react';
+import { store } from '../../redux/store';
 
 const mdTheme = createTheme();
 const columns: GridColDef[] = [
-  { field: 'id',
-   headerName: 'Id',
-    width: 70
+  {
+    field: 'id',
+    headerName: 'Id',
+    width: 100
   },
   {
-    field: 'company_name',
-    headerName: 'Company Name',
+    field: 'parent',
+    headerName: 'Parent Category',
     width: 170,
   },
   {
-    field: 'first_name',
-    headerName: 'First Name',
-    width: 170,
+    field: 'name',
+    headerName: 'Title',
+    width: 200,
   },
   {
-    field: 'last_name',
-    headerName: 'Last Name',
-    width: 160,
-  },
-  {
-    field: 'email',
-    headerName: 'Email',
-    width: 150,
-  },
-  {
-    field: 'phone',
-    headerName: 'Phone',
-    width: 150,
-  },
-  {
-    field: 'is_active',
-    headerName: 'Status',
-    width: 90,
-    valueGetter: (params: GridValueGetterParams) =>
-    `${params.row.is_active || ''}`,
+    field: 'url',
+    headerName: 'Url',
+    width: 370,
   },
   {
     field: 'action',
@@ -65,30 +47,28 @@ const columns: GridColDef[] = [
     width: 150,
     sortable: false,
     renderCell: (params) => {
-    return (
+      return (
         <>
-          <Button  sx={{ minWidth: 40 }}  component={Link}  to={'/users/edit/'+params.row.id}  > <EditIcon  /> </Button>
-          <Button  sx={{ minWidth: 40 }}   component={Link} to={'/users/view/'+params.row.id}  > <VisibilityIcon  /> </Button>
-          <Button  sx={{ minWidth: 40 }}   component={Link} to={'/users/delete/'+params.row.id} > <DeleteIcon  /> </Button>
+        <Button  sx={{ minWidth: 40 }}  component={Link} to={'/permissions/edit/'+params.row.id} > <EditIcon  /> </Button>
+        <Button  sx={{ minWidth: 40 }}   component={Link} to={'/permissions/view/'+params.row.id} > <DeleteIcon  /> </Button>
         </>
       );
    }
   },
 ];
 
-function UserList() {
-
-  const [users,setUsers] = useState([]);
+function CompanyList() {
+  const [permissions,setPermissions] = useState([]);
   useEffect(() => {
-    if(users.length == 0){
-      store.dispatch(getUsers()).then((res: any) => {
-        if (res && res.payload.users) {
-          setUsers(res.payload.users);
+    if(permissions.length == 0){
+      store.dispatch(getPermissions()).then((res: any) => {
+        if (res && res.payload?.permissions) {
+          setPermissions(res.payload?.permissions);
         } 
       }); 
     }
   });
-
+  
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>
@@ -114,16 +94,16 @@ function UserList() {
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
                 <Box className="headingbutton" sx={{ mb: 1 }}>
                   <Typography component="h2" variant="h6" color="primary" gutterBottom>
-                    Users 
-                    </Typography>
-                    <Button variant="contained" component={Link} to="/users/add">Add</Button>
+                    Permissions 
+                  </Typography>
+                  <Button variant="contained" component={Link} to="/permissions/add">Add</Button>
                 </Box>
                 <Divider />
                 <Box sx={{ height: 400, width: '100%' }}>
                   <DataGrid
-                    rows={users}
+                    rows={permissions}
                     columns={columns}
-                    pageSize={5}
+                    pageSize={10}
                     rowsPerPageOptions={[5]}
                   />
                 </Box>
@@ -138,5 +118,5 @@ function UserList() {
   );
 }
 export default function Listing() {
-  return <UserList />;
+  return <CompanyList />;
 }

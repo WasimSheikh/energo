@@ -25,8 +25,8 @@ function UserView() {
   const [companyName,setCompanyName] = useState('');
   const [email,setEmail] = useState('');
   const [phone,setPhone] = useState('');
-  const [address1,setAddress] = useState('');
-  const [address2,setAddress2] = useState('');
+  const [address,setAddress] = useState('');
+  const [street,setStreet] = useState('');
   const [city,setCity] = useState('');
   const [country,setCountry] = useState('');
   const [password,setPassword] = useState('');
@@ -39,23 +39,25 @@ function UserView() {
 
   useEffect(() => {
      if(onload==false){
-       store.dispatch(getUser()).then((res: any) => {
+      const userId = window.location.href.split('/')[5]
+      const formData = {id:userId};  
+       store.dispatch(getUser(formData)).then((res: any) => {
         setOnload(true);
            if (res && res.payload) {
-               setId(res.payload.id);
-               setCompanyName(res.payload.companyName);
-               setEmail(res.payload.email);
-               setPhone(res.payload.phone);
-               setAddress(res.payload.address1);
-               setAddress2(res.payload.address2);
-               setFirstName(res.payload.firstName);
-               setLastName(res.payload.lastName);
-               setCity(res.payload.city);
-               setCountry(res.payload.country);
-               setPostalCode(res.payload.postalCode);
-               setPermission(res.payload.permission);
-               setPassword(res.payload.password);
-               setGlobalUser(res.payload.globalUser)
+              setId(res.payload.user?.id);
+              setCompanyName(res.payload.user?.company?.title);
+              setEmail(res.payload.user?.email);
+              setPhone(res.payload.user?.phone);
+              setAddress(res.payload.user?.address?.address);
+              setStreet(res.payload.user?.address?.street);
+              setFirstName(res.payload.user?.first_name);
+              setLastName(res.payload.user?.last_name);
+              setCity(res.payload.user?.address?.city);
+              setCountry(res.payload.user?.address?.country);
+              setPostalCode(res.payload.user?.address?.zipcode);
+              setPermission(res.payload.user?.permission);
+              setPassword(res.payload.user?.password);
+              setGlobalUser(res.payload.user?.globalUser);
            } 
        }); 
     }
@@ -106,10 +108,10 @@ function UserView() {
                             <Box> Phone : <Box component="span">{phone}</Box></Box>
                       </Grid>
                       <Grid item xs={6} sm={6}>
-                            <Box> Address : <Box component="span">{address1}</Box></Box>
+                            <Box> Address : <Box component="span">{address}</Box></Box>
                       </Grid>
                       <Grid item xs={6} sm={6}>
-                            <Box> Street : <Box component="span">{address2}</Box></Box>
+                            <Box> Street : <Box component="span">{street}</Box></Box>
                       </Grid>
                       <Grid item xs={6} sm={6}>
                             <Box> City : <Box component="span">{city}</Box></Box>

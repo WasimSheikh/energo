@@ -14,7 +14,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { updateCompany, getCompany } from '../../redux/store/reducers/slices/UserSlice';
 import { store } from '../../redux/store';
 import React, { useEffect, useState } from 'react';
@@ -22,8 +22,7 @@ import React, { useEffect, useState } from 'react';
 const mdTheme = createTheme();
 
 function CompanyEdit() {
-
-    const params = useParams();
+    const navigate = useNavigate();
     const [id,setId] = useState('');
     const [companyName,setCompanyName] = useState('');
     const [email,setEmail] = useState('');
@@ -37,48 +36,58 @@ function CompanyEdit() {
     const [logo,setLogo] = useState('');
     const [isHeadauator,setIsHeadauator] = useState('');
     const [onload,setOnload] = useState(false);
+    const [errorMessages, setErrorMessages] = useState('');
+  
+
 
   const handleSubmit = (e:any) => {
     e.preventDefault();
     const formData = {
-      company_name:companyName,
+      id:id,
+      title:companyName,
       website: website,
       phone:phone,
       email:email,
-      address1:address1,
-      address2:address2,
-      postalCode:postalCode,
+      address:address1,
+      street:address2,
+      zipcode:postalCode,
       city:city,
       country:country,
       logo:logo,
-      isHeadquater:isHeadauator,
+      is_headquater:isHeadauator,
     }  
     store.dispatch(updateCompany(formData)).then((res: any) => {
-      
+      if (res.payload.status == true) {
+        setErrorMessages('');
+        navigate("/companies");
+      } else {
+        setErrorMessages(res.payload?.message);
+      }
     });           
   };
 
   useEffect(() => {
     if(onload==false){
       setOnload(true);
-       store.dispatch(getCompany()).then((res: any) => {
-        
+      const companyId = window.location.href.split('/')[5]
+      const formData = {id:companyId};  
+       store.dispatch(getCompany(formData)).then((res: any) => { 
            if (res && res.payload) {
-               setId(res.payload.id);
-               setCompanyName(res.payload.companyName);
-               setEmail(res.payload.email);
-               setPhone(res.payload.phone);
-               setWebsite(res.payload.website);
-               setAddress1(res.payload.address1);
-               setAddress2(res.payload.address2);
-               setCity(res.payload.city);
-               setCountry(res.payload.country);
-               setPostalCode(res.payload.postalCode);
-               setLogo(res.payload.logo);
-               setIsHeadauator(res.payload.isHeadauator);
-           } 
+               setId(res.payload.company?.id);
+               setCompanyName(res.payload.company?.title);
+               setEmail(res.payload.company?.email);
+               setPhone(res.payload.company?.phone);
+               setWebsite(res.payload.company?.website);
+               setAddress1(res.payload.company?.address?.address);
+               setAddress2(res.payload.company?.address?.street);
+               setCity(res.payload.company.address?.city);
+               setCountry(res.payload.company?.address?.country);
+               setPostalCode(res.payload.company?.address?.zipcode);
+               setLogo(res.payload.company?.logo);
+               setLogo(res.payload.company?.is_headquater);
+            } 
        }); 
-    }
+      }
    });
 
   return (
@@ -243,7 +252,7 @@ function CompanyEdit() {
                             onChange={(e) => {
                               setIsHeadauator(e.target.value);
                             }} 
-                            name="headquater" value="1" />}
+                            name="headquater" value={isHeadauator} />}
                             label="Company Headquater Office"
                             sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
                         />

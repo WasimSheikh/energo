@@ -24,6 +24,12 @@ export default function Login() {
   const [email,setEmail] = useState('');
   const [password,setPassword] = useState('');
   const [errorMessages, setErrorMessages] = useState('');
+
+  function IsLoggedIn(){
+    console.log(localStorage.getItem("access_token")); 
+    let access_token = localStorage.getItem("access_token");
+    return (access_token != '' && access_token != null ) ? true : false;
+  }
   
   const handleSubmit = (e:any) => {
     e.preventDefault();
@@ -33,8 +39,14 @@ export default function Login() {
     }  
     store.dispatch(login(formData)).then((res: any) => {
       if (res.payload.status == true) {
+        
+        let access_token = res.payload.access_token;
+        if(access_token !="" && access_token !=""){
+         localStorage.setItem("access_token", access_token); 
+         navigate("/dashboard");
+        }
+
         setErrorMessages('');
-        navigate("/dashboard");
         //const that = this.context.router.history.push("/dashboard");  
       } else {
         setErrorMessages(res.payload?.message);

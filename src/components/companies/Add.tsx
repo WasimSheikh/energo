@@ -14,44 +14,58 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import { Link } from "react-router-dom";
+import { Link , useNavigate } from "react-router-dom";
 import { createCompany } from '../../redux/store/reducers/slices/UserSlice';
 import { store } from '../../redux/store';
 import React, { useEffect, useState } from 'react';
 
+
 const mdTheme = createTheme();
 
 function CompanyAdd() {
+  const navigate = useNavigate();
+
   const [companyName,setCompanyName] = useState('');
   const [email,setEmail] = useState('');
   const [phone,setPhone] = useState('');
   const [website,setWebsite] = useState('');
-  const [address1,setAddress1] = useState('');
-  const [address2,setAddress2] = useState('');
+  const [address,setAddress] = useState('');
+  const [street,setStreet] = useState('');
   const [city,setCity] = useState('');
   const [country,setCountry] = useState('');
   const [postalCode,setPostalCode] = useState('');
   const [logo,setLogo] = useState('');
   const [isHeadauator,setIsHeadauator] = useState('');
+  const [errorMessages, setErrorMessages] = useState('');
 
   const handleSubmit = (e:any) => {
     e.preventDefault();
     const formData = {
-      company_name:companyName,
+      title:companyName,
       website: website,
       phone:phone,
       email:email,
-      address1:address1,
-      address2:address2,
+      address:address,
+      street:street,
       city:city,
       country:country,
       logo:logo,
       isHeadquater:isHeadauator,
+      zipcode:postalCode,
     }  
     store.dispatch(createCompany(formData)).then((res: any) => {
-      
+      if (res.payload.status == true) {
+        setErrorMessages('');
+        navigate("/companies");
+      } else {
+        setErrorMessages(res.payload?.message);
+      }
     });           
   };
+  const renderErrorMessage = () =>
+  errorMessages && (
+    <div className="error">{errorMessages}</div>
+  );
 
   return (
     <ThemeProvider theme={mdTheme}>
@@ -59,6 +73,7 @@ function CompanyAdd() {
         <CssBaseline />
         <Header />
         <Navigation />
+        
         <Box
           component="main"
           sx={{
@@ -71,8 +86,10 @@ function CompanyAdd() {
             overflow: 'auto',
           }}
         >
+         
           <Toolbar />
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+          {renderErrorMessage()}
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
@@ -143,7 +160,7 @@ function CompanyAdd() {
                               label="Address"
                               name="address"
                               onChange={(e) => {
-                                setAddress1(e.target.value);
+                                setAddress(e.target.value);
                               }}
                           />
                       </Grid>
@@ -156,7 +173,7 @@ function CompanyAdd() {
                               label="Street"
                               name="address2"
                               onChange={(e) => {
-                                setAddress2(e.target.value);
+                                setStreet(e.target.value);
                               }}
                           />
                       </Grid>

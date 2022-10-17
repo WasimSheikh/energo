@@ -2,16 +2,22 @@ export interface AppUser {
     currUser?: User;
 }
 
-export interface Address {
-    full_address?: string;
-    address1?: string;
-    address2?: string;
-    country?:string;
-    city?:string;
-    zip?: string;
+export interface Role {
+    id?: string;
+    name?: string;
+    guard_name?:string;
+}
+
+export interface Permission {
+    id?:string;
+    title?: string;
+    url?: string;
+    parent?: string;
+    guard_name?:string;
 }
 
 export interface User {
+    id?: string;
     companyName?: string;
     companyId?: string;
     firstName?: string;
@@ -20,26 +26,25 @@ export interface User {
     password?:string;
     phone?: string;
     isGlobal?:boolean;
-    address?: Address;
     permission?:string;
-    address1?: string;
-    address2?: string;
+    address?: string;
+    street?: string;
     country?:string;
     city?:string;
     zip?: string;
      
 }
 
-export interface Comapny {
-    comapnyName?: string;
+export interface Company {
+    id?: string;
+    title?: string;
     webiste?:string;
     email?: string;
     phone?: string;
     IsHeadquater?:boolean;
-    address?: Address;
+    address?: string;
     logo?:string;  
-    address1?: string;
-    address2?: string;
+    street?: string;
     country?:string;
     city?:string;
     zip?: string;

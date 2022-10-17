@@ -13,37 +13,33 @@ import Divider from '@mui/material/Divider';
 import Button from '@mui/material/Button';
 import { Link ,useParams } from "react-router-dom";
 import React, { useEffect, useState } from 'react';
-import { getPermissionParentChlid, getRole } from '../../redux/store/reducers/slices/UserSlice';
+import { getRole } from '../../redux/store/reducers/slices/UserSlice';
 import { store } from '../../redux/store';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
+
 
 function CompanyView() {
   const mdTheme = createTheme();
   const params = useParams();
   const [id,setId] = useState('');
   const [title,setTitle] = useState('');
-  const [permissions,setPermissions] = useState([]);
+
   const [onload,setOnload] = useState(false);
 
-  useEffect(() => {
-    if(onload==false){
-      const roleId = window.location.href.split('/')[5]
+    useEffect(() => {
+     if(onload==false){
+        setOnload(true);
+        const roleId = window.location.href.split('/')[5]
         const formData = {id:roleId};  
-        store.dispatch(getRole(formData)).then((res: any) => {
-          setOnload(true);
-            if (res && res.payload) {
-                setId(res.payload.role?.id);
-                setTitle(res.payload.role?.name);
-            } 
-        }); 
-        store.dispatch(getPermissionParentChlid()).then((res: any) => {
-          if (res && res.payload?.permissionparent) {
-            setPermissions(res.payload?.permissionparent);
-          } 
-        }); 
+          store.dispatch(getRole(formData)).then((res: any) => {
+              if (res && res.payload?.role) {
+                  setId(res.payload.role?.id);
+                  setTitle(res.payload.role?.name);
+              } 
+          }); 
       }
-  });
+    });
 
   const theme = useTheme();
 
@@ -53,8 +49,8 @@ function CompanyView() {
         <CssBaseline />
         <Header />
         <Navigation />
-          <Box
-            component="main"
+        <Box
+          component="main"
             sx={{
               backgroundColor: (theme) =>
                 theme.palette.mode === 'light'
@@ -85,33 +81,11 @@ function CompanyView() {
                           <Typography component="h2" variant="h6" sx={{ mt: 1}} gutterBottom>
                             Permission
                           </Typography>
-                          {permissions.map((permission:any) => (  
-                            <>
-                            <Grid>
-                              <FormControlLabel
-                                  control={<Checkbox  
-                                  name={permission.name} value={permission.id} />}
-                                  label={permission.name}
-                                  sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
-                              />
-                            </Grid>
-                            {permission.chlid.map((value:any) => (
-                              <Grid  sx={{ ml: 5 }}>
-                              <FormControlLabel
-                                  control={<Checkbox  
-                                  name={value.name} value={value.id} />}
-                                  label={value.name}
-                                  sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
-                              />
-                              </Grid>
-                            ))} 
-                            </>
-                            ))} 
-                      </Grid>   
+                        </Grid>
                     </Grid>
                     <Divider />
                     <Toolbar  sx={{ ml: 0 ,pl:"0 !important"}}>
-                        <Button variant="contained" component={Link} to="/roles" sx={{ ml: 1 }} >Cancel </Button>
+                        <Button variant="contained" component={Link} to="/permissions" sx={{ ml: 1 }} >Cancel </Button>
                     </Toolbar> 
                   </Box>
                 </Paper>

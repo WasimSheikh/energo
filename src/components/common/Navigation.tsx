@@ -113,6 +113,21 @@ const Navigation = (): JSX.Element => {
               </ListItemIcon>
               <ListItemText primary="Activity Logs" />
             </ListItemButton>
+
+            <ListItemButton component={Link} to="/roles">
+              <ListItemIcon>
+                <SettingsIcon />
+              </ListItemIcon>
+              <ListItemText primary="Roles" />
+            </ListItemButton>
+
+            <ListItemButton component={Link} to="/permissions">
+              <ListItemIcon>
+                <SettingsIcon />
+              </ListItemIcon>
+              <ListItemText primary="Permissions" />
+            </ListItemButton>
+
             </React.Fragment>
           </List>
         </Drawer>

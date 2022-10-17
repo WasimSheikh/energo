@@ -18,30 +18,23 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from 'react';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import { store } from '../../redux/store';
-import { createUser } from '../../redux/store/reducers/slices/UserSlice';
+import { createUser,getCompanies } from '../../redux/store/reducers/slices/UserSlice';
 
 const mdTheme = createTheme();
-const names = [
-  'Oliver Hansen',
-  'Van Henry',
-  'April Tucker',
-  'Ralph Hubbard',
-  'Omar Alexander'
-];
-
 
 function UserAdd() {
   const theme = useTheme();
-  const [companyName,setCompanyName] = useState('');
+  const navigate = useNavigate();
+  const [company_id,setCompanyId] = useState('');
   const [email,setEmail] = useState('');
   const [phone,setPhone] = useState('');
-  const [address1,setAddress] = useState('');
-  const [address2,setAddress2] = useState('');
+  const [address,setAddress] = useState('');
+  const [street,setStreet] = useState('');
   const [city,setCity] = useState('');
   const [country,setCountry] = useState('');
   const [password,setPassword] = useState('');
@@ -50,40 +43,59 @@ function UserAdd() {
   const [lastName,setLastName] = useState('');
   const [permission, setPermission] = React.useState('');
   const [globalUser, setGlobalUser] = React.useState('');
+  const [onload,setOnload] = useState(false);
+  const [errorMessages, setErrorMessages] = useState('');
+  const [companies, setCompanies] = React.useState([]);
   
-
   const [dirtyFields, setDirtyFields] = useState({
     companyName: false,
   });
 
   const selectChange = (event: SelectChangeEvent) => {
-    setCompanyName(event.target.value);
+    setCompanyId(event.target.value);
   };
 
   const radioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPermission((event.target as HTMLInputElement).value);
   };
-    
+
   const handleSubmit = (e:any) => {
     e.preventDefault();
     const formData = {
-      companyName:companyName,
+      company_id:company_id,
       first_name: firstName,
       last_name:lastName,
       global_user:globalUser,
       phone:phone,
       email:email,
-      address1:address1,
-      address2:address2,
+      address:address,
+      street:street,
       city:city,
       country:country,
       password:password,
       permission: permission,
+      zipcode:postalCode,
     }     
     store.dispatch(createUser(formData)).then((res: any) => {
-       
+      if(res.payload.status == true){
+        setErrorMessages('');
+        navigate("/users");
+      }else {
+        setErrorMessages(res.payload?.message);
+      }
     });                                     
   };
+
+  useEffect(() => {
+    if(onload==false){
+      setOnload(true);
+       store.dispatch(getCompanies()).then((res: any) => { 
+          if (res && res.payload.companies) {
+            setCompanies(res.payload.companies);
+          } 
+       }); 
+      }
+   });
 
   return (
     <ThemeProvider theme={mdTheme}>
@@ -121,25 +133,22 @@ function UserAdd() {
                         labelId="company_name_label"
                         required
                         id="company_name"
-                        value={companyName}
+                        value={company_id}
                         label="Company Name"
                         onChange={selectChange}
                         onBlur={(e) =>{
                           setDirtyFields((dirty) => ({
                               ...dirty,
-                              companyName: false,
+                              company_id: false,
                               }));
                         }}
                       >
                        <MenuItem value="">-Select-</MenuItem>
-                          {names.map((name) => (
-                            <MenuItem
-                              key={name}
-                              value={name}
-                            >
-                            {name}
+                          {companies.map((opt:any) => (  
+                            <MenuItem key={opt.id} value={opt.id}>
+                            {opt.title}
                             </MenuItem>
-                          ))}
+                          ))} 
                        </Select>
                     </FormControl>
                       </Grid>
@@ -220,7 +229,7 @@ function UserAdd() {
                               label="Street"
                               name="address2"
                               onChange={(e) => {
-                                setAddress2(e.target.value);
+                                setStreet(e.target.value);
                               }}
                           />
                       </Grid>

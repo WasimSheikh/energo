@@ -18,48 +18,44 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { Link , useParams } from "react-router-dom";
+import { Link , useParams ,useNavigate} from "react-router-dom";
 import React, { useEffect, useState } from 'react';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import { store } from '../../redux/store';
-import { updateUser, getUser } from '../../redux/store/reducers/slices/UserSlice';
+import { updateUser, getUser, getCompanies } from '../../redux/store/reducers/slices/UserSlice';
 
 const mdTheme = createTheme();
-const names = [
-  'Oliver Hansen',
-  'Van Henry',
-  'April Tucker',
-  'Ralph Hubbard',
-  'Omar Alexander'
-];
 
 function UserEdit() {
+  const navigate = useNavigate();
   const mdTheme = createTheme();
   const theme = useTheme();
   const params = useParams();
   const [id,setId] = useState('');
-  const [companyName,setCompanyName] = useState('');
+  const [company_id,setCompanyId] = useState('');
   const [email,setEmail] = useState('');
   const [phone,setPhone] = useState('');
   const [address1,setAddress] = useState('');
-  const [address2,setAddress2] = useState('');
+  const [street,setStreet] = useState('');
   const [city,setCity] = useState('');
   const [country,setCountry] = useState('');
   const [password,setPassword] = useState('');
   const [postalCode,setPostalCode] = useState('');
   const [firstName,setFirstName] = useState('');
   const [lastName,setLastName] = useState('');
-  const [permission, setPermission] = React.useState('');
-  const [globalUser, setGlobalUser] = React.useState('');
+  const [permission, setPermission] = useState('');
+  const [globalUser, setGlobalUser] = useState('');
   const [onload,setOnload] = useState(false);
+  const [errorMessages, setErrorMessages] = useState('');
+  const [companies, setCompanies] = React.useState([]);
   
   const [dirtyFields, setDirtyFields] = useState({
-    companyName: false,
+    company_id: false,
   });
 
   const selectChange = (event: SelectChangeEvent) => {
-    setCompanyName(event.target.value);
+    setCompanyId(event.target.value);
   };
 
   const radioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -69,45 +65,59 @@ function UserEdit() {
   const handleSubmit = (e:any) => {
     e.preventDefault();
     const formData = {
-      companyName:companyName,
+      id:id,
+      company_id:company_id,
       first_name: firstName,
       last_name:lastName,
       global_user:globalUser,
       phone:phone,
       email:email,
-      address1:address1,
-      address2:address2,
+      address:address1,
+      street:street,
       city:city,
       country:country,
+      zipcode:postalCode,
       password:password,
       permission: permission,
     }     
     store.dispatch(updateUser(formData)).then((res: any) => {
-       
+      if(res.payload.status == true){
+        setErrorMessages('');
+        navigate("/users");
+      }else{
+        setErrorMessages(res.payload?.message);
+      }
     });                                     
   };
 
   useEffect(() => {
-     if(onload==false){
-       store.dispatch(getUser()).then((res: any) => {
-        setOnload(true);
-           if (res && res.payload) {
-               setId(res.payload.id);
-               setCompanyName(res.payload.companyName);
-               setEmail(res.payload.email);
-               setPhone(res.payload.phone);
-               setAddress(res.payload.address1);
-               setAddress2(res.payload.address2);
-               setFirstName(res.payload.firstName);
-               setLastName(res.payload.lastName);
-               setCity(res.payload.city);
-               setCountry(res.payload.country);
-               setPostalCode(res.payload.postalCode);
-               setPermission(res.payload.permission);
-               setPassword(res.payload.password);
-               setGlobalUser(res.payload.globalUser)
-           } 
-       }); 
+    if(onload==false){
+      const userId = window.location.href.split('/')[5]
+      const formData = {id:userId};  
+      store.dispatch(getUser(formData)).then((res: any) => {
+          setOnload(true);
+          if(res && res.payload){
+              setId(res.payload.user?.id);
+              setCompanyId(res.payload.user?.company_id);
+              setEmail(res.payload.user?.email);
+              setPhone(res.payload.user?.phone);
+              setAddress(res.payload.user?.address?.address);
+              setStreet(res.payload.user?.address?.street);
+              setFirstName(res.payload.user?.first_name);
+              setLastName(res.payload.user?.last_name);
+              setCity(res.payload.user?.address?.city);
+              setCountry(res.payload.user?.address?.country);
+              setPostalCode(res.payload.user?.address?.zipcode);
+              setPermission(res.payload.user?.permission);
+              setPassword(res.payload.user?.password);
+              setGlobalUser(res.payload.user?.globalUser);
+          } 
+      }); 
+      store.dispatch(getCompanies()).then((res: any) => { 
+        if (res && res.payload.companies) {
+          setCompanies(res.payload.companies);
+        } 
+     }); 
     }
    });
 
@@ -147,26 +157,22 @@ function UserEdit() {
                         labelId="company_name_label"
                         required
                         id="company_name"
-                        value={companyName}
+                        value={company_id}
                         label="Company Name"
                         onChange={selectChange}
-                       
                         onBlur={(e) =>{
                           setDirtyFields((dirty) => ({
                               ...dirty,
                               companyName: false,
-                              }));
+                          }));
                         }}
                       >
-                       <MenuItem value="">-Select-</MenuItem>
-                          {names.map((name) => (
-                            <MenuItem
-                              key={name}
-                              value={name}
-                            >
-                            {name}
+                      <MenuItem value="">-Select-</MenuItem>
+                          {companies.map((opt:any) => (  
+                            <MenuItem key={opt.id} value={opt.id}>
+                            {opt.title}
                             </MenuItem>
-                          ))}
+                          ))} 
                        </Select>
                     </FormControl>
                       </Grid>
@@ -239,22 +245,21 @@ function UserEdit() {
                               onChange={(e) => {
                                 setAddress(e.target.value);
                               }}
-                            
-                          />
+                        />
                       </Grid>
                       <Grid item xs={6} sm={6}>
                         <TextField
                               margin="normal"
                               required
                               fullWidth
-                              value={address2}
+                              value={street}
                               id="street 1"
                               label="Street"
                               name="address2"
                               onChange={(e) => {
-                                setAddress2(e.target.value);
+                                setStreet(e.target.value);
                               }}
-                          />
+                        />
                       </Grid>
                       <Grid item xs={6} sm={6}>
                         <TextField
@@ -268,7 +273,7 @@ function UserEdit() {
                               onChange={(e) => {
                                 setCity(e.target.value);
                               }}
-                          />
+                        />
                       </Grid>
                       <Grid item xs={6} sm={6}>
                       <TextField
@@ -296,10 +301,10 @@ function UserEdit() {
                             onChange={(e) => {
                               setCountry(e.target.value);
                             }}
-                        /> 
-                        </Grid>
+                      /> 
+                      </Grid>
                         <Grid item xs={6} sm={6}>
-                       </Grid>
+                      </Grid>
                     </Grid>
                     <Typography component="h2" variant="h6" sx={{ mt: 1}} color="primary" gutterBottom>
                         Login Information
@@ -309,7 +314,7 @@ function UserEdit() {
                     </Box>
                     <Grid container spacing={2} rowSpacing={1} >
                       <Grid item xs={6} >
-                      <TextField
+                        <TextField
                             margin="normal"
                             required
                             fullWidth
@@ -328,7 +333,7 @@ function UserEdit() {
                         name="password"
                         value={password}
                         label="Password"
-                        type="password"
+                        type="text"
                         id="password"
                         onChange={(e) => {
                           setPassword(e.target.value);
@@ -346,10 +351,10 @@ function UserEdit() {
                                     value={permission}
                                     onChange={radioChange}
                                   >
-                                    <FormControlLabel value="admin" control={<Radio />} label="Admin" />
-                                    <FormControlLabel value="author" control={<Radio />} label="Author" />
-                                  </RadioGroup>
-                                </FormControl>
+                                  <FormControlLabel value="admin" control={<Radio />} label="Admin" />
+                                  <FormControlLabel value="author" control={<Radio />} label="Author" />
+                                </RadioGroup>
+                            </FormControl>
                       </Grid>
                      </Grid>
                     

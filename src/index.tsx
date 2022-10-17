@@ -5,6 +5,7 @@ import { createRoot } from "react-dom/client";
 import reportWebVitals from "./reportWebVitals";
 import "./index.css";
 import App from "./App";
+import { BrowserRouter } from 'react-router-dom';
 //import Login from "./components/login/Login"
 
 const container = document.getElementById("root")!;
@@ -12,11 +13,12 @@ const root = createRoot(container);
 
 root.render(
   <React.StrictMode>
-    <App />
+    <BrowserRouter>
+      <App />
     {/* <Provider store={store}>
       <Dashboard />
     </Provider> */}
-   
+   </BrowserRouter>
   </React.StrictMode>
 );
 

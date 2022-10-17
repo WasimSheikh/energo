@@ -12,44 +12,32 @@ import Footer from '../common/Footer';
 import Header from '../common/Header';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import { Link } from "react-router-dom";
-import { createCompany } from '../../redux/store/reducers/slices/UserSlice';
+import { Link,useNavigate } from "react-router-dom";
+import { createRole } from '../../redux/store/reducers/slices/UserSlice';
 import { store } from '../../redux/store';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 const mdTheme = createTheme();
 
-function CompanyAdd() {
-  const [companyName,setCompanyName] = useState('');
-  const [email,setEmail] = useState('');
-  const [phone,setPhone] = useState('');
-  const [website,setWebsite] = useState('');
-  const [address1,setAddress1] = useState('');
-  const [address2,setAddress2] = useState('');
-  const [city,setCity] = useState('');
-  const [country,setCountry] = useState('');
-  const [postalCode,setPostalCode] = useState('');
-  const [logo,setLogo] = useState('');
-  const [isHeadauator,setIsHeadauator] = useState('');
+function RoleAdd() {
+
+  const navigate = useNavigate();
+  const [title,setTitle] = useState('');
+  const [errorMessages, setErrorMessages] = useState('');
 
   const handleSubmit = (e:any) => {
     e.preventDefault();
     const formData = {
-      company_name:companyName,
-      website: website,
-      phone:phone,
-      email:email,
-      address1:address1,
-      address2:address2,
-      city:city,
-      country:country,
-      logo:logo,
-      isHeadquater:isHeadauator,
-    }  
-    store.dispatch(createCompany(formData)).then((res: any) => {
-      
+      name:title,
+      guard_name:'web'
+    }
+    store.dispatch(createRole(formData)).then((res: any) => {
+      if (res.payload.status == true) {
+        setErrorMessages('');
+        navigate("/roles");
+      } else {
+        setErrorMessages(res.payload?.message);
+      }
     });           
   };
 
@@ -77,161 +65,37 @@ function CompanyAdd() {
               <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
                 <Typography component="h2" variant="h6" color="primary" gutterBottom>
-                Add Company
+                Add Role
                 </Typography>
                 <Divider />
-                  <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
+                <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
                   <Grid container spacing={2} rowSpacing={1} >
-                      <Grid item xs={6} sm={6}>
+                      <Grid item xs={6} sm={6} sx={{ mb: 2}}>
                           <TextField
                             margin="normal"
-                            id="company_name"
+                            id="title"
                             required
-                            name="company_name"
-                            label="Company Name"
+                            name="title"
+                            label="Title"
                             fullWidth
+                            value={title}
                             onChange={(e) => {
-                              setCompanyName(e.target.value);
+                              setTitle(e.target.value);
                             }}
                           />
                       </Grid>
-                      <Grid item xs={6} sm={6}>
-                          <TextField
-                            margin="normal"
-                            id="website"
-                            required
-                            name="website"
-                            label="Website"
-                            fullWidth
-                            onChange={(e) => {
-                              setWebsite(e.target.value);
-                            }}
-                          />
                       </Grid>
-                      <Grid item xs={6} sm={6}>
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="email"
-                            label="Email"
-                            name="email"
-                            onChange={(e) => {
-                              setEmail(e.target.value);
-                            }}
-                        />
-                      </Grid>
-                      <Grid item xs={6} sm={6}>
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="phone"
-                            label="Phone"
-                            name="phone"
-                            onChange={(e) => {
-                              setPhone(e.target.value);
-                            }}
-                        />
-                      </Grid>
-                      <Grid item xs={6} sm={6}>
-                        <TextField
-                              margin="normal"
-                              required
-                              fullWidth
-                              id="address"
-                              label="Address"
-                              name="address"
-                              onChange={(e) => {
-                                setAddress1(e.target.value);
-                              }}
-                          />
-                      </Grid>
-                      <Grid item xs={6} sm={6}>
-                        <TextField
-                              margin="normal"
-                              required
-                              fullWidth
-                              id="street 1"
-                              label="Street"
-                              name="address2"
-                              onChange={(e) => {
-                                setAddress2(e.target.value);
-                              }}
-                          />
-                      </Grid>
-                      <Grid item xs={6} sm={6}>
-                        <TextField
-                              margin="normal"
-                              required
-                              fullWidth
-                              id="city"
-                              label="City"
-                              name="city"
-                              onChange={(e) => {
-                                setCity(e.target.value);
-                              }}
-                          />
-                      </Grid>
-                      <Grid item xs={6} sm={6}>
-                      <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="zipcode"
-                            label="Zipcode"
-                            name="postalCode"
-                            onChange={(e) => {
-                              setPostalCode(e.target.value);
-                            }}
-                        />
-                      </Grid>
-                      <Grid item xs={6} sm={6}>
-                      <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="country"
-                            label="Country"
-                            name="country"
-                            onChange={(e) => {
-                              setCountry(e.target.value);
-                            }}
-                        /> 
-                        </Grid>
-                        <Grid item xs={2} sm={6} mt={2}>
-                        <FormControlLabel
-                            control={<Checkbox  
-                            onChange={(e) => {
-                              setIsHeadauator(e.target.value);
-                            }} 
-                            name="headquater" value="1" />}
-                            label="Company Headquater Office"
-                            sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
-                        />
-                        </Grid>
-                        <Grid item xs={6} sm={6}>
-                          <Button variant="contained" component="label"  sx={{ mb: 3 }}>
-                            Upload Logo
-                            <input name='logo' hidden accept="image/*" multiple type="file"  />
-                          </Button>
-                        </Grid>
-                        <Grid item xs={6} sm={6}>
-                      </Grid>
-                  </Grid>
-                    
-                  
-                  <Divider />
+                      <Divider />
                       <Toolbar  sx={{ ml: 0 ,pl:"0 !important"}}>
                           <Button
                           type="submit"
                           variant="contained"
                         >
                         Submit
-                          </Button>
-                        <Button variant="contained" component={Link} to="/companies" sx={{ ml: 1 }} >Cancel </Button>
+                        </Button>
+                        <Button variant="contained" component={Link} to="/roles" sx={{ ml: 1 }} >Cancel </Button>
                       </Toolbar> 
-                      </Box>
+                  </Box>
                 </Paper>
               </Grid>
             </Grid>
@@ -243,5 +107,5 @@ function CompanyAdd() {
   );
 }
 export default function Add() {
-  return <CompanyAdd />;
+  return <RoleAdd />;
 }

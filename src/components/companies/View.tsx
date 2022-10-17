@@ -19,7 +19,6 @@ import { store } from '../../redux/store';
 
 function CompanyView() {
   const mdTheme = createTheme();
-  const params = useParams();
   const [id,setId] = useState('');
   const [companyName,setCompanyName] = useState('');
   const [email,setEmail] = useState('');
@@ -36,21 +35,23 @@ function CompanyView() {
 
     useEffect(() => {
      if(onload==false){
-        store.dispatch(getCompany()).then((res: any) => {
+      const companyId = window.location.href.split('/')[5]
+      const formData = {id:companyId};  
+        store.dispatch(getCompany(formData)).then((res: any) => {
           setOnload(true);
             if (res && res.payload) {
                 setId(res.payload.id);
-                setCompanyName(res.payload.companyName);
-                setEmail(res.payload.email);
-                setPhone(res.payload.phone);
-                setWebsite(res.payload.website);
-                setAddress1(res.payload.address1);
-                setAddress2(res.payload.address2);
-                setCity(res.payload.city);
-                setCountry(res.payload.country);
-                setPostalCode(res.payload.postalCode);
-                setLogo(res.payload.logo);
-                setIsHeadauator(res.payload.isHeadauator);
+                setCompanyName(res.payload.company.title);
+                setEmail(res.payload.company?.email);
+                setPhone(res.payload.company?.phone);
+                setWebsite(res.payload.company?.website);
+                setAddress1(res.payload.company?.address?.address);
+                setAddress2(res.payload.company?.address?.street);
+                setCity(res.payload.company?.address?.city);
+                setCountry(res.payload.company?.address?.country);
+                setPostalCode(res.payload.company?.address?.zipcode);
+                setLogo(res.payload.company?.logo);
+                setIsHeadauator(res.payload.company?.isHeadauator);
             } 
         }); 
       }
@@ -88,7 +89,7 @@ function CompanyView() {
                   <Box sx={{ mt: 1 }}>
                   <Grid container spacing={2} rowSpacing={1} sx={{ mb: 2 }} >
                       <Grid item xs={6} sm={6}> 
-                            <Box> Comapny Name : <Box component="span">{companyName}</Box></Box>
+                            <Box> Company Name : <Box component="span">{companyName}</Box></Box>
                       </Grid>
                       <Grid item xs={6} sm={6}>
                             <Box> Website : <Box component="span" >{website}</Box></Box>

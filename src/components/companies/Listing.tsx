@@ -25,22 +25,22 @@ const mdTheme = createTheme();
 const columns: GridColDef[] = [
   { field: 'id',
    headerName: 'Id',
-    width: 90
+    width: 60
   },
   {
-    field: 'companyName',
+    field: 'title',
     headerName: 'Company Name',
-    width: 190,
+    width: 170,
   },
   {
     field: 'email',
     headerName: 'Email',
-    width: 190,
+    width: 230,
   },
   {
     field: 'phone',
     headerName: 'Phone',
-    width: 197,
+    width: 120,
   },
   {
     field: 'website',
@@ -50,6 +50,13 @@ const columns: GridColDef[] = [
     //`${params.row.firstName || ''} ${params.row.lastName || ''}`,
   },
   {
+    field: 'is_active',
+    headerName: 'Status',
+    width: 90,
+    valueGetter: (params: GridValueGetterParams) =>
+    `${params.row.is_active || ''}`,
+  },
+  {
     field: 'action',
     headerName: 'Action',
     width: 180,
@@ -57,11 +64,10 @@ const columns: GridColDef[] = [
     renderCell: (params) => {
       return (
         <>
-        <Button  sx={{ minWidth: 40 }}  component={Link} to="/companies/edit/1" > <EditIcon  /> </Button>
-        <Button  sx={{ minWidth: 40 }}   component={Link} to="/companies/view/1" > <VisibilityIcon  /> </Button>
-        <Button  sx={{ minWidth: 40 }}   component={Link} to="/companies/view/1" > <DeleteIcon  /> </Button>
-        <Button  sx={{ minWidth: 40 }}   component={Link} to="/companies/document/1" > <FileCopyIcon  /> </Button>
-       
+        <Button  sx={{ minWithd: 40 }}   component={Link} to={'/companies/edit/'+params.row.id} > <EditIcon  /> </Button>
+        <Button  sx={{ minWidth: 40 }}  component={Link} to={'/companies/view/'+params.row.id} > <VisibilityIcon  /> </Button>
+        <Button  sx={{ minWidth: 40 }}  component={Link} to={'/companies/delete/'+params.row.id} > <DeleteIcon  /> </Button>
+        <Button  sx={{ minWidth: 40 }}  component={Link} to={'/companies/document/'+params.row.id} > <FileCopyIcon  /> </Button>
         </>
       );
    }
@@ -69,13 +75,13 @@ const columns: GridColDef[] = [
 ];
 
 function CompanyList() {
-
   const [companies,setCompanies] = useState([]);
+
   useEffect(() => {
     if(companies.length == 0){
       store.dispatch(getCompanies()).then((res: any) => {
-        if (res && res.payload) {
-          setCompanies(res.payload);
+        if (res && res.payload.companies) {
+          setCompanies(res.payload.companies);
         } 
       }); 
     }
