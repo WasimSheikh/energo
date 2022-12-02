@@ -13,7 +13,7 @@ import Divider from '@mui/material/Divider';
 import Button from '@mui/material/Button';
 import { Link ,useParams } from "react-router-dom";
 import React, { useEffect, useState } from 'react';
-import { getPermissionParentChlid, getRole } from '../../redux/store/reducers/slices/UserSlice';
+import { createRole, getPermissionParentChlid, getRole, createRolehasPermission } from '../../redux/store/reducers/slices/UserSlice';
 import { store } from '../../redux/store';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
@@ -22,9 +22,11 @@ function CompanyView() {
   const mdTheme = createTheme();
   const params = useParams();
   const [id,setId] = useState('');
+  const [permissionsId,setPermissionsId] = useState([]);
   const [title,setTitle] = useState('');
   const [permissions,setPermissions] = useState([]);
   const [onload,setOnload] = useState(false);
+  const [errorMessages, setErrorMessages] = useState('');
 
   useEffect(() => {
     if(onload==false){
@@ -45,7 +47,27 @@ function CompanyView() {
       }
   });
 
+  const handleChange = (value:any) => { 
+    let array = permissionsId;
+    array.push(value);
+    setPermissionsId(array);
+  }; 
+
   const theme = useTheme();
+  const handleSubmit = (e:any) => {
+    e.preventDefault();
+    const formData = {
+      id:id,
+      permissions_id:permissionsId,
+    }
+    store.dispatch(createRolehasPermission(formData)).then((res: any) => {
+      if (res.payload.status == true) {
+        setErrorMessages('');
+      } else {
+        setErrorMessages(res.payload?.message);
+      }
+    });           
+  };
 
   return (
     <ThemeProvider theme={mdTheme}>
@@ -74,7 +96,7 @@ function CompanyView() {
                  View Role
                 </Typography>
                 <Divider />
-                  <Box sx={{ mt: 1 }}>
+                  <Box sx={{ mt: 1 }} component="form" noValidate onSubmit={handleSubmit}>
                     <Grid container spacing={2} rowSpacing={1} sx={{ mb: 2 }} >
                       <Grid item xs={6} sm={6}> 
                         <Box> Title : <Box component="span">{title}</Box></Box>
@@ -97,10 +119,14 @@ function CompanyView() {
                             </Grid>
                             {permission.chlid.map((value:any) => (
                               <Grid  sx={{ ml: 5 }}>
+                              {/* <input type="checkbox"  ></input> */}
                               <FormControlLabel
                                   control={<Checkbox  
                                   name={value.name} value={value.id} />}
                                   label={value.name}
+                                  onChange={(e) => {
+                                    handleChange(value.id);
+                                  }} 
                                   sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
                               />
                               </Grid>
@@ -111,8 +137,15 @@ function CompanyView() {
                     </Grid>
                     <Divider />
                     <Toolbar  sx={{ ml: 0 ,pl:"0 !important"}}>
+                          <Button
+                          type="submit"
+                          variant="contained"
+                        >
+                        Submit
+                        </Button>
                         <Button variant="contained" component={Link} to="/roles" sx={{ ml: 1 }} >Cancel </Button>
-                    </Toolbar> 
+                      </Toolbar> 
+                    
                   </Box>
                 </Paper>
               </Grid>

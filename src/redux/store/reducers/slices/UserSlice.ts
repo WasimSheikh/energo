@@ -3,7 +3,7 @@ import { AppUser, Permission, Role, User, Company } from './../../../../model/Us
 
 const localEndPoint="http://localhost:8080";
 const buildEndPoint="/apis"
-const apiEndPoint='http://localhost/Energobackend/api'//detectEnvURL();
+const apiEndPoint='https://laravel.cppatidar.com/energo/backend'//detectEnvURL();
 
 export const createUser = createAsyncThunk('Create_user', async (user: User) => {
     return await fetch(apiEndPoint+'/createUser', {
@@ -299,6 +299,22 @@ export const createPermission = createAsyncThunk('create_Permission', async (per
         return res.json()
     });
 })
+
+export const createRolehasPermission = createAsyncThunk('create_Role_has_Permission', async (role: Role) => {
+    return await fetch(apiEndPoint+'/createRolehasPermission', {
+       method: 'POST',
+       headers: {
+           'Accept': 'application/json',
+           'Content-Type': 'application/json',
+           'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
+       },
+       body: JSON.stringify(role)
+   }).then(res => {
+       return res.json()
+   });
+})
+
+
 
 export const updatePermission = createAsyncThunk('update_Permission', async (permission: Permission) => {
     return await fetch(apiEndPoint+'/updatePermission', {

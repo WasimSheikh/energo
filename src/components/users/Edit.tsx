@@ -331,7 +331,7 @@ function UserEdit() {
                         required
                         fullWidth
                         name="password"
-                        value={password}
+                        value=""
                         label="Password"
                         type="text"
                         id="password"

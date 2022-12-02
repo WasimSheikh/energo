@@ -6,6 +6,8 @@ export interface Role {
     id?: string;
     name?: string;
     guard_name?:string;
+    permissions_id?:string[];
+    
 }
 
 export interface Permission {
