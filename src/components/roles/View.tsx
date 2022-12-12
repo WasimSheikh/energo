@@ -47,11 +47,11 @@ function CompanyView() {
       }
   });
 
-  const handleChange = (value:any) => { 
-    let array = permissionsId;
-    array.push(value);
-    setPermissionsId(array);
-  }; 
+  // const handleChange = (value:any) => { 
+  //   let array = permissionsId;
+  // //  array.push(value);
+  //   //setPermissionsId(array);
+  // }; 
 
   const theme = useTheme();
   const handleSubmit = (e:any) => {
@@ -125,7 +125,7 @@ function CompanyView() {
                                   name={value.name} value={value.id} />}
                                   label={value.name}
                                   onChange={(e) => {
-                                    handleChange(value.id);
+                                    //handleChange(value.id);
                                   }} 
                                   sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
                               />

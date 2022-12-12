@@ -3,7 +3,7 @@ import { AppUser, Permission, Role, User, Company } from './../../../../model/Us
 
 const localEndPoint="http://localhost:8080";
 const buildEndPoint="/apis"
-const apiEndPoint='https://laravel.cppatidar.com/energo/backend'//detectEnvURL();
+const apiEndPoint='https://laravel.cppatidar.com/energo/backend/api'//detectEnvURL();
 
 export const createUser = createAsyncThunk('Create_user', async (user: User) => {
     return await fetch(apiEndPoint+'/createUser', {
