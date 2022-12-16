@@ -27,6 +27,9 @@ import { updateUser, getUser, getCompanies } from '../../redux/store/reducers/sl
 
 const mdTheme = createTheme();
 
+
+
+
 function UserEdit() {
   const navigate = useNavigate();
   const mdTheme = createTheme();
@@ -49,10 +52,16 @@ function UserEdit() {
   const [onload,setOnload] = useState(false);
   const [errorMessages, setErrorMessages] = useState('');
   const [companies, setCompanies] = React.useState([]);
+
+  const [checkbox, setCheckbox] = useState('');
+
   
   const [dirtyFields, setDirtyFields] = useState({
     company_id: false,
   });
+
+
+
 
   const selectChange = (event: SelectChangeEvent) => {
     setCompanyId(event.target.value);
@@ -81,6 +90,7 @@ function UserEdit() {
       permission: permission,
     }     
     store.dispatch(updateUser(formData)).then((res: any) => {
+      console.log(res)
       if(res.payload.status == true){
         setErrorMessages('');
         navigate("/users");
@@ -121,8 +131,9 @@ function UserEdit() {
     }
    });
 
+
   return (
-    <ThemeProvider theme={mdTheme}>
+    <ThemeProvider theme={mdTheme}> 
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
         <Header />
@@ -326,6 +337,16 @@ function UserEdit() {
                               setEmail(e.target.value);
                             }} 
                         />
+                          <FormControlLabel
+                            control={<Checkbox  
+                            onChange={(e) => {
+                              setCheckbox (e.target.value);
+                            }} 
+                            id='checkbx'
+                            name="Do you want to change password ?" />}
+                            label="Do you want to change password ? "
+                            sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
+                        />
                         <TextField
                         margin="normal"
                         required
@@ -351,6 +372,7 @@ function UserEdit() {
                                     value={permission}
                                     onChange={radioChange}
                                   >
+                                    
                                   <FormControlLabel value="admin" control={<Radio />} label="Admin" />
                                   <FormControlLabel value="author" control={<Radio />} label="Author" />
                                 </RadioGroup>
@@ -366,7 +388,7 @@ function UserEdit() {
                         >
                         Update
                           </Button>
-                        <Button variant="contained" component={Link} to="/users" sx={{ ml: 1 }} >Cancel </Button>
+                        <Button variant="contained" component={Link} to="/users" sx={{ ml: 1 }} >Cancel</Button>
                       </Toolbar> 
                       </Box>
                 </Paper>

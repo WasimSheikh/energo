@@ -1,4 +1,4 @@
-import {createTheme, ThemeProvider } from '@mui/material/styles';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -22,22 +22,22 @@ import { useEffect, useState } from 'react';
 
 const mdTheme = createTheme();
 function ShareAdd() {
-  const [email,setEmail] = useState('');
-  const [name,setName] = useState('');
-  const [description,setDescription] = useState('');
-  const [documents,setDocuments] = useState([]);
+  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [documents, setDocuments] = useState([]);
 
   const [errorMessages, setErrorMessages] = useState('');
 
   const cards = [1, 2];
-  const handleSubmit = (event:any) => {
+  const handleSubmit = (event: any) => {
     event.preventDefault();
     const formData = {
-      name:name,
-      email:email,
-      description:description,
-      documents:documents
-    } 
+      name: name,
+      email: email,
+      description: description,
+      documents: documents
+    }
     store.dispatch(shareDocuments(formData)).then((res: any) => {
       if (res.payload.status == true) {
         setErrorMessages('');
@@ -45,7 +45,7 @@ function ShareAdd() {
       } else {
         setErrorMessages(res.payload?.message);
       }
-    }); 
+    });
   };
   return (
     <ThemeProvider theme={mdTheme}>
@@ -70,28 +70,28 @@ function ShareAdd() {
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                <Typography component="h2" variant="h6" color="primary" gutterBottom>
-               Documents / Share Files
-                </Typography>
-                <Divider />
+                  <Typography component="h2" variant="h6" color="primary" gutterBottom>
+                    Documents / Share Files
+                  </Typography>
+                  <Divider />
                   <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
-                  <Grid container spacing={2} rowSpacing={1} >
+                    <Grid container spacing={2} rowSpacing={1} >
                       <Grid item xs={5} >
-                      <Container sx={{ py: 3  ,paddingTop:"18px"}}  >
-                          <Grid container spacing={2}  sx={{paddingTop:"0px" }} >
+                        <Container sx={{ py: 3, paddingTop: "18px" }}  >
+                          <Grid container spacing={2} sx={{ paddingTop: "0px" }} >
                             {cards.map((card) => (
-                              <Grid item key={card}  xs={12} sm={6} md={12}  sx={{paddingTop:"0px" }} >
-                                <Card  sx={{ height: "100%" ,boxShadow:'none' ,border:"1px solid black"}} >
-                                  <CardContent sx={{paddingTop:"6px", pb:'6px !important' }} >
-                                     <Toolbar>
-                                      <PermMediaIcon   sx={{ width: '20%' , height: '20%'}} />
-                                      <Typography variant="h6" color="inherit"  sx={{pl:1 ,lineHeight:'19px'}} >
+                              <Grid item key={card} xs={12} sm={6} md={12} sx={{ paddingTop: "0px" }} >
+                                <Card sx={{ height: "100%", boxShadow: 'none', border: "1px solid black" }} >
+                                  <CardContent sx={{ paddingTop: "6px", pb: '6px !important' }} >
+                                    <Toolbar>
+                                      <PermMediaIcon sx={{ width: '20%', height: '20%' }} />
+                                      <Typography variant="h6" color="inherit" sx={{ pl: 1, lineHeight: '19px' }} >
                                         Folder
-                                         <Typography  sx={{color:"#808080d1", fontSize:'13px'}} >
-                                        Uploaded 2022-02-02 
+                                        <Typography sx={{ color: "#808080d1", fontSize: '13px' }} >
+                                          Uploaded 2022-02-02
+                                        </Typography>
                                       </Typography>
-                                      </Typography>
-                                      </Toolbar>
+                                    </Toolbar>
                                   </CardContent>
                                 </Card>
                               </Grid>
@@ -99,54 +99,54 @@ function ShareAdd() {
                           </Grid>
                         </Container>
                       </Grid>
-                      <Grid item xs={7} sx={{ mb:'20px !important' }} >
-                          <TextField
-                            margin="normal"
-                            id="Name"
-                            required
-                            name="name"
-                            autoFocus
-                            label="Name"
-                            fullWidth
-                          />
-                          <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="email"
-                            label="Email"
-                            name="email"
-                            autoFocus
+                      <Grid item xs={7} sx={{ mb: '20px !important' }} >
+                        <TextField
+                          margin="normal"
+                          id="Name"
+                          required
+                          name="name"
+                          autoFocus
+                          label="Name"
+                          fullWidth
                         />
-                          <TextField
-                              margin="normal"
-                              required
-                              fullWidth
-                              multiline
-                              rows={4}
-                              id="description"
-                              label="Reason for sharing/Requesting"
-                              name="description"
-                          />
+                        <TextField
+                          margin="normal"
+                          required
+                          fullWidth
+                          id="email"
+                          label="Email"
+                          name="email"
+                          autoFocus
+                        />
+                        <TextField
+                          margin="normal"
+                          required
+                          fullWidth
+                          multiline
+                          rows={4}
+                          id="description"
+                          label="Reason for sharing/Requesting"
+                          name="description"
+                        />
                       </Grid>
-                     </Grid>
-                   </Box>
+                    </Grid>
+                  </Box>
                   <Divider />
-                  <Toolbar  sx={{ ml: 0 ,pl:"0 !important"}}>
-                          <Button
-                          type="submit"
-                          variant="contained"
-                        >
-                        Submit
-                          </Button>
-                        <Button variant="contained" component={Link} to="/companies/document/1" sx={{ ml: 1 }} >Cancel </Button>
-                      </Toolbar>
-                       
-                    
+                  <Toolbar sx={{ ml: 0, pl: "0 !important" }}>
+                    <Button
+                      type="submit"
+                      variant="contained"
+                    >
+                      Submit
+                    </Button>
+                    <Button variant="contained" component={Link} to="/companies/document/1" sx={{ ml: 1 }} >Cancel </Button>
+                  </Toolbar>
+
+
                 </Paper>
               </Grid>
             </Grid>
-           <Footer />
+            <Footer />
           </Container>
         </Box>
       </Box>

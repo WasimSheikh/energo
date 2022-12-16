@@ -20,7 +20,26 @@ import { getCompanies } from '../../redux/store/reducers/slices/UserSlice';
 import React, { useEffect , useState } from 'react';
 import { store } from '../../redux/store';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
-
+import Swal from 'sweetalert2';
+const toggle = () =>{
+  Swal.fire({
+    title: 'Are you sure?',
+    text: "You won't be able to revert this!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes, delete it!'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      Swal.fire(
+        'Deleted!',
+        'Your file has been deleted.',
+        'success'
+      )
+    }
+  })
+}
 const mdTheme = createTheme();
 const columns: GridColDef[] = [
   { field: 'id',
@@ -54,7 +73,7 @@ const columns: GridColDef[] = [
     headerName: 'Status',
     width: 90,
     valueGetter: (params: GridValueGetterParams) =>
-    `${params.row.is_active || ''}`,
+    `${params.row.is_active == '1' ? 'active': 'In-active' }`,
   },
   {
     field: 'action',
@@ -66,8 +85,9 @@ const columns: GridColDef[] = [
         <>
         <Button  sx={{ minWithd: 40 }}   component={Link} to={'/companies/edit/'+params.row.id} > <EditIcon  /> </Button>
         <Button  sx={{ minWidth: 40 }}  component={Link} to={'/companies/view/'+params.row.id} > <VisibilityIcon  /> </Button>
-        <Button  sx={{ minWidth: 40 }}  component={Link} to={'/companies/delete/'+params.row.id} > <DeleteIcon  /> </Button>
+        <Button  sx={{ minWidth: 40 }}  component={Link} to={'/companies/delete/'+params.row.id} onClick={toggle} > <DeleteIcon  /> </Button>
         <Button  sx={{ minWidth: 40 }}  component={Link} to={'/companies/document/'+params.row.id} > <FileCopyIcon  /> </Button>
+        {console.log("my params id", params.row.id)}
         </>
       );
    }

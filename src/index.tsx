@@ -7,6 +7,7 @@ import "./index.css";
 import App from "./App";
 import { BrowserRouter } from 'react-router-dom';
 //import Login from "./components/login/Login"
+import Swal from 'sweetalert2/dist/sweetalert2.js'
 
 const container = document.getElementById("root")!;
 const root = createRoot(container);
