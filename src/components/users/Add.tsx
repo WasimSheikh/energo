@@ -48,8 +48,20 @@ function UserAdd() {
   const [companies, setCompanies] = React.useState([]);
   
   const [dirtyFields, setDirtyFields] = useState({
-    companyName: false,
+    first_name:false,
+    companyname:false,
+last_name:false,
+email:false,
+address:false,
+street:false,
+city:false,
+country:false,
+password:false,
+permission:false,
+postalCode:false,
+phone:false,
   });
+
 
   const selectChange = (event: SelectChangeEvent) => {
     setCompanyId(event.target.value);
@@ -76,7 +88,8 @@ function UserAdd() {
       password:password,
       permission: permission,
       zipcode:postalCode,
-    }     
+    }    
+     
     store.dispatch(createUser(formData)).then((res: any) => {
       if(res.payload.status == true){
         setErrorMessages('');
@@ -87,7 +100,23 @@ function UserAdd() {
       }
     });                                     
   };
+  const renderErrorMessage = () =>
+  errorMessages && (
+    <div className="error">{errorMessages}</div>
+  );
 
+  const ifEmpty= (val: string): boolean => {
+
+    return (val !== undefined && val.length > 0);// return true;
+}
+
+const getError = (msg: string): JSX.Element => {
+  return (
+    <span className="text-13 d-inline-block ml-1 text_13 text-danger">
+      {msg}
+    </span>
+  );
+};
   useEffect(() => {
     if(onload==false){
       setOnload(true);
@@ -159,11 +188,13 @@ function UserAdd() {
                             control={<Checkbox  
                             onChange={(e) => {
                               setGlobalUser(e.target.value);
+                            
                             }} 
-                            name="global_user" value="yes" />}
+                            name="global_user" value={globalUser} />}
                             label="Global User"
-                            sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
+                            sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}  
                         />
+                        
                       </Grid>
                       <Grid item xs={6} sm={6}>
                           <TextField
@@ -176,8 +207,13 @@ function UserAdd() {
                             fullWidth
                             onChange={(e) => {
                               setFirstName(e.target.value);
+                              setDirtyFields((dirty) => ({
+                                ...dirty,
+                                first_name: !ifEmpty(e.target.value),
+                              }));
                             }}
                           />
+                             {dirtyFields["first_name"] && getError("firstName is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                           <TextField
@@ -190,8 +226,13 @@ function UserAdd() {
                             fullWidth
                             onChange={(e) => {
                               setLastName(e.target.value);
+                              setDirtyFields((dirty) => ({
+                                ...dirty,
+                                last_name: !ifEmpty(e.target.value),
+                              }));
                             }}
                           />
+                             {dirtyFields["last_name"] && getError("lastName is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                         <TextField
@@ -203,8 +244,13 @@ function UserAdd() {
                             name="phone"
                             onChange={(e) => {
                              setPhone(e.target.value);
-                            }}
+                             setDirtyFields((dirty) => ({
+                              ...dirty,
+                              phone: !ifEmpty(e.target.value),
+                            }));
+                          }}
                         />
+                           {dirtyFields["phone"] && getError("phone is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}> 
                       </Grid>
@@ -218,9 +264,13 @@ function UserAdd() {
                               name="address1"
                               onChange={(e) => {
                                 setAddress(e.target.value);
+                                setDirtyFields((dirty) => ({
+                                  ...dirty,
+                                  address: !ifEmpty(e.target.value),
+                                }));
                               }}
-                            
-                          />
+                            />
+                               {dirtyFields["address"] && getError("address is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                         <TextField
@@ -232,8 +282,13 @@ function UserAdd() {
                               name="address2"
                               onChange={(e) => {
                                 setStreet(e.target.value);
+                                setDirtyFields((dirty) => ({
+                                  ...dirty,
+                                  street: !ifEmpty(e.target.value),
+                                }));
                               }}
-                          />
+                            />
+                               {dirtyFields["street"] && getError("street is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                         <TextField
@@ -245,8 +300,13 @@ function UserAdd() {
                               name="city"
                               onChange={(e) => {
                                 setCity(e.target.value);
+                                setDirtyFields((dirty) => ({
+                                  ...dirty,
+                                  city: !ifEmpty(e.target.value),
+                                }));
                               }}
-                          />
+                            />
+                               {dirtyFields["city"] && getError("city is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                       <TextField
@@ -258,8 +318,13 @@ function UserAdd() {
                             name="postalcode"
                             onChange={(e) => {
                               setPostalCode(e.target.value);
+                              setDirtyFields((dirty) => ({
+                                ...dirty,
+                                postalCode: !ifEmpty(e.target.value),
+                              }));
                             }}
-                        />
+                          />
+                             {dirtyFields["postalCode"] && getError("postalCode is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                       <TextField
@@ -271,8 +336,13 @@ function UserAdd() {
                             name="country"
                             onChange={(e) => {
                               setCountry(e.target.value);
+                              setDirtyFields((dirty) => ({
+                                ...dirty,
+                                country: !ifEmpty(e.target.value),
+                              }));
                             }}
-                        /> 
+                          />
+                             {dirtyFields["country"] && getError("country is requried")}
                         </Grid>
                         <Grid item xs={6} sm={6}>
                        </Grid>

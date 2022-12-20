@@ -24,10 +24,12 @@ import DialogActions from '@mui/material/DialogActions';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close'
 import TextField from '@mui/material/TextField';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useParams } from "react-router-dom";
+import { createCompanyFolder, getCompanyFolder } from '../../redux/store/reducers/slices/UserSlice';
+import { store } from '../../redux/store';
 
 const mdTheme = createTheme();
-const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12];
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
       padding: theme.spacing(2),
@@ -38,13 +40,93 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 }));
 
 function DocumentList() {
+  const params = useParams();
     const [open, setOpen] = React.useState(false);
+    const [openFolder, setFolder] = React.useState(false);
+    const [folder, setCompanyFolder] = useState([]);
+    const [title,setTitle] = useState('');
+    const [file, setFile] = useState<File>();
+    const [ showFolder, setShowFolder]= useState([])
+
+    const handleAdd = (e:any) => {
+      console.log(params.companyId,"params")
+      e.preventDefault();
+      const formData = {
+        company_id:params.companyId,
+        title:title,
+      }
+      console.log(formData,"formData")
+      store.dispatch(createCompanyFolder(formData)).then((res: any) => {
+        console.log(res,"jjjjjjjjjj")
+        setCompanyFolder(res.response)
+        // window.location.reload();
+        // if (res.payload.status == true) {
+        //   // setErrorMessages('');
+        //   // navigate("/roles");
+        // } else {
+        //   // setErrorMessages(res.payload?.message);
+        // }
+      });           
+    };
+    const UploadDocument = (e:any) => {
+      console.log(params.companyId,"params")
+      alert(e.target.value)
+      e.preventDefault();
+      const formData = {
+        company_id:params.companyId,
+        user_id:e.target.value,
+        profile_picture:file,
+      }
+      console.log(formData,"formData")
+      // store.dispatch(createCompanyFolder(formData)).then((res: any) => {
+      //   console.log(res,"jjjjjjjjjj")
+      //   setCompanyFolder(res.response)
+      //   // window.location.reload();
+      //   // if (res.payload.status == true) {
+      //   //   // setErrorMessages('');
+      //   //   // navigate("/roles");
+      //   // } else {
+      //   //   // setErrorMessages(res.payload?.message);
+      //   // }
+      // });           
+    };
+    
+
+    const handleFileChange = (e:any) => {
+      if (e.target.files) {
+        console.log(e.target.files[0],"file")
+        setFile(e.target.files[0]);
+      }
+    };
     const handleClickOpen = () => {
       setOpen(true);
     };
     const handleClose = () => {
       setOpen(false);
     };
+    const handleClickOpenFolder = () => {
+      setFolder(true);
+    };
+    const handleCloseFolder = () => {
+      setFolder(false);
+    };
+  
+
+    const getCpmpanyFolder=()=>{
+      const formData = {
+        company_id:params.companyId,
+      }
+      store.dispatch(getCompanyFolder(formData)).then((res: any) => {
+        console.log(res.payload.folders,"5555")
+        setShowFolder(res.payload.folders);
+        // if (res && res.payload?.permissionparent) {
+        //   setCompanyFolder(res.payload);
+        // } 
+      }); 
+    }
+      useEffect(() => {
+        getCpmpanyFolder();
+    }, []);
 
   return (
     <ThemeProvider theme={mdTheme}>
@@ -79,7 +161,7 @@ function DocumentList() {
                   <Container sx={{ py: 3  ,paddingTop:"18px"}}  >
                     {/* End hero unit */}
                     <Grid container spacing={2}  sx={{paddingTop:"0px" }} >
-                      {cards.map((card) => (
+                      {showFolder.map((card:any) => (
                         <Grid item key={card}  xs={12} sm={6} md={4}  sx={{paddingTop:"0px" }} >
                           <Card  className='' sx={{ height: "100%" ,boxShadow:'none' ,border:"1px solid black"}} >
                             <CardContent sx={{paddingTop:"6px", pb:'6px !important' }} >
@@ -87,12 +169,12 @@ function DocumentList() {
                                 <Checkbox className='documentselect' />
                                 <PermMediaIcon   sx={{ width: '20%' , height: '20%'}} />
                                 <Typography variant="h6" color="inherit"  sx={{pl:1 ,lineHeight:'19px'}} >
-                                <Typography component={Link} to="/companies/document/view/1">Folder</Typography>
+                                <Typography component={Link} to="/companies/document/view/1">{card.title}</Typography>
                                   <Typography  sx={{color:"#808080d1", fontSize:'13px'}} >
                                   Uploaded 2022-02-02
                                 </Typography>
                                 </Typography>
-                                <ControlPointIcon sx={{ width: '15%' , height: '20%' ,color:'#000' ,ml:'20px'}} />
+                                <ControlPointIcon sx={{ width: '15%' , height: '20%' ,color:'#000' ,ml:'20px'}} onClick={handleClickOpenFolder} />
                                 </Toolbar>
                             </CardContent>
                           </Card>
@@ -123,12 +205,40 @@ function DocumentList() {
         </IconButton>
         </DialogTitle>
         <DialogContent dividers>
-          <TextField margin="normal" required fullWidth id="title" label="Title" name="title" /> 
+          <TextField margin="normal" 
+          required 
+          fullWidth 
+          id="title" 
+          label="Title" 
+          name="title"     
+          value={title}
+          onChange={(e) => {
+            setTitle(e.target.value);
+          }}/> 
         </DialogContent>
         <DialogActions>
-          <Button  variant="contained"  onClick={handleClose}>
+          <Button  variant="contained"  onClick={handleAdd}>
             Save
           </Button>
+        </DialogActions>
+      </BootstrapDialog>
+      {/* add image in folder  */}
+      <BootstrapDialog onClose={handleCloseFolder} aria-labelledby="customized-dialog-title" open={openFolder} >
+        <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+          Upload Documents
+        <IconButton aria-label="close" onClick={handleCloseFolder} sx={{position: 'absolute',right: 8,top: 8,color: (theme) => theme.palette.grey[500],
+          }}
+        >
+        <CloseIcon />
+        </IconButton>
+        </DialogTitle>
+        <DialogContent dividers>
+           <input type="file" onChange={handleFileChange} />
+        </DialogContent>
+        <DialogActions>
+          <Button  variant="contained"  onClick={UploadDocument}>
+            Upload
+          </Button> 
         </DialogActions>
       </BootstrapDialog>
     </ThemeProvider>
