@@ -34,7 +34,8 @@ function CompanyEdit() {
     const [country,setCountry] = useState('');
     const [postalCode,setPostalCode] = useState('');
     const [logo,setLogo] = useState('');
-    const [isHeadauator,setIsHeadauator] = useState(false);
+    const [isHeadauator,setIsHeadauator] = useState(true);
+    const [checked,setchecked] = useState('');
     const [onload,setOnload] = useState(false);
     const [errorMessages, setErrorMessages] = useState('');
   
@@ -66,6 +67,10 @@ function CompanyEdit() {
     });           
   };
 
+  function checkBoxValue(data:any){
+    setIsHeadauator(data.target.checked)
+  }
+
   useEffect(() => {
     if(onload==false){
       setOnload(true);
@@ -84,10 +89,11 @@ function CompanyEdit() {
                setCountry(res.payload.company?.address?.country);
                setPostalCode(res.payload.company?.address?.zipcode);
                setLogo(res.payload.company?.logo);
-               if(res.payload.company.is_headquater =='1'){
+               setchecked(res.payload.company?.is_headquater)
+               
+               if(res.payload.company.is_headquater == '0'){
                 setIsHeadauator(true)
-               }else{
-                setIsHeadauator(false)
+                console.log(res.payload.company.is_headquater,"res.payload.company.is_headquater",isHeadauator)
                }
             } 
        }); 
@@ -258,8 +264,9 @@ function CompanyEdit() {
                             //   setIsHeadauator(e.target.value);
                             // }} 
                             // name="headquater" value={isHeadauator} />
-                            <input name="headquater" type="checkbox" defaultChecked={isHeadauator}    onChange={(e) => {
-                              setIsHeadauator(e.target.checked);
+                            <input name="headquater" type="checkbox" defaultChecked={isHeadauator}    
+                            onChange={(e) => {
+                              checkBoxValue(e);
                             }}  />
                           }
                             label="Company Headquater Office"

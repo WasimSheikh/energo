@@ -47,7 +47,10 @@ function DocumentList() {
     const [title,setTitle] = useState('');
     const [file, setFile] = useState<File>();
     const [ showFolder, setShowFolder]= useState([])
+    const [ addFolders, setAddFolders]= useState([])
 
+
+    
     const handleAdd = (e:any) => {
       console.log(params.companyId,"params")
       e.preventDefault();
@@ -91,6 +94,16 @@ function DocumentList() {
       // });           
     };
     
+    // const addFolder = (e:any)=>{
+    //   console.log(!e.target.value)
+    // }
+    function addFolder(event:any) {
+      console.log(event,"event");
+      setAddFolders(event)
+      // addFolders.forEach((id)=>{
+        console.log(addFolders,"77777")
+      // })
+  }
 
     const handleFileChange = (e:any) => {
       if (e.target.files) {
@@ -166,7 +179,7 @@ function DocumentList() {
                           <Card  className='' sx={{ height: "100%" ,boxShadow:'none' ,border:"1px solid black"}} >
                             <CardContent sx={{paddingTop:"6px", pb:'6px !important' }} >
                                 <Toolbar sx={{ pr:'0px !important' }}>
-                                <Checkbox className='documentselect' />
+                                <Checkbox className='documentselect' onClick={()=>{addFolder(card)}}/>
                                 <PermMediaIcon   sx={{ width: '20%' , height: '20%'}} />
                                 <Typography variant="h6" color="inherit"  sx={{pl:1 ,lineHeight:'19px'}} >
                                 <Typography component={Link} to="/companies/document/view/1">{card.title}</Typography>
