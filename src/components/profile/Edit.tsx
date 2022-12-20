@@ -111,7 +111,6 @@ function EditProfile() {
       const userId = window.location.href.split('/')[5]
       const formData = {id:userId};  
       store.dispatch(getUser(formData)).then((res: any) => {
-
           setOnload(true);
           if(res && res.payload){
               setId(res.payload.user?.id);

@@ -192,6 +192,9 @@ export const getCompany = createAsyncThunk('get_Company', async (company: Compan
 })
 
 export const deleteCompany = createAsyncThunk('delete_Company', async (company: Company) => {
+    const requestOptions = {
+        id:`${company}`
+    };
     return await fetch(apiEndPoint+'/deleteCompany', {
         method: 'POST',
         headers: {
@@ -199,12 +202,33 @@ export const deleteCompany = createAsyncThunk('delete_Company', async (company: 
             'Content-Type': 'application/json',
             'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
         },
-        body: JSON.stringify(company)
+
+        
+        body: JSON.stringify(requestOptions)
     }).then(res => {
         return res.json()
     });
 })
 
+
+export const deleteUser = createAsyncThunk('delete_Company', async (user: User) => {
+    const requestOptions = {
+        id:`${user}`
+    };
+    return await fetch(apiEndPoint+'/deleteUser', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
+        },
+
+        
+        body: JSON.stringify(requestOptions)
+    }).then(res => {
+        return res.json()
+    });
+})
 export const getUser = createAsyncThunk('get_User', async (user: User) => {
     return await fetch(apiEndPoint+'/getUser', {
         method: 'POST',

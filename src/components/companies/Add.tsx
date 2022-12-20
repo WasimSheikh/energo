@@ -223,7 +223,7 @@ return (
                             onChange={(e) => {
                               setIsHeadauator(e.target.value);
                             }}
-                            name="headquater" value="1" />}
+                            name="headquater" value= '1' />}
                           label="Company Headquater Office"
                           sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
                         />

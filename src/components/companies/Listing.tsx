@@ -11,35 +11,44 @@ import Header from '../common/Header';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import Button from '@mui/material/Button';
-import { Link } from "react-router-dom";
+import { Link ,useNavigate} from "react-router-dom";
 import EditIcon from '@mui/icons-material/Edit';
 import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { getCompanies } from '../../redux/store/reducers/slices/UserSlice';
+import { deleteCompany,getCompanies } from '../../redux/store/reducers/slices/UserSlice';
 import React, { useEffect , useState } from 'react';
 import { store } from '../../redux/store';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import Swal from 'sweetalert2';
-const toggle = () =>{
+
+const deleteId=(e:any)=>{
+
   Swal.fire({
-    title: 'Are you sure?',
+    title: 'Are you sure want to delete?',
     text: "You won't be able to revert this!",
     icon: 'warning',
     showCancelButton: true,
     confirmButtonColor: '#3085d6',
     cancelButtonColor: '#d33',
-    confirmButtonText: 'Yes, delete it!'
+    confirmButtonText: 'Yes , confirm !'
   }).then((result) => {
     if (result.isConfirmed) {
+      store.dispatch(deleteCompany(e)).then((res: any) => {
+        const result = res.json();
+      }); 
+      window.location.reload();
       Swal.fire(
         'Deleted!',
         'Your file has been deleted.',
         'success'
       )
+  
     }
+    
   })
 }
+
 const mdTheme = createTheme();
 const columns: GridColDef[] = [
   { field: 'id',
@@ -85,7 +94,8 @@ const columns: GridColDef[] = [
         <>
         <Button  sx={{ minWithd: 40 }}   component={Link} to={'/companies/edit/'+params.row.id} > <EditIcon  /> </Button>
         <Button  sx={{ minWidth: 40 }}  component={Link} to={'/companies/view/'+params.row.id} > <VisibilityIcon  /> </Button>
-        <Button  sx={{ minWidth: 40 }}  component={Link} to={'/companies/delete/'+params.row.id} onClick={toggle} > <DeleteIcon  /> </Button>
+        {/* <Button  sx={{ minWidth: 40 }}  component={Link} to={'deleteCompany'+params.row.id} onClick={toggle} > <DeleteIcon  /> </Button> */}
+        <Button onClick={()=>{deleteId(params.row.id)}}  sx={{ minWidth: 40 }}   > <DeleteIcon  /> </Button>
         <Button  sx={{ minWidth: 40 }}  component={Link} to={'/companies/document/'+params.row.id} > <FileCopyIcon  /> </Button>
         {console.log("my params id", params.row.id)}
         </>
@@ -96,10 +106,11 @@ const columns: GridColDef[] = [
 
 function CompanyList() {
   const [companies,setCompanies] = useState([]);
-
+  
   useEffect(() => {
     if(companies.length == 0){
       store.dispatch(getCompanies()).then((res: any) => {
+        console.log(res,"jhiogho")
         if (res && res.payload.companies) {
           setCompanies(res.payload.companies);
         } 

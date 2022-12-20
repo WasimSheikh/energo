@@ -59,6 +59,7 @@ function UserAdd() {
     setPermission((event.target as HTMLInputElement).value);
   };
 
+  
   const handleSubmit = (e:any) => {
     e.preventDefault();
     const formData = {
