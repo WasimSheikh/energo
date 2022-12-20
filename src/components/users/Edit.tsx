@@ -54,13 +54,20 @@ function UserEdit() {
   const [companies, setCompanies] = React.useState([]);
 
   const [checkbox, setCheckbox] = useState('');
-
+  const [boxValue,setBoxValue] = useState(false);
   
   const [dirtyFields, setDirtyFields] = useState({
     company_id: false,
   });
 
-
+const showPassword =()=>{
+  console.log(checkbox,"checkbox")
+  if(checkbox == 'off'){
+    setBoxValue(false)
+  }else{
+    setBoxValue(true)
+  }
+}
 
 
   const selectChange = (event: SelectChangeEvent) => {
@@ -340,14 +347,14 @@ function UserEdit() {
                           <FormControlLabel
                             control={<Checkbox  
                             onChange={(e) => {
-                              setCheckbox (e.target.value);
+                              setCheckbox (e.target.value); showPassword();
                             }} 
                             id='checkbx'
                             name="Do you want to change password ?" />}
                             label="Do you want to change password ? "
                             sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
                         />
-                        <TextField
+                      {boxValue &&  <TextField
                         margin="normal"
                         required
                         fullWidth
@@ -359,7 +366,7 @@ function UserEdit() {
                         onChange={(e) => {
                           setPassword(e.target.value);
                         }} 
-                      />
+                      />}
                       </Grid>
                       <Grid item xs={6} >
                           <Typography component="h6" color="primary" variant="h6" sx={{ mt: 2 }}  gutterBottom>
