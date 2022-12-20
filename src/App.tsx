@@ -24,6 +24,8 @@ import Permissions from './components/permissions/Listing';
 import AddPermission from './components/permissions/Add';
 import EditPermission from './components/permissions/Edit';
 import ViewPermission from './components/permissions/View';
+import ProfileEdit from "./components/profile/Edit";
+import Navgiate from "./components/common/Header";
 import React, { useEffect } from 'react';
 
 function App() {
@@ -75,6 +77,8 @@ function App() {
           {/* <Route path="documents" element={<Documents />} /> */}
           {/* <Route path="documents/share" element={<Share />} /> */}
           <Route path="notifications" element={<Notifications />} /> 
+          <Route path="ProfileEdit" element={<ProfileEdit />} /> 
+          {/* <Route path="dashboard" element={</Navgiate>} />  */}
           </>
         }
         

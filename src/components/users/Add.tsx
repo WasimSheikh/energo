@@ -79,6 +79,7 @@ function UserAdd() {
     store.dispatch(createUser(formData)).then((res: any) => {
       if(res.payload.status == true){
         setErrorMessages('');
+        console.log(res,4544554)
         navigate("/users");
       }else {
         setErrorMessages(res.payload?.message);

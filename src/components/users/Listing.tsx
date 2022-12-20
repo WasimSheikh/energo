@@ -19,7 +19,31 @@ import React, { useEffect , useState } from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteIcon from '@mui/icons-material/Delete';
+import Swal from 'sweetalert2';
 
+
+
+
+
+const alertbox=()=>{
+  Swal.fire({
+    title: 'Are you sure want to delete?',
+    text: "You won't be able to revert this!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes , confirm !'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      Swal.fire(
+        'Deleted!',
+        'Your file has been deleted.',
+        'success'
+      )
+    }
+  })
+}
 
 const mdTheme = createTheme();
 const columns: GridColDef[] = [
@@ -57,8 +81,8 @@ const columns: GridColDef[] = [
     headerName: 'Status',
     width: 90,
     valueGetter: (params: GridValueGetterParams) =>
-    `${params.row.is_active || ''}`,
-  },
+    `${params.row.is_active ? "Active":"Inactive"}`,
+  }, 
   {
     field: 'action',
     headerName: 'Action',
@@ -69,7 +93,10 @@ const columns: GridColDef[] = [
         <>
           <Button  sx={{ minWidth: 40 }}  component={Link}  to={'/users/edit/'+params.row.id}  > <EditIcon  /> </Button>
           <Button  sx={{ minWidth: 40 }}   component={Link} to={'/users/view/'+params.row.id}  > <VisibilityIcon  /> </Button>
-          <Button  sx={{ minWidth: 40 }}   component={Link} to={'/users/delete/'+params.row.id} > <DeleteIcon  /> </Button>
+          <Button onClick={alertbox}  sx={{ minWidth: 40 }}   > <DeleteIcon  /> </Button>
+          {/* component={Link} to={'/users/delete/'+params.row.id} */}
+          
+         
         </>
       );
    }
@@ -89,6 +116,9 @@ function UserList() {
     }
   });
 
+  
+
+ 
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>

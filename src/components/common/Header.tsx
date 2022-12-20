@@ -7,6 +7,11 @@ import IconButton from '@mui/material/IconButton';
 import Badge from '@mui/material/Badge';
 import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import { Link , useParams ,useNavigate} from "react-router-dom";
+
 
 function capitalizeFirstLetter(string:string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
@@ -18,6 +23,11 @@ const Header = (): JSX.Element => {
   interface AppBarProps extends MuiAppBarProps {
     open?: boolean;
   }
+  const [age, setAge] = React.useState('');
+  const navigate = useNavigate();
+  const handleChange = (event: SelectChangeEvent) => {
+    setAge(event.target.value);
+  };
   const [open, setOpen] = React.useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
@@ -73,6 +83,29 @@ const Header = (): JSX.Element => {
                 <NotificationsIcon />
               </Badge>
             </IconButton>
+            {/* <MenuIcon /> */}
+          
+            {/* <Typography
+              component="h1"
+              variant="h6"
+              color="inherit"
+              noWrap
+              sx={{ flexGrow: 1 }}
+            >
+            { capitalizeFirstLetter(urlElements) }
+           </Typography> */}
+            <FormControl sx={{ m: 1, minWidth: 20 }} size="small">
+      <Select
+        labelId="demo-select-small"
+        id="demo-select-small"
+        value={age}
+        label="Age"
+        onChange={handleChange}
+      >
+        <MenuItem component={Link} to="/ProfileEdit">Profile</MenuItem>
+        <MenuItem component={Link} to="/">Logout</MenuItem>
+      </Select>
+    </FormControl>
           </Toolbar>
         </AppBar>
     </>;
