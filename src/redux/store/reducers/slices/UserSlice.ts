@@ -192,6 +192,9 @@ export const getCompany = createAsyncThunk('get_Company', async (company: Compan
 })
 
 export const deleteCompany = createAsyncThunk('delete_Company', async (company: Company) => {
+    const requestOptions = {
+        id:`${company}`
+    };
     return await fetch(apiEndPoint+'/deleteCompany', {
         method: 'POST',
         headers: {
@@ -199,7 +202,27 @@ export const deleteCompany = createAsyncThunk('delete_Company', async (company: 
             'Content-Type': 'application/json',
             'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
         },
-        body: JSON.stringify(company)
+
+        
+        body: JSON.stringify(requestOptions)
+    }).then(res => {
+        return res.json()
+    });
+})
+export const deleteUser = createAsyncThunk('delete_User', async (user: any) => {
+    const requestOptions = {
+        id:`${user}`
+    };
+    return await fetch(apiEndPoint+'/deleteUser', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
+        },
+
+        
+        body: JSON.stringify(requestOptions)
     }).then(res => {
         return res.json()
     });
@@ -329,10 +352,33 @@ export const updatePermission = createAsyncThunk('update_Permission', async (per
         return res.json()
     });
 })
+export const createCompanyFolder = createAsyncThunk('create_Company_Folder', async (company_id:any) => {
+    return await fetch(apiEndPoint+'/createCompanyFolder', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
+        },
+        body: JSON.stringify(company_id)
+    }).then(res => {
+        return res.json()
+    });
+})
 
-
-
-
+export const getCompanyFolder = createAsyncThunk('get_Company_Folders', async (company_id:any) => {
+    return await fetch(apiEndPoint+'/getCompanyFolders', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
+        },
+        body: JSON.stringify(company_id)
+    }).then(res => {
+        return res.json()
+    });
+})
 
 const INIT_STATE: AppUser = {
     currUser: {

@@ -14,7 +14,7 @@ import Button from '@mui/material/Button';
 import { Link } from "react-router-dom";
 import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 import { store } from '../../redux/store';
-import { getUsers } from '../../redux/store/reducers/slices/UserSlice';
+import { deleteUser,getUsers } from '../../redux/store/reducers/slices/UserSlice';
 import React, { useEffect , useState } from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -25,7 +25,7 @@ import Swal from 'sweetalert2';
 
 
 
-const alertbox=()=>{
+const deleteId=(e:any)=>{
   Swal.fire({
     title: 'Are you sure want to delete?',
     text: "You won't be able to revert this!",
@@ -36,6 +36,10 @@ const alertbox=()=>{
     confirmButtonText: 'Yes , confirm !'
   }).then((result) => {
     if (result.isConfirmed) {
+      store.dispatch(deleteUser(e)).then((res: any) => {
+        const result = res.json();
+      }); 
+      window.location.reload();
       Swal.fire(
         'Deleted!',
         'Your file has been deleted.',
@@ -93,10 +97,8 @@ const columns: GridColDef[] = [
         <>
           <Button  sx={{ minWidth: 40 }}  component={Link}  to={'/users/edit/'+params.row.id}  > <EditIcon  /> </Button>
           <Button  sx={{ minWidth: 40 }}   component={Link} to={'/users/view/'+params.row.id}  > <VisibilityIcon  /> </Button>
-          <Button onClick={alertbox}  sx={{ minWidth: 40 }}   > <DeleteIcon  /> </Button>
-          {/* component={Link} to={'/users/delete/'+params.row.id} */}
+         <Button onClick={()=>{deleteId(params.row.id)}}  sx={{ minWidth: 40 }}   > <DeleteIcon  /> </Button>
           
-         
         </>
       );
    }
