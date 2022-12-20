@@ -37,6 +37,9 @@ function CompanyAdd() {
   const [logo, setLogo] = useState();
   const [isHeadauator, setIsHeadauator] = useState('');
   const [errorMessages, setErrorMessages] = useState('');
+  const [dirtyFields, setDirtyFields] = useState({
+    email: false,
+  });
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
@@ -67,6 +70,20 @@ function CompanyAdd() {
     errorMessages && (
       <div className="error">{errorMessages}</div>
     );
+  
+    const ifEmpty= (val: string): boolean => {
+  
+      return (val !== undefined && val.length > 0);// return true;
+  }
+
+  const getError = (msg: string): JSX.Element => {
+    return (
+      <span className="text-13 d-inline-block ml-1 text_13 text-danger">
+        {msg}
+      </span>
+    );
+  };
+    
 
 return (
     <ThemeProvider theme={mdTheme}>
@@ -136,8 +153,13 @@ return (
                           name="email"
                           onChange={(e) => {
                             setEmail(e.target.value);
+                            setDirtyFields((dirty) => ({
+                              ...dirty,
+                              email: !ifEmpty(e.target.value),
+                            }));
                           }}
                         />
+                          {dirtyFields["email"] && getError("Email is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                         <TextField

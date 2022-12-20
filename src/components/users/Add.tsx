@@ -159,7 +159,7 @@ function UserAdd() {
                             onChange={(e) => {
                               setGlobalUser(e.target.value);
                             }} 
-                            name="global_user" value="yes" />}
+                            name="global_user" value={globalUser} />}
                             label="Global User"
                             sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
                         />
