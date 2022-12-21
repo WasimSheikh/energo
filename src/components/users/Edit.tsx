@@ -53,21 +53,15 @@ function UserEdit() {
   const [errorMessages, setErrorMessages] = useState('');
   const [companies, setCompanies] = React.useState([]);
 
-  const [checkbox, setCheckbox] = useState('');
   const [boxValue,setBoxValue] = useState(false);
   
   const [dirtyFields, setDirtyFields] = useState({
     company_id: false,
   });
 
-const showPassword =()=>{
-  console.log(checkbox,"checkbox")
-  if(checkbox == 'off'){
-    setBoxValue(false)
-  }else{
-    setBoxValue(true)
+  function showPassword(data:any){
+    setBoxValue(data)
   }
-}
 
 
   const selectChange = (event: SelectChangeEvent) => {
@@ -347,7 +341,7 @@ const showPassword =()=>{
                           <FormControlLabel
                             control={<Checkbox  
                             onChange={(e) => {
-                              setCheckbox (e.target.value); showPassword();
+                              showPassword(e.target.checked);
                             }} 
                             id='checkbx'
                             name="Do you want to change password ?" />}

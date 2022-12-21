@@ -13,8 +13,10 @@ import Divider from '@mui/material/Divider';
 import Button from '@mui/material/Button';
 import { Link ,useParams } from "react-router-dom";
 import React, { useEffect, useState } from 'react';
-import { getCompany } from '../../redux/store/reducers/slices/UserSlice';
+import { getCompany, getDocuments } from '../../redux/store/reducers/slices/UserSlice';
 import { store } from '../../redux/store';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 function CompanyView() {
@@ -31,6 +33,7 @@ function CompanyView() {
   const [postalCode,setPostalCode] = useState('');
   const [logo,setLogo] = useState('');
   const [isHeadauator,setIsHeadauator] = useState('');
+  const [showImages,setShowImages] = useState([]);
   const [onload,setOnload] = useState(false);
 
     useEffect(() => {
@@ -54,7 +57,21 @@ function CompanyView() {
                 setIsHeadauator(res.payload.company?.isHeadauator);
             } 
         }); 
+  
       }
+
+      // store.dispatch(getDocuments(getdata)).then((res: any) => {
+      //   console.log(res,"jjjjjjjjjj")
+      //   setShowImages(res.response)
+      //   // window.location.reload();
+      //   if (res.payload.status == true) {
+      //     toast(res.message)
+      //     // navigate("/roles");
+      //   } else {
+      //     // setErrorMessages(res.payload?.message);
+      //     toast.error(res.message)
+      //   }
+      // });   
     });
 
   const theme = useTheme();
@@ -137,6 +154,7 @@ function CompanyView() {
           </Container>
         </Box>
       </Box>
+      <ToastContainer/>
     </ThemeProvider>
   );
 }

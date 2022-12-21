@@ -7,10 +7,12 @@ import IconButton from '@mui/material/IconButton';
 import Badge from '@mui/material/Badge';
 import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { Link , useParams ,useNavigate} from "react-router-dom";
+import { Avatar, Button, Menu, MenuItem } from "@mui/material";
+import '../common/common.css'
+
 
 
 function capitalizeFirstLetter(string:string) {
@@ -49,6 +51,33 @@ const Header = (): JSX.Element => {
       }),
     }),
   }));
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open1 = Boolean(anchorEl);
+
+  const OpneProfile = () => {
+    // setOpenProfile("Profile")
+    setAnchorEl(null);
+  }
+
+  const profileClick = (event:any) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const profileClose = () => {
+    setAnchorEl(null);
+  };
+
+  const Logout = () => {
+    // toast.success("Logout successfully")
+    // localStorage.removeItem("token")
+    // localStorage.removeItem("user_name")
+    // localStorage.removeItem("user_email")
+    // localStorage.removeItem("user_phone")
+    // localStorage.removeItem("user_password")
+    // setTimeout(() => {
+    //   // @ts-ignore
+    //   window.location.reload(false);
+    // }, 1000);
+  }
 
     return <>
     <AppBar position="absolute" open={open}>
@@ -83,18 +112,28 @@ const Header = (): JSX.Element => {
                 <NotificationsIcon />
               </Badge>
             </IconButton>
-            {/* <MenuIcon /> */}
-          
-            {/* <Typography
-              component="h1"
-              variant="h6"
-              color="inherit"
-              noWrap
-              sx={{ flexGrow: 1 }}
-            >
-            { capitalizeFirstLetter(urlElements) }
-           </Typography> */}
-            <FormControl sx={{ m: 1, minWidth: 20 }} size="small">
+            <Button className="btn btn-dark"
+                id="basic-button"
+                aria-controls={open1 ? 'basic-menu' : undefined}
+                aria-haspopup="true"
+                aria-expanded={open1 ? 'true' : undefined}
+                onClick={profileClick}>
+                <Avatar src="/broken-image.jpg" />
+              </Button>
+            <Menu
+                id="basic-menu"
+                anchorEl={anchorEl}
+                open={open1}
+                onClose={profileClose}
+                MenuListProps={{
+                  'aria-labelledby': 'basic-button',
+                }}
+               style={{top:"40px",left: '90%'}}>
+                <MenuItem onClick={() => { OpneProfile() }} component={Link} to="/ProfileEdit">Profile</MenuItem>
+                <MenuItem onClick={Logout}><Link to={{ pathname: "/" }}>Logout</Link></MenuItem>
+              </Menu>
+
+            {/* <FormControl sx={{ m: 1, minWidth: 20 }} size="small">
       <Select
         labelId="demo-select-small"
         id="demo-select-small"
@@ -105,7 +144,7 @@ const Header = (): JSX.Element => {
         <MenuItem component={Link} to="/ProfileEdit">Profile</MenuItem>
         <MenuItem component={Link} to="/">Logout</MenuItem>
       </Select>
-    </FormControl>
+    </FormControl> */}
           </Toolbar>
         </AppBar>
     </>;
