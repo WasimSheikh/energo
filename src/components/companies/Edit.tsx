@@ -36,6 +36,7 @@ function CompanyEdit() {
     const [logo,setLogo] = useState('');
     const [isHeadauator,setIsHeadauator] = useState(true);
     const [checked,setchecked] = useState('');
+
     const [onload,setOnload] = useState(false);
     const [errorMessages, setErrorMessages] = useState('');
   
@@ -89,11 +90,15 @@ function CompanyEdit() {
                setCountry(res.payload.company?.address?.country);
                setPostalCode(res.payload.company?.address?.zipcode);
                setLogo(res.payload.company?.logo);
+
                setchecked(res.payload.company?.is_headquater)
                
-               if(res.payload.company.is_headquater == '0'){
-                setIsHeadauator(true)
-                console.log(res.payload.company.is_headquater,"res.payload.company.is_headquater",isHeadauator)
+               setIsHeadauator(res.payload.company?.is_headquater)
+
+               if(res.payload.company.is_headquater == '1'){
+                (document.getElementById('checkBox')as any).checked = true;
+               }else{
+                (document.getElementById('checkBox')as any).checked = false;
                }
             } 
        }); 
@@ -259,18 +264,15 @@ function CompanyEdit() {
                         <Grid item xs={2} sm={6} mt={2}>
                         <FormControlLabel
                             control={
-                            // <Checkbox  
-                            // onChange={(e) => {
-                            //   setIsHeadauator(e.target.value);
-                            // }} 
-                            // name="headquater" value={isHeadauator} />
-                            <input name="headquater" type="checkbox" defaultChecked={isHeadauator}    
+
+                            <input type= 'checkbox' name="headquater" id = 'checkBox' 
+
                             onChange={(e) => {
                               checkBoxValue(e);
                             }}  />
                           }
                             label="Company Headquater Office"
-                            sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
+                            sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }} style={{fontSize : '50px'}}
                         />
                            
                         </Grid>

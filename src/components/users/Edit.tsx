@@ -53,21 +53,27 @@ function UserEdit() {
   const [errorMessages, setErrorMessages] = useState('');
   const [companies, setCompanies] = React.useState([]);
 
-  const [checkbox, setCheckbox] = useState('');
   const [boxValue,setBoxValue] = useState(false);
   
+
   const [dirtyFields, setDirtyFields] = useState({
-    company_id: false,
+    first_name:false,
+    companyname:false,
+  last_name:false,
+  email:false,
+  address:false,
+  street:false,
+  city:false,
+  country:false,
+  password:false,
+  permission:false,
+  postalCode:false,
+  phone:false,
   });
 
-const showPassword =()=>{
-  console.log(checkbox,"checkbox")
-  if(checkbox == 'off'){
-    setBoxValue(false)
-  }else{
-    setBoxValue(true)
+  function showPassword(data:any){
+    setBoxValue(data)
   }
-}
 
 
   const selectChange = (event: SelectChangeEvent) => {
@@ -85,7 +91,7 @@ const showPassword =()=>{
       company_id:company_id,
       first_name: firstName,
       last_name:lastName,
-      global_user:globalUser,
+      is_global:globalUser,
       phone:phone,
       email:email,
       address:address1,
@@ -106,6 +112,26 @@ const showPassword =()=>{
       }
     });                                     
   };
+  function checkBoxValue(data:any){
+    setGlobalUser(data.target.checked)
+}
+  const renderErrorMessage = () =>
+  errorMessages && (
+    <div className="error">{errorMessages}</div>
+  );
+
+  const ifEmpty= (val: string): boolean => {
+
+    return (val !== undefined && val.length > 0);// return true;
+}
+
+const getError = (msg: string): JSX.Element => {
+  return (
+    <span className="text-13 d-inline-block ml-1 text_13 text-danger">
+      {msg}
+    </span>
+  );
+};
 
   useEffect(() => {
     if(onload==false){
@@ -128,8 +154,15 @@ const showPassword =()=>{
               setPermission(res.payload.user?.permission);
               setPassword(res.payload.user?.password);
               setGlobalUser(res.payload.user?.globalUser);
+              console.log(res.payload.user,44444,res.payload.user.is_global)
+              if(res.payload.user.is_global == '1'){
+                (document.getElementById('checkBox')as any).checked = true;
+               }else{
+                (document.getElementById('checkBox')as any).checked = false;
+               }
           } 
       }); 
+
       store.dispatch(getCompanies()).then((res: any) => { 
         if (res && res.payload.companies) {
           setCompanies(res.payload.companies);
@@ -194,16 +227,24 @@ const showPassword =()=>{
                        </Select>
                     </FormControl>
                       </Grid>
-                      <Grid item xs={2} sm={6} mt={2}>
+                      <Grid item xs={6} sm={6} mt={2}>
                       <FormControlLabel
-                            control={<Checkbox  
+                            control={
+                            // onChange={(e) => {
+                            //   setGlobalUser(e.target.value);
+                            // }} 
+                            // name="global_user" value="yes" />}
+                            // label="Global User"
+                            // sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
+                            <input  type= 'checkbox' name="global_user" id = 'checkBox'  
                             onChange={(e) => {
-                              setGlobalUser(e.target.value);
-                            }} 
-                            name="global_user" value="yes" />}
-                            label="Global User"
+                              checkBoxValue(e);
+                            }}    />
+                          }
+                            label="Global User" 
                             sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
-                        />
+                        
+                          />
                       </Grid>
                       <Grid item xs={6} sm={6}>
                           <TextField
@@ -217,8 +258,13 @@ const showPassword =()=>{
                             fullWidth
                             onChange={(e) => {
                               setFirstName(e.target.value);
+                              setDirtyFields((dirty) => ({
+                                ...dirty,
+                                first_name: !ifEmpty(e.target.value),
+                              }));
                             }}
                           />
+                             {dirtyFields["first_name"] && getError("firstName is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                           <TextField
@@ -232,8 +278,13 @@ const showPassword =()=>{
                             fullWidth
                             onChange={(e) => {
                               setLastName(e.target.value);
+                                setDirtyFields((dirty) => ({
+                                ...dirty,
+                                last_name: !ifEmpty(e.target.value),
+                              }));
                             }}
                           />
+                             {dirtyFields["last_name"] && getError("lastName is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                         <TextField
@@ -246,8 +297,13 @@ const showPassword =()=>{
                             name="phone"
                             onChange={(e) => {
                              setPhone(e.target.value);
-                            }}
+                             setDirtyFields((dirty) => ({
+                              ...dirty,
+                              phone: !ifEmpty(e.target.value),
+                            }));
+                          }}
                         />
+                           {dirtyFields["phone"] && getError("Phone is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}> 
                       </Grid>
@@ -262,8 +318,13 @@ const showPassword =()=>{
                               name="address1"
                               onChange={(e) => {
                                 setAddress(e.target.value);
+                                setDirtyFields((dirty) => ({
+                                  ...dirty,
+                                  address: !ifEmpty(e.target.value),
+                                }));
                               }}
-                        />
+                            />
+                               {dirtyFields["address"] && getError("address is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                         <TextField
@@ -276,8 +337,13 @@ const showPassword =()=>{
                               name="address2"
                               onChange={(e) => {
                                 setStreet(e.target.value);
+                                setDirtyFields((dirty) => ({
+                                  ...dirty,
+                                  street: !ifEmpty(e.target.value),
+                                }));
                               }}
-                        />
+                            />
+                               {dirtyFields["street"] && getError("street is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                         <TextField
@@ -290,8 +356,13 @@ const showPassword =()=>{
                               name="city"
                               onChange={(e) => {
                                 setCity(e.target.value);
+                                setDirtyFields((dirty) => ({
+                                  ...dirty,
+                                  city: !ifEmpty(e.target.value),
+                                }));
                               }}
-                        />
+                            />
+                               {dirtyFields["city"] && getError("city is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                       <TextField
@@ -304,8 +375,13 @@ const showPassword =()=>{
                             name="postalcode"
                             onChange={(e) => {
                               setPostalCode(e.target.value);
+                              setDirtyFields((dirty) => ({
+                                ...dirty,
+                                postalCode: !ifEmpty(e.target.value),
+                              }));
                             }}
-                        />
+                          />
+                             {dirtyFields["postalCode"] && getError("postalCode is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                       <TextField
@@ -318,8 +394,13 @@ const showPassword =()=>{
                             name="country"
                             onChange={(e) => {
                               setCountry(e.target.value);
+                              setDirtyFields((dirty) => ({
+                                ...dirty,
+                                country: !ifEmpty(e.target.value),
+                              }));
                             }}
-                      /> 
+                          />
+                             {dirtyFields["country"] && getError("country is requried")}
                       </Grid>
                         <Grid item xs={6} sm={6}>
                       </Grid>
@@ -342,17 +423,22 @@ const showPassword =()=>{
                             name="email" 
                             onChange={(e) => {
                               setEmail(e.target.value);
-                            }} 
-                        />
+                              setDirtyFields((dirty) => ({
+                                ...dirty,
+                                email: !ifEmpty(e.target.value),
+                              }));
+                            }}
+                          />
+                             {dirtyFields["email"] && getError("email is requried")}
                           <FormControlLabel
                             control={<Checkbox  
                             onChange={(e) => {
-                              setCheckbox (e.target.value); showPassword();
+                              showPassword(e.target.checked);
                             }} 
                             id='checkbx'
                             name="Do you want to change password ?" />}
                             label="Do you want to change password ? "
-                            sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
+                            // sx={{ : { fontSize: 28 } }}
                         />
                       {boxValue &&  <TextField
                         margin="normal"
@@ -380,7 +466,7 @@ const showPassword =()=>{
                                     onChange={radioChange}
                                   >
                                     
-                                  <FormControlLabel value="admin" control={<Radio />} label="Admin" />
+                                  <FormControlLabel value="admin" control={<Radio />}  label="Admin" />
                                   <FormControlLabel value="author" control={<Radio />} label="Author" />
                                 </RadioGroup>
                             </FormControl>
