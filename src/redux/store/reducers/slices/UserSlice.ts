@@ -401,6 +401,34 @@ export const getCompanyFolder = createAsyncThunk('get_Company_Folders', async (c
     });
 })
 
+
+export const getDocuments = createAsyncThunk('get_Documents', async (data:any) => {
+    return await fetch(apiEndPoint+'/getDocuments', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
+        },
+        body: JSON.stringify(data)
+    }).then(res => {
+        return res.json()
+    });
+})
+export const uploadeImage = createAsyncThunk('uploade_Image', async (data:any) => {
+    return await fetch(apiEndPoint+'/uploadeImage', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
+        },
+        body: JSON.stringify(data)
+    }).then(res => {
+        return res.json()
+    });
+})
+
 const INIT_STATE: AppUser = {
     currUser: {
         companyName: '',

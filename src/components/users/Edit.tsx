@@ -53,7 +53,6 @@ function UserEdit() {
   const [errorMessages, setErrorMessages] = useState('');
   const [companies, setCompanies] = React.useState([]);
 
-  const [checkbox, setCheckbox] = useState('');
   const [boxValue,setBoxValue] = useState(false);
   
 
@@ -72,14 +71,9 @@ function UserEdit() {
   phone:false,
   });
 
-const showPassword =()=>{
-  console.log(checkbox,"checkbox")
-  if(checkbox == 'off'){
-    setBoxValue(false)
-  }else{
-    setBoxValue(true)
+  function showPassword(data:any){
+    setBoxValue(data)
   }
-}
 
 
   const selectChange = (event: SelectChangeEvent) => {
@@ -439,7 +433,7 @@ const getError = (msg: string): JSX.Element => {
                           <FormControlLabel
                             control={<Checkbox  
                             onChange={(e) => {
-                              setCheckbox (e.target.value); showPassword();
+                              showPassword(e.target.checked);
                             }} 
                             id='checkbx'
                             name="Do you want to change password ?" />}

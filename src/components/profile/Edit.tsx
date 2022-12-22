@@ -32,23 +32,14 @@ function EditProfile() {
   const mdTheme = createTheme();
   const theme = useTheme();
   const params = useParams();
-  const [id,setId] = useState('');
+  const [id,setId] = useState(localStorage.getItem('user_id'));
   const [company_id,setCompanyId] = useState('');
   const [email,setEmail] = useState('');
-  const [phone,setPhone] = useState('');
-  const [address1,setAddress] = useState('');
-  const [street,setStreet] = useState('');
-  const [city,setCity] = useState('');
-  const [country,setCountry] = useState('');
   const [password,setPassword] = useState('');
-  const [postalCode,setPostalCode] = useState('');
   const [firstName,setFirstName] = useState('');
   const [lastName,setLastName] = useState('');
-  const [permission, setPermission] = useState('');
-  const [globalUser, setGlobalUser] = useState('');
   const [onload,setOnload] = useState(false);
   const [errorMessages, setErrorMessages] = useState('');
-  const [companies, setCompanies] = React.useState([]);
   
   const [dirtyFields, setDirtyFields] = useState({
     company_id: false,
@@ -73,10 +64,6 @@ function EditProfile() {
     setCompanyId(event.target.value);
   };
 
-  const radioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPermission((event.target as HTMLInputElement).value);
-  };
-    
   const handleSubmit = (e:any) => {
     e.preventDefault();
     const formData = {
@@ -84,56 +71,36 @@ function EditProfile() {
       company_id:company_id,
       first_name: firstName,
       last_name:lastName,
-      global_user:globalUser,
-      phone:phone,
       email:email,
-      address:address1,
-      street:street,
-      city:city,
-      country:country,
-      zipcode:postalCode,
-      password:password,
-      permission: permission,
     }     
-    store.dispatch(updateUser(formData)).then((res: any) => {
-      console.log(res,468654465465)
-      if(res.payload.status == true){
-        setErrorMessages('');
-        navigate("/users");
-      }else{
-        setErrorMessages(res.payload?.message);
-      }
-    });                                     
+    // store.dispatch(updateUser(formData)).then((res: any) => {
+    //   console.log(res,468654465465)
+    //   if(res.payload.status == true){
+    //     setErrorMessages('');
+    //     navigate("/users");
+    //   }else{
+    //     setErrorMessages(res.payload?.message);
+    //   }
+    // });                                     
   };
 
   useEffect(() => {
     if(onload==false){
-      const userId = window.location.href.split('/')[5]
+      const userId = localStorage.getItem('user_id')
       const formData = {id:userId};  
+
       store.dispatch(getUser(formData)).then((res: any) => {
+
           setOnload(true);
           if(res && res.payload){
               setId(res.payload.user?.id);
               // setCompanyId(res.payload.user?.company_id);
               setEmail(res.payload.user?.email);
-              // setPhone(res.payload.user?.phone);
-              // setAddress(res.payload.user?.address?.address);
-              // setStreet(res.payload.user?.address?.street);
               setFirstName(res.payload.user?.first_name);
               setLastName(res.payload.user?.last_name);
-              // setCity(res.payload.user?.address?.city);
-              // setCountry(res.payload.user?.address?.country);
-              // setPostalCode(res.payload.user?.address?.zipcode);
-              // setPermission(res.payload.user?.permission);
               setPassword(res.payload.user?.password);
-              // setGlobalUser(res.payload.user?.globalUser);
           } 
       }); 
-      store.dispatch(getCompanies()).then((res: any) => { 
-        if (res && res.payload.companies) {
-          setCompanies(res.payload.companies);
-        } 
-     }); 
     }
    });
 
@@ -225,6 +192,7 @@ function EditProfile() {
                       /> 
                       </Grid>
                       <Grid item xs={6} sm={6}>
+                        <p>Upload Profile</p>
                     <input type="file" onChange={handleFileChange} />
                         </Grid>
                      </Grid>

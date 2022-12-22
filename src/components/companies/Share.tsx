@@ -39,6 +39,7 @@ function ShareAdd() {
       documents: documents
     }
     store.dispatch(shareDocuments(formData)).then((res: any) => {
+      console.log(res)
       if (res.payload.status == true) {
         setErrorMessages('');
         //const that = this.context.router.history.push("/dashboard");  
