@@ -88,9 +88,9 @@ function EditProfile() {
     if(onload==false){
       const userId = localStorage.getItem('user_id')
       const formData = {id:userId};  
-      console.log(formData,"oooo")
-      store.dispatch(getUser({id:'1'})).then((res: any) => {
-        console.log(res,"7777777")
+
+      store.dispatch(getUser(formData)).then((res: any) => {
+
           setOnload(true);
           if(res && res.payload){
               setId(res.payload.user?.id);

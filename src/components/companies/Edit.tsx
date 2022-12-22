@@ -34,7 +34,9 @@ function CompanyEdit() {
     const [country,setCountry] = useState('');
     const [postalCode,setPostalCode] = useState('');
     const [logo,setLogo] = useState('');
-    const [isHeadauator,setIsHeadauator] = useState('');
+    const [isHeadauator,setIsHeadauator] = useState(true);
+    const [checked,setchecked] = useState('');
+
     const [onload,setOnload] = useState(false);
     const [errorMessages, setErrorMessages] = useState('');
   
@@ -88,7 +90,11 @@ function CompanyEdit() {
                setCountry(res.payload.company?.address?.country);
                setPostalCode(res.payload.company?.address?.zipcode);
                setLogo(res.payload.company?.logo);
+
+               setchecked(res.payload.company?.is_headquater)
+               
                setIsHeadauator(res.payload.company?.is_headquater)
+
                if(res.payload.company.is_headquater == '1'){
                 (document.getElementById('checkBox')as any).checked = true;
                }else{
@@ -258,12 +264,9 @@ function CompanyEdit() {
                         <Grid item xs={2} sm={6} mt={2}>
                         <FormControlLabel
                             control={
-                            // <Checkbox  
-                            // onChange={(e) => {
-                            //   setIsHeadauator(e.target.value);
-                            // }} 
-                            // name="headquater" value={isHeadauator} />
-                            <input name="headquater" type="checkbox" id ='checkBox'
+
+                            <input type= 'checkbox' name="headquater" id = 'checkBox' 
+
                             onChange={(e) => {
                               checkBoxValue(e);
                             }}  />

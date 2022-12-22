@@ -97,8 +97,11 @@ const columns: GridColDef[] = [
         <>
           <Button  sx={{ minWidth: 40 }}  component={Link}  to={'/users/edit/'+params.row.id}  > <EditIcon  /> </Button>
           <Button  sx={{ minWidth: 40 }}   component={Link} to={'/users/view/'+params.row.id}  > <VisibilityIcon  /> </Button>
+                <Button onClick={()=>{deleteId(params.row.id)}}  sx={{ minWidth: 40 }}   > <DeleteIcon  /> </Button>
+
+
          <Button onClick={()=>{deleteId(params.row.id)}}  sx={{ minWidth: 40 }}   > <DeleteIcon  /> </Button>
-          
+
         </>
       );
    }
