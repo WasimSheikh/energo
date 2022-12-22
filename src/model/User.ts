@@ -19,7 +19,7 @@ export interface Permission {
 }
 
 export interface User {
-    id?: string;
+    id?: any;
     companyName?: string;
     companyId?: string;
     firstName?: string;
@@ -57,6 +57,13 @@ export interface ShareDocument {
     email?:string;
     reason?: string;
     documentId?:string[];
+}
+export interface ShareEmail {
+    name?: string;
+    email?:string;
+    reason?: string;
+    description?:string;
+    documents?: any;
 }
 
 

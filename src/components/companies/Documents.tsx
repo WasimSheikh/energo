@@ -31,7 +31,8 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { store } from '../../redux/store';
 import {useNavigate} from "react-router-dom"
-
+import { json } from 'stream/consumers';
+import '../common/common.css'
 const mdTheme = createTheme();
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
@@ -49,12 +50,12 @@ function DocumentList() {
     const [openFolder, setFolder] = React.useState(false);
     const [folder, setCompanyFolder] = useState([]);
     const [title,setTitle] = useState('');
-    const [file, setFile] = useState();
+    const [documents, setFile] = React.useState('');
     const [ showFolder, setShowFolder]= useState([])
     const [ addFolders, setAddFolders]= useState([])
-    const [ folder_id, setfolder_id]= useState('')
-    const [ company_id, setCompany_id]= useState(file)
+    const [ folderId, setFolderId]= useState('')
     var formData = new FormData();
+    var documentss=documents;
 
     
     const handleAdd = (e:any) => {
@@ -81,21 +82,17 @@ function DocumentList() {
       });           
     };
     const UploadDocument = (e:any) => {
+      
       e.preventDefault();
+     var folderIds = JSON.stringify(folderId)
       var company_id = params.companyId
-      // const formData = new FormData();
-      // formData.append("company_id",company_id);
-      // formData.append("folder_id",folder_id);
-      // formData.append("documents",file);
-      // console.log(file,"ppppppppppppp")
-      // console.log(formData)
-      const formData ={
-        company_id:params.companyId,
-        folder_id:folder_id,
-        documents:file
-      }
+      const formData = new FormData();
+      formData.append("company_id",`${company_id}`);
+      formData.append("folder_id", folderIds);
+      formData.append("documents",documentss);
+      console.log(formData,"formData",company_id,"company_id",folderIds,"folderId",documentss)
       store.dispatch(uploadeImage(formData)).then((res: any) => {
-        console.log(res,"jjjjjjjjjj")
+        console.log(res,"jjjjjjjjjj",company_id,"folderId",folderId,"folderId",documentss)
         setCompanyFolder(res.response)
         // window.location.reload();
         if (res.payload.status == true) {
@@ -111,25 +108,32 @@ function DocumentList() {
     var newArray:any =[]
     var finalArray:any=[]
       var player_id:any = []
-    function addFolder(event:any,i:any) {
+
+    function addFolder(event:any,i:any,e:any) {
       newArray.push(event.id)
-      // alert(event.id)
-      var data = (document.getElementById(i+'card')as any).style.backgroundColor = "blue";
-      player_id.push(event.id)
-        if (player_id.includes(event.id)) {
-          console.log("unfollw");
-        } else {
-          player_id.push(event.id)
-        }
-          console.log("follow",event.id);
-          console.log(player_id,"45456564",data);
+      var cardID = (document.getElementById(i+'card')as any);
+      var ID = event.id
+      if(e.checked == true){
+        var data = (document.getElementById(i+'card')as any);
+        data.classList.add("Active");
+      //  (document.getElementById(i+'card')as any).style.backgroundColor = "blue";
+        player_id.push(event.id)
+        console.log("true",event.id);
+      }else{
+        // cardID.style.backgroundColor = "white";
+        cardID.classList.remove("Active");
+        console.log(player_id,"45456564",ID);
+        finalArray = player_id.filter((id:any) => id != ID);
+        console.log(finalArray,"45456564",ID);
+        setAddFolders(finalArray);
+
+      }
       }
     
  
 
     const handleFileChange = (e:any) => {
       if (e.target.files) {
-        console.log(e.target.files[0],"file")
         setFile(e.target.files[0]);
       }
     };
@@ -140,7 +144,7 @@ function DocumentList() {
       setOpen(false);
     };
     function handleClickOpenFolder(id:any){
-      setfolder_id(id)
+      setFolderId(id)
       setFolder(true);
     };
     const handleCloseFolder = () => {
@@ -153,16 +157,10 @@ function DocumentList() {
         company_id:params.companyId,
       }
       store.dispatch(getCompanyFolder(formData)).then((res: any) => {
-        console.log(res,"5555")
         setShowFolder(res.payload.folders);
-        // if(res.status == true){
-        //   // toast.success(res.payload.message);
-        // }else{
-        //   toast.error(res.payload.message);
-        //   // navigate[('/companies')]
-        // }
       }); 
     }
+
       useEffect(() => {
         console.log('555585858')
         getCpmpanyFolder();
@@ -171,10 +169,13 @@ function DocumentList() {
     function sendFolder(){
       const formData = {
         company_id:params.companyId,
-        id:player_id,
+        id:finalArray,
       }
       console.log(formData)
       navigate("/companies/document/share")
+    }
+    function viewDocument(id:any){
+      navigate(`/companies/document/view/${id}`)
     }
 
   return (
@@ -215,10 +216,10 @@ function DocumentList() {
                           <Card  className='' sx={{ height: "100%" ,boxShadow:'none' ,border:"1px solid black"}}  id={i + 'card'}>
                             <CardContent sx={{paddingTop:"6px", pb:'6px !important' }} >
                                 <Toolbar sx={{ pr:'0px !important' }}>
-                                <Checkbox className='documentselect' onClick={()=>{addFolder(card,i)}} />
+                                <Checkbox className='documentselect' onClick={(e)=>{addFolder(card,i,e.target);}} />
                                 <PermMediaIcon   sx={{ width: '20%' , height: '20%'}} />
                                 <Typography variant="h6" color="inherit"  sx={{pl:1 ,lineHeight:'19px'}} >
-                                <Typography component={Link} to="/companies/document/view/1">{card.title}</Typography>
+                                <Typography  onClick={()=>{viewDocument(card.id)}}><a href="javascript:void(0)">{card.title}</a></Typography>
                                   <Typography  sx={{color:"#808080d1", fontSize:'13px'}} >
                                   Uploaded 2022-02-02
                                 </Typography>
@@ -233,7 +234,7 @@ function DocumentList() {
                   </Container>
                   <Divider />
                   <Toolbar  sx={{ ml: 0 ,pl:"0 !important"}}>
-                    <Button variant="contained"  onClick={()=>{sendFolder()}}  >Share </Button>
+                    <Button variant="contained"  onClick={()=>{sendFolder()}} disabled={!addFolders}  >Share </Button>
                     <Button variant="contained" component={Link} to="/companies/document/share" sx={{ ml: 1 }} >Request </Button>
                     <Button variant="contained" component={Link} to="/companies" sx={{ ml: 1 }} >Cancel </Button>
                   </Toolbar>   
@@ -281,14 +282,17 @@ function DocumentList() {
         <CloseIcon />
         </IconButton>
         </DialogTitle>
+        <form  onSubmit={UploadDocument} >
         <DialogContent dividers>
-           <input type="file" onChange={handleFileChange} multiple/>
+           <input type="file" name={documents} onChange={handleFileChange} multiple/>
         </DialogContent>
         <DialogActions>
-          <Button  variant="contained"  onClick={UploadDocument}>
+          {/* // <Button  variant="contained"  onClick={UploadDocument}> */}
+          <Button  variant="contained"  type='submit' >
             Upload
           </Button> 
         </DialogActions>
+        </form>
       </BootstrapDialog>
       <ToastContainer/>
     </ThemeProvider>
