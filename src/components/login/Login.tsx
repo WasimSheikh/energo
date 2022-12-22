@@ -16,6 +16,8 @@ import { login } from '../../redux/store/reducers/slices/UserSlice';
 import { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import Footer from '../common/Footer';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
  
 const theme = createTheme();
 
@@ -39,17 +41,19 @@ export default function Login() {
     }  
     store.dispatch(login(formData)).then((res: any) => {
       if (res.payload.status == true) {
-        
         let access_token = res.payload.access_token;
         if(access_token !="" && access_token !=""){
          localStorage.setItem("access_token", access_token); 
+         localStorage.setItem("user_id", res.payload.user.id); 
          navigate("/dashboard");
+         toast.success(res.payload.message);
         }
 
         setErrorMessages('');
         //const that = this.context.router.history.push("/dashboard");  
       } else {
         setErrorMessages(res.payload?.message);
+        toast.error(res.payload.message);
       }
     });    
   };
@@ -148,6 +152,7 @@ export default function Login() {
           </Box>
         </Grid>
       </Grid>
+      <ToastContainer/>
     </ThemeProvider>
   );
 }

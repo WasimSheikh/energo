@@ -26,8 +26,11 @@ import CloseIcon from '@mui/icons-material/Close'
 import TextField from '@mui/material/TextField';
 import React, { useEffect, useState } from 'react';
 import { useParams } from "react-router-dom";
-import { createCompanyFolder, getCompanyFolder } from '../../redux/store/reducers/slices/UserSlice';
+import { createCompanyFolder, getCompanyFolder, uploadeImage } from '../../redux/store/reducers/slices/UserSlice';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { store } from '../../redux/store';
+import {useNavigate} from "react-router-dom"
 
 const mdTheme = createTheme();
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
@@ -40,15 +43,18 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 }));
 
 function DocumentList() {
+  const navigate = useNavigate();
   const params = useParams();
     const [open, setOpen] = React.useState(false);
     const [openFolder, setFolder] = React.useState(false);
     const [folder, setCompanyFolder] = useState([]);
     const [title,setTitle] = useState('');
-    const [file, setFile] = useState<File>();
+    const [file, setFile] = useState();
     const [ showFolder, setShowFolder]= useState([])
     const [ addFolders, setAddFolders]= useState([])
-
+    const [ folder_id, setfolder_id]= useState('')
+    const [ company_id, setCompany_id]= useState(file)
+    var formData = new FormData();
 
     
     const handleAdd = (e:any) => {
@@ -60,50 +66,66 @@ function DocumentList() {
       }
       console.log(formData,"formData")
       store.dispatch(createCompanyFolder(formData)).then((res: any) => {
-        console.log(res,"jjjjjjjjjj")
+        console.log(res,"jjjj")
+        // toast.success(res.payload.message);
         setCompanyFolder(res.response)
-        // window.location.reload();
-        // if (res.payload.status == true) {
-        //   // setErrorMessages('');
-        //   // navigate("/roles");
-        // } else {
-        //   // setErrorMessages(res.payload?.message);
-        // }
+        if (res.payload.status == true) {
+          toast.success(res.payload.message);
+          setTimeout(() => {
+            console.log((`/companies/document/${params.companyId}`),"000000000000000000")
+            navigate(`/companies`)
+          }, 2000);
+        } else {
+          toast.error(res.payload.message)
+        }
       });           
     };
     const UploadDocument = (e:any) => {
-      console.log(params.companyId,"params")
-      alert(e.target.value)
       e.preventDefault();
-      const formData = {
+      var company_id = params.companyId
+      // const formData = new FormData();
+      // formData.append("company_id",company_id);
+      // formData.append("folder_id",folder_id);
+      // formData.append("documents",file);
+      // console.log(file,"ppppppppppppp")
+      // console.log(formData)
+      const formData ={
         company_id:params.companyId,
-        user_id:e.target.value,
-        profile_picture:file,
+        folder_id:folder_id,
+        documents:file
       }
-      console.log(formData,"formData")
-      // store.dispatch(createCompanyFolder(formData)).then((res: any) => {
-      //   console.log(res,"jjjjjjjjjj")
-      //   setCompanyFolder(res.response)
-      //   // window.location.reload();
-      //   // if (res.payload.status == true) {
-      //   //   // setErrorMessages('');
-      //   //   // navigate("/roles");
-      //   // } else {
-      //   //   // setErrorMessages(res.payload?.message);
-      //   // }
-      // });           
+      store.dispatch(uploadeImage(formData)).then((res: any) => {
+        console.log(res,"jjjjjjjjjj")
+        setCompanyFolder(res.response)
+        // window.location.reload();
+        if (res.payload.status == true) {
+          toast.success(res.message)
+          // navigate("/roles");
+        } else {
+          // setErrorMessages(res.payload?.message);
+          toast.error(res.message)
+        }
+      });           
     };
     
-    // const addFolder = (e:any)=>{
-    //   console.log(!e.target.value)
-    // }
-    function addFolder(event:any) {
-      console.log(event,"event");
-      setAddFolders(event)
-      // addFolders.forEach((id)=>{
-        console.log(addFolders,"77777")
-      // })
-  }
+    var newArray:any =[]
+    var finalArray:any=[]
+      var player_id:any = []
+    function addFolder(event:any,i:any) {
+      newArray.push(event.id)
+      // alert(event.id)
+      var data = (document.getElementById(i+'card')as any).style.backgroundColor = "blue";
+      player_id.push(event.id)
+        if (player_id.includes(event.id)) {
+          console.log("unfollw");
+        } else {
+          player_id.push(event.id)
+        }
+          console.log("follow",event.id);
+          console.log(player_id,"45456564",data);
+      }
+    
+ 
 
     const handleFileChange = (e:any) => {
       if (e.target.files) {
@@ -117,7 +139,8 @@ function DocumentList() {
     const handleClose = () => {
       setOpen(false);
     };
-    const handleClickOpenFolder = () => {
+    function handleClickOpenFolder(id:any){
+      setfolder_id(id)
       setFolder(true);
     };
     const handleCloseFolder = () => {
@@ -130,16 +153,29 @@ function DocumentList() {
         company_id:params.companyId,
       }
       store.dispatch(getCompanyFolder(formData)).then((res: any) => {
-        console.log(res.payload.folders,"5555")
+        console.log(res,"5555")
         setShowFolder(res.payload.folders);
-        // if (res && res.payload?.permissionparent) {
-        //   setCompanyFolder(res.payload);
-        // } 
+        // if(res.status == true){
+        //   // toast.success(res.payload.message);
+        // }else{
+        //   toast.error(res.payload.message);
+        //   // navigate[('/companies')]
+        // }
       }); 
     }
       useEffect(() => {
+        console.log('555585858')
         getCpmpanyFolder();
     }, []);
+
+    function sendFolder(){
+      const formData = {
+        company_id:params.companyId,
+        id:player_id,
+      }
+      console.log(formData)
+      navigate("/companies/document/share")
+    }
 
   return (
     <ThemeProvider theme={mdTheme}>
@@ -174,12 +210,12 @@ function DocumentList() {
                   <Container sx={{ py: 3  ,paddingTop:"18px"}}  >
                     {/* End hero unit */}
                     <Grid container spacing={2}  sx={{paddingTop:"0px" }} >
-                      {showFolder.map((card:any) => (
-                        <Grid item key={card}  xs={12} sm={6} md={4}  sx={{paddingTop:"0px" }} >
-                          <Card  className='' sx={{ height: "100%" ,boxShadow:'none' ,border:"1px solid black"}} >
+                      {showFolder.map((card:any, i:any) => (
+                        <Grid item key={card.id}  xs={12} sm={6} md={4}  sx={{paddingTop:"0px" }} >
+                          <Card  className='' sx={{ height: "100%" ,boxShadow:'none' ,border:"1px solid black"}}  id={i + 'card'}>
                             <CardContent sx={{paddingTop:"6px", pb:'6px !important' }} >
                                 <Toolbar sx={{ pr:'0px !important' }}>
-                                <Checkbox className='documentselect' onClick={()=>{addFolder(card)}}/>
+                                <Checkbox className='documentselect' onClick={()=>{addFolder(card,i)}} />
                                 <PermMediaIcon   sx={{ width: '20%' , height: '20%'}} />
                                 <Typography variant="h6" color="inherit"  sx={{pl:1 ,lineHeight:'19px'}} >
                                 <Typography component={Link} to="/companies/document/view/1">{card.title}</Typography>
@@ -187,7 +223,7 @@ function DocumentList() {
                                   Uploaded 2022-02-02
                                 </Typography>
                                 </Typography>
-                                <ControlPointIcon sx={{ width: '15%' , height: '20%' ,color:'#000' ,ml:'20px'}} onClick={handleClickOpenFolder} />
+                                <ControlPointIcon sx={{ width: '15%' , height: '20%' ,color:'#000' ,ml:'20px'}} onClick={()=>{handleClickOpenFolder(card.id)}} />
                                 </Toolbar>
                             </CardContent>
                           </Card>
@@ -197,7 +233,7 @@ function DocumentList() {
                   </Container>
                   <Divider />
                   <Toolbar  sx={{ ml: 0 ,pl:"0 !important"}}>
-                    <Button variant="contained" component={Link} to="/companies/document/share"   >Share </Button>
+                    <Button variant="contained"  onClick={()=>{sendFolder()}}  >Share </Button>
                     <Button variant="contained" component={Link} to="/companies/document/share" sx={{ ml: 1 }} >Request </Button>
                     <Button variant="contained" component={Link} to="/companies" sx={{ ml: 1 }} >Cancel </Button>
                   </Toolbar>   
@@ -246,7 +282,7 @@ function DocumentList() {
         </IconButton>
         </DialogTitle>
         <DialogContent dividers>
-           <input type="file" onChange={handleFileChange} />
+           <input type="file" onChange={handleFileChange} multiple/>
         </DialogContent>
         <DialogActions>
           <Button  variant="contained"  onClick={UploadDocument}>
@@ -254,6 +290,7 @@ function DocumentList() {
           </Button> 
         </DialogActions>
       </BootstrapDialog>
+      <ToastContainer/>
     </ThemeProvider>
   );
 }
