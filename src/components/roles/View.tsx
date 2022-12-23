@@ -47,6 +47,19 @@ function CompanyView() {
       }
   });
 
+  function viewcheck (e:any){
+    console.log(e.checked)
+    if (e.checked == true){
+      (document.getElementById("0child")as any).checked = true;
+      (document.getElementById("1child")as any).checked = true;
+    }else{
+      (document.getElementById("0child")as any).checked = false;
+      (document.getElementById("1child")as any).checked = false;
+    }
+   
+
+  }
+
   // const handleChange = (value:any) => { 
   //   let array = permissionsId;
   // //  array.push(value);
@@ -112,17 +125,21 @@ function CompanyView() {
                             <Grid>
                               <FormControlLabel
                                   control={<Checkbox  
-                                  name={permission.name} value={permission.id} />}
+                                  name={permission.name} value={permission.id} 
+                                  onChange={(e)=>{viewcheck(e.target)}}/>}
                                   label={permission.name}
                                   sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
                               />
                             </Grid>
-                            {permission.chlid.map((value:any) => (
+                            {permission.chlid.map((value:any,i:any) => (
                               <Grid  sx={{ ml: 5 }}>
                               {/* <input type="checkbox"  ></input> */}
                               <FormControlLabel
-                                  control={<Checkbox  
-                                  name={value.name} value={value.id} />}
+                                  control={
+                                    <input type="checkbox"  id={i + 'child'}/>
+                                  // <Checkbox  
+                                  // name={value.name} value={value.id} />
+                                }
                                   label={value.name}
                                   onChange={(e) => {
                                     //handleChange(value.id);
