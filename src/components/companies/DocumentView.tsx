@@ -26,7 +26,11 @@ import { useEffect, useState } from "react";
 
 const mdTheme = createTheme();
 
-function ShareAdd() {
+type addData ={
+  data:string;
+}
+
+export default function ShareAdd(props:addData) {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -63,12 +67,13 @@ function ShareAdd() {
   };
 
   useEffect(() => {
-    
+    console.log(props.data,"props")
     store.dispatch(getDocuments(data)).then((res: any) => {
       console.log(res.payload.folders.media, "jjjjjjjjjjmedia");
       setDocuments(res.payload.folders.media)
       setFolderName(res.payload.folders.title)
     });
+
   },[]);
   return (
     <ThemeProvider theme={mdTheme}>
@@ -155,6 +160,6 @@ function ShareAdd() {
     </ThemeProvider>
   );
 }
-export default function Add() {
-  return <ShareAdd />;
-}
+// export default function Add() {
+//   return <ShareAdd />;
+// }

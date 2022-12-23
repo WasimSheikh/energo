@@ -27,6 +27,7 @@ import ViewPermission from './components/permissions/View';
 import ProfileEdit from "./components/profile/Edit";
 import Navgiate from "./components/common/Header";
 import React, { useEffect } from 'react';
+import ShareAdd from './components/companies/DocumentView';
 
 function App() {
   const navigate = useNavigate();
@@ -61,7 +62,7 @@ function App() {
           <Route path="companies/edit/:companyId" element={<EditCompany />} />
           <Route path="companies/document/:companyId" element={<DocumentCompany />} />
           <Route path="companies/document/share" element={<Share />} />
-          <Route path="companies/document/view/:documentId" element={<DocumentView />} />
+          <Route path="companies/document/view/:documentId" element={<ShareAdd data="ajay jatwa"/>} />
           <Route path="users" element={<Users />} />
           <Route path="users/add" element={<AddUser />} />
           <Route path="users/view/:userId" element={<ViewUser />} />

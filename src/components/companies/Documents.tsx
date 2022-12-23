@@ -24,7 +24,7 @@ import DialogActions from '@mui/material/DialogActions';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close'
 import TextField from '@mui/material/TextField';
-import React, { useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState, useRef } from 'react';
 import { useParams } from "react-router-dom";
 import { createCompanyFolder, getCompanyFolder, uploadeImage } from '../../redux/store/reducers/slices/UserSlice';
 import { ToastContainer, toast } from 'react-toastify';
@@ -33,6 +33,9 @@ import { store } from '../../redux/store';
 import {useNavigate} from "react-router-dom"
 import { json } from 'stream/consumers';
 import '../common/common.css'
+import DocumentView from './DocumentView'
+
+
 const mdTheme = createTheme();
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
@@ -43,21 +46,23 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     },
 }));
 
+
+
 function DocumentList() {
   const navigate = useNavigate();
+  const fileInput = useRef<any | null>(null);
   const params = useParams();
     const [open, setOpen] = React.useState(false);
     const [openFolder, setFolder] = React.useState(false);
     const [folder, setCompanyFolder] = useState([]);
     const [title,setTitle] = useState('');
-    const [documents, setFile] = React.useState('');
+    const [documents, setFile] = React.useState<any | null>(null);
     const [ showFolder, setShowFolder]= useState([])
     const [ addFolders, setAddFolders]= useState([])
     const [ folderId, setFolderId]= useState('')
-    var formData = new FormData();
-    var documentss=documents;
 
-    
+
+    var documentss:any = documents;
     const handleAdd = (e:any) => {
       console.log(params.companyId,"params")
       e.preventDefault();
@@ -81,30 +86,88 @@ function DocumentList() {
         }
       });           
     };
-    const UploadDocument = (e:any) => {
-      
+
+    // const getBase64 = (file) => {
+    //   return new Promise((resolve, reject) => {
+    //     const reader = new FileReader();
+    //     reader.readAsDataURL(file);
+    //     reader.onload = () => resolve(reader.result);
+    //     reader.onerror = (error) => reject(error);
+    //   });
+    // };
+    const getBase64 = (file:any) => {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        console.log(reader.result,"oooooo")
+        reader.onerror = (error) => reject(error);
+      });
+    };
+    
+    
+    function UploadDocument(e:any){
       e.preventDefault();
+      var imageUrl:any;
      var folderIds = JSON.stringify(folderId)
-      var company_id = params.companyId
-      const formData = new FormData();
-      formData.append("company_id",`${company_id}`);
-      formData.append("folder_id", folderIds);
-      formData.append("documents",documentss);
-      console.log(formData,"formData",company_id,"company_id",folderIds,"folderId",documentss)
-      store.dispatch(uploadeImage(formData)).then((res: any) => {
-        console.log(res,"jjjjjjjjjj",company_id,"folderId",folderId,"folderId",documentss)
+     var company_id = params.companyId
+     var company_ids = JSON.stringify(company_id)
+    //  var documentone = JSON.stringify(imageUrl)
+      console.log(fileInput.current);
+      if (!fileInput) return;
+      alert(`Selected file - ${fileInput.current.files[0].name}`);
+      var documents1 = fileInput.current.files[0]
+      var reader = new FileReader();
+   reader.readAsDataURL(documents1);
+   console.log(reader.result,"reader")
+   reader.onload = function () {
+     console.log(reader.result);
+        imageUrl = reader.result
+   };
+      // const formData = new FormData();
+      // formData.append("company_id",company_ids);
+      // formData.append("folder_id",folderIds);
+      // formData.append("documents",imageUrl);
+
+      console.log()
+      var formdata = new FormData();
+      formdata.append("folder_id", "16");
+      formdata.append("company_id", "6");
+      formdata.append("documents", fileInput.current.files[0])
+
+      // const formData:any = {
+      //   'company_id':company_id,
+      //   'folder_id':folderIds,
+      //   'documents':imageUrl,
+      // }
+      store.dispatch(uploadeImage(formdata)).then((res: any) => {
         setCompanyFolder(res.response)
-        // window.location.reload();
         if (res.payload.status == true) {
           toast.success(res.message)
-          // navigate("/roles");
         } else {
-          // setErrorMessages(res.payload?.message);
           toast.error(res.message)
         }
       });           
     };
     
+////////////////////////////////////
+// var token = localStorage.getItem("token");
+// const formData = new FormData();
+// // @ts-ignore
+// formData.append("user_profile",user_profile);
+// formData.append("user_name",user_name ? user_name : name);
+// // console.log(formData,"requestOptionsrequestOptions")
+// var result = await fetch(`${BASE_URL}/update-profile`,{
+// method: 'PUT',
+// headers: {
+//   "Authorization": `Bearer ${token}`
+// },
+// body:formData
+// });
+// var results = await result.json();
+////////////////////////////////////
+
+
     var newArray:any =[]
     var finalArray:any=[]
       var player_id:any = []
@@ -116,27 +179,15 @@ function DocumentList() {
       if(e.checked == true){
         var data = (document.getElementById(i+'card')as any);
         data.classList.add("Active");
-      //  (document.getElementById(i+'card')as any).style.backgroundColor = "blue";
         player_id.push(event.id)
-        console.log("true",event.id);
       }else{
-        // cardID.style.backgroundColor = "white";
         cardID.classList.remove("Active");
-        console.log(player_id,"45456564",ID);
         finalArray = player_id.filter((id:any) => id != ID);
-        console.log(finalArray,"45456564",ID);
         setAddFolders(finalArray);
 
       }
       }
-    
- 
 
-    const handleFileChange = (e:any) => {
-      if (e.target.files) {
-        setFile(e.target.files[0]);
-      }
-    };
     const handleClickOpen = () => {
       setOpen(true);
     };
@@ -282,17 +333,30 @@ function DocumentList() {
         <CloseIcon />
         </IconButton>
         </DialogTitle>
-        <form  onSubmit={UploadDocument} >
+        {/* <form  onSubmit={UploadDocument} >
         <DialogContent dividers>
-           <input type="file" name={documents} onChange={handleFileChange} multiple/>
+           <input type="file" ref={fileInput}/>
         </DialogContent>
         <DialogActions>
-          {/* // <Button  variant="contained"  onClick={UploadDocument}> */}
           <Button  variant="contained"  type='submit' >
             Upload
           </Button> 
         </DialogActions>
-        </form>
+        </form> */}
+      <div className="card px-4">
+      <form onSubmit={UploadDocument} className="form-group mt-2">
+      <label>
+        Upload file:
+        </label>
+        <input type="file" ref={fileInput}  className="form-control" multiple/>
+     
+      <br />
+      <div className="text-center">
+      <button type="submit" className='btn btn-primary'>Submit</button>
+      </div>
+     
+    </form>
+      </div>
       </BootstrapDialog>
       <ToastContainer/>
     </ThemeProvider>
