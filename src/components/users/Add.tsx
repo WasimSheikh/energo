@@ -62,12 +62,25 @@ function UserAdd() {
     postalCode:false,
     phone:false,
   });
+  const getBase64 = (file:any) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      console.log(reader.result,"11111111");
+      reader.onerror = (error) => reject(error);
+    });
+  };
+
   const handleFileChange = (e:any) => {
     if (e.target.files) {
-      console.log(e.target.files[0],"file")
       setFile(e.target.files[0]);
+      var image = e.target.files[0]
+      getBase64(image)
     }
   };
+
+console.log(getBase64);
   const isValidData = ():boolean => {
     const validateFields = ifEmpty( firstName && lastName && phone && address && street && city && country && permission && postalCode );
     return validateFields;

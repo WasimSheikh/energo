@@ -37,14 +37,10 @@ function App() {
     let access_token = localStorage.getItem("access_token");
     return (access_token != '' && access_token != null ) ? true : false;
   }
-
   useEffect(() => {
      if(onload==false){
         setIsLogin(IsLoggedIn());
         setOnload(true);
-        //if(login==false){
-        //  navigate("/");
-        //}
      } 
   }); 
 
