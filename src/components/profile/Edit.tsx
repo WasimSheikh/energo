@@ -114,26 +114,18 @@ function EditProfile() {
           setOnload(true);
           if(res && res.payload){
               setId(res.payload.user?.id);
-              // setCompanyId(res.payload.user?.company_id);
               setEmail(res.payload.user?.email);
-              // setPhone(res.payload.user?.phone);
-              // setAddress(res.payload.user?.address?.address);
-              // setStreet(res.payload.user?.address?.street);
               setFirstName(res.payload.user?.first_name);
               setLastName(res.payload.user?.last_name);
-              // setCity(res.payload.user?.address?.city);
-              // setCountry(res.payload.user?.address?.country);
-              // setPostalCode(res.payload.user?.address?.zipcode);
-              // setPermission(res.payload.user?.permission);
               setPassword(res.payload.user?.password);
-              // setGlobalUser(res.payload.user?.globalUser);
           } 
+          console.log(res.payload,":::::::::::::::::::")
       }); 
-      store.dispatch(getCompanies()).then((res: any) => { 
-        if (res && res.payload.companies) {
-          setCompanies(res.payload.companies);
-        } 
-     }); 
+    //   store.dispatch(getCompanies()).then((res: any) => { 
+    //     if (res && res.payload.companies) {
+    //       setCompanies(res.payload.companies);
+    //     } 
+    //  }); 
     }
    });
 

@@ -50,9 +50,13 @@ function CompanyAdd() {
     // isHeadauator:false,
     zipcode:false,
   });
-
+  const isValidData = ():boolean => {
+    const validateFields = ifEmpty( companyName && website && phone && address && street && city && country && email && postalCode && isHeadauator );
+    return validateFields;
+  };
   const handleSubmit = (e: any) => {
     e.preventDefault();
+    if(isValidData()){
     const formData = {
       title: companyName,
       website: website,
@@ -66,6 +70,7 @@ function CompanyAdd() {
       isHeadquater: isHeadauator,
       zipcode: postalCode,
     }
+  
     store.dispatch(createCompany(formData)).then((res: any) => {
       console.log("my all data responce ", res);  
       if (res.payload.status == true) {
@@ -76,6 +81,7 @@ function CompanyAdd() {
       }
     });
   };
+}
   const renderErrorMessage = () =>
     errorMessages && (
       <div className="error">{errorMessages}</div>
@@ -143,7 +149,7 @@ return (
                             }));
                           }}
                         />
-                          {dirtyFields["companyName"] && getError("companyName is requried")}
+                          {dirtyFields["companyName"] && getError("CompanyName is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                         <TextField
@@ -161,7 +167,7 @@ return (
                             }));
                           }}
                         />
-                          {dirtyFields["website"] && getError("website is requried")}
+                          {dirtyFields["website"] && getError("Website is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                         <TextField
@@ -197,7 +203,7 @@ return (
                             }));
                           }}
                         />
-                         {dirtyFields["phone"] && getError("phone is requried")}
+                         {dirtyFields["phone"] && getError("Phone is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                         <TextField
@@ -215,7 +221,7 @@ return (
                             }));
                           }}
                         />
-                         {dirtyFields["address"] && getError("address is requried")}
+                         {dirtyFields["address"] && getError("Address is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                         <TextField
@@ -251,7 +257,7 @@ return (
                             }));
                           }}
                         />
-                         {dirtyFields["city"] && getError("city is requried")}
+                         {dirtyFields["city"] && getError("City is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                         <TextField
@@ -269,7 +275,7 @@ return (
                             }));
                           }}
                         />
-                         {dirtyFields["zipcode"] && getError("zipcode is requried")}
+                         {dirtyFields["zipcode"] && getError("Zipcode is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                         <TextField
@@ -287,7 +293,7 @@ return (
                             }));
                           }}
                         />
-                         {dirtyFields["country"] && getError("country is requried")}
+                         {dirtyFields["country"] && getError("Country is requried")}
                       </Grid>
                       <Grid item xs={2} sm={6} mt={2}>
                         <FormControlLabel
@@ -313,7 +319,8 @@ return (
 
                     <Divider />
                     <Toolbar sx={{ ml: 0, pl: "0 !important" }}>
-                      <Button
+                    <Button 
+                       disabled={!isValidData()}
                         type="submit"
                         variant="contained"
                       >

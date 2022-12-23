@@ -33,14 +33,41 @@ function PermissionAdd() {
   const [errorMessages, setErrorMessages] = useState('');
   const [permissions, setPermissions] = useState([]);
   const [onload,setOnload] = useState(false);
-  
-
+  const [dirtyFields, setDirtyFields] = useState({
+    name: false,
+    parent:false,
+    url:false,
+  });
   const selectChange = (event: SelectChangeEvent) => {
     setParent(event.target.value);
   };
- 
+
+  const renderErrorMessage = () =>
+  errorMessages && (
+    <div className="error">{errorMessages}</div>
+  );
+
+  const ifEmpty= (val: string): boolean => {
+
+    return (val !== undefined && val.length > 0);// return true;
+}
+
+const getError = (msg: string): JSX.Element => {
+  return (
+    <span className="text-13 d-inline-block ml-1 text_13 text-danger">
+      {msg}
+    </span>
+  );
+};
+const isValidData = ():boolean => {
+  console.log(name,url,parent,"kkkkkkkkk");
+  const validateFields = ifEmpty( name && url);
+  
+  return validateFields;
+};
   const handleSubmit = (e:any) => {
     e.preventDefault();
+    if(isValidData()){
     const formData = {
       name:name,
       url:url,
@@ -56,7 +83,7 @@ function PermissionAdd() {
       }
     });           
   };
-
+  }
   useEffect(() => {
     if(onload==false){
       setOnload(true);
@@ -127,8 +154,13 @@ function PermissionAdd() {
                             value={name}
                             onChange={(e) => {
                               setName(e.target.value);
+                              setDirtyFields((dirty) => ({
+                                ...dirty,
+                                parent: !ifEmpty(e.target.value),
+                              }));
                             }}
                           />
+                            {dirtyFields["parent"] && getError("Title is requried")}
                       </Grid>
                       <Grid item xs={12} sm={12} sx={{ mb: 2}}>
                           <TextField
@@ -141,14 +173,19 @@ function PermissionAdd() {
                             value={url}
                             onChange={(e) => {
                               setUrl(e.target.value);
+                              setDirtyFields((dirty) => ({
+                                ...dirty,
+                                url: !ifEmpty(e.target.value),
+                              }));
                             }}
                           />
+                            {dirtyFields["url"] && getError("Url is requried")}
                       </Grid>
                       </Grid>
                       </Grid>
                       <Divider />
                       <Toolbar  sx={{ ml: 0 ,pl:"0 !important"}}>
-                        <Button type="submit" variant="contained">
+                        <Button  disabled={!isValidData()} type="submit" variant="contained">
                         Submit
                         </Button>
                         <Button variant="contained" component={Link} to="/permissions" sx={{ ml: 1 }} >Cancel </Button>

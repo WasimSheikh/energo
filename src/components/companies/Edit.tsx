@@ -38,11 +38,28 @@ function CompanyEdit() {
     const [checked,setchecked] = useState('');
     const [onload,setOnload] = useState(false);
     const [errorMessages, setErrorMessages] = useState('');
+    const [dirtyFields, setDirtyFields] = useState({
+      email: false,
+      companyName:false,
+      website:false,
+      phone:false,
+      address:false,
+      street:false,
+      city:false,
+      country:false,
+      logo:false,
+      // isHeadauator:false,
+      zipcode:false,
+    });
   
-
+    const isValidData = ():boolean => {
+      const validateFields = ifEmpty( companyName && website && phone && address1 && address2 && city && country && email && postalCode  );
+      return validateFields;
+    };
 
   const handleSubmit = (e:any) => {
     e.preventDefault();
+    if(isValidData()){
     const formData = {
       id:id,
       title:companyName,
@@ -66,11 +83,28 @@ function CompanyEdit() {
       }
     });           
   };
-
+  }
   function checkBoxValue(data:any){
     setIsHeadauator(data.target.checked)
   }
+  const renderErrorMessage = () =>
+    errorMessages && (
+      <div className="error">{errorMessages}</div>
+    );
+  
+    const ifEmpty= (val: string): boolean => {
+  
+      return (val !== undefined && val.length > 0);// return true;
+  }
 
+  const getError = (msg: string): JSX.Element => {
+    return (
+      <span className="text-13 d-inline-block ml-1 text_13 text-danger">
+        {msg}
+      </span>
+    );
+  };
+    
   useEffect(() => {
     if(onload==false){
       setOnload(true);
@@ -141,8 +175,13 @@ function CompanyEdit() {
                             value={companyName}
                             onChange={(e) => {
                               setCompanyName(e.target.value);
+                              setDirtyFields((dirty) => ({
+                                ...dirty,
+                                companyName: !ifEmpty(e.target.value),
+                              }));
                             }}
                           />
+                            {dirtyFields["companyName"] && getError("CompanyName is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                           <TextField
@@ -155,8 +194,13 @@ function CompanyEdit() {
                             value={website}
                             onChange={(e) => {
                               setWebsite(e.target.value);
+                              setDirtyFields((dirty) => ({
+                                ...dirty,
+                                website: !ifEmpty(e.target.value),
+                              }));
                             }}
                           />
+                            {dirtyFields["website"] && getError("Website is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                         <TextField
@@ -169,8 +213,13 @@ function CompanyEdit() {
                             name="email"
                             onChange={(e) => {
                               setEmail(e.target.value);
+                              setDirtyFields((dirty) => ({
+                                ...dirty,
+                                email: !ifEmpty(e.target.value),
+                              }));
                             }}
-                        />
+                          />
+                            {dirtyFields["email"] && getError("Email is requried")}
                       </Grid>
                       
                       <Grid item xs={6} sm={6}>
@@ -184,8 +233,13 @@ function CompanyEdit() {
                             name="phone"
                             onChange={(e) => {
                               setPhone(e.target.value);
+                              setDirtyFields((dirty) => ({
+                                ...dirty,
+                                phone: !ifEmpty(e.target.value),
+                              }));
                             }}
-                        />
+                          />
+                            {dirtyFields["phone"] && getError("Phone is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                         <TextField
@@ -198,8 +252,13 @@ function CompanyEdit() {
                               name="address"
                               onChange={(e) => {
                                 setAddress1(e.target.value);
+                                setDirtyFields((dirty) => ({
+                                  ...dirty,
+                                  address: !ifEmpty(e.target.value),
+                                }));
                               }}
-                          />
+                            />
+                              {dirtyFields["address"] && getError("Address is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                         <TextField
@@ -212,8 +271,13 @@ function CompanyEdit() {
                               name="address2"
                               onChange={(e) => {
                                 setAddress2(e.target.value);
+                                setDirtyFields((dirty) => ({
+                                  ...dirty,
+                                  street: !ifEmpty(e.target.value),
+                                }));
                               }}
-                          />
+                            />
+                              {dirtyFields["street"] && getError("Street is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                         <TextField
@@ -226,8 +290,13 @@ function CompanyEdit() {
                               name="city"
                               onChange={(e) => {
                                 setCity(e.target.value);
+                                setDirtyFields((dirty) => ({
+                                  ...dirty,
+                                  city: !ifEmpty(e.target.value),
+                                }));
                               }}
-                          />
+                            />
+                              {dirtyFields["city"] && getError("City is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                       <TextField
@@ -240,8 +309,13 @@ function CompanyEdit() {
                             name="postalCode"
                             onChange={(e) => {
                               setPostalCode(e.target.value);
+                              setDirtyFields((dirty) => ({
+                                ...dirty,
+                                zipcode: !ifEmpty(e.target.value),
+                              }));
                             }}
-                        />
+                          />
+                            {dirtyFields["zipcode"] && getError("Zipcode is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                       <TextField
@@ -254,8 +328,14 @@ function CompanyEdit() {
                             name="country"
                             onChange={(e) => {
                               setCountry(e.target.value);
+                              setDirtyFields((dirty) => ({
+                                ...dirty,
+                                country: !ifEmpty(e.target.value),
+                              }));
                             }}
-                        /> </Grid>
+                          />
+                            {dirtyFields["country"] && getError("Country is requried")}
+                        </Grid>
                        
                         <Grid item xs={2} sm={6} mt={2}>
                         <FormControlLabel
@@ -283,7 +363,8 @@ function CompanyEdit() {
                   
                   <Divider />
                       <Toolbar  sx={{ ml: 0 ,pl:"0 !important"}}>
-                          <Button
+                      <Button 
+                       disabled={!isValidData()}
                           type="submit"
                           variant="contained"
                         >

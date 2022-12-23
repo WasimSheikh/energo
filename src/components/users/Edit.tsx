@@ -29,7 +29,6 @@ const mdTheme = createTheme();
 
 
 
-
 function UserEdit() {
   const navigate = useNavigate();
   const mdTheme = createTheme();
@@ -89,9 +88,13 @@ const showPassword =()=>{
   const radioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPermission((event.target as HTMLInputElement).value);
   };
-    
+  const isValidData = ():boolean => {
+    const validateFields = ifEmpty( firstName && lastName && phone && address1 && street && city && country && permission && postalCode );
+    return validateFields;
+  };
   const handleSubmit = (e:any) => {
     e.preventDefault();
+    if(isValidData()){
     const formData = {
       id:id,
       company_id:company_id,
@@ -118,6 +121,7 @@ const showPassword =()=>{
       }
     });                                     
   };
+}
   function checkBoxValue(data:any){
     setGlobalUser(data.target.checked)
 }
@@ -158,7 +162,7 @@ const getError = (msg: string): JSX.Element => {
               setCountry(res.payload.user?.address?.country);
               setPostalCode(res.payload.user?.address?.zipcode);
               setPermission(res.payload.user?.permission);
-              setPassword(res.payload.user?.password);
+             // setPassword(res.payload.user?.password);
               setGlobalUser(res.payload.user?.globalUser);
               console.log(res.payload.user,44444,res.payload.user.is_global)
               if(res.payload.user.is_global == '1'){
@@ -166,6 +170,7 @@ const getError = (msg: string): JSX.Element => {
                }else{
                 (document.getElementById('checkBox')as any).checked = false;
                }
+               
           } 
       }); 
 
@@ -451,7 +456,7 @@ const getError = (msg: string): JSX.Element => {
                         required
                         fullWidth
                         name="password"
-                        value=""
+                        value={password}
                         label="Password"
                         type="text"
                         id="password"
@@ -481,7 +486,8 @@ const getError = (msg: string): JSX.Element => {
                     
                     <Divider />
                       <Toolbar  sx={{ ml: 0 ,pl:"0 !important"}}>
-                          <Button
+                      <Button 
+                           disabled={!isValidData()}
                           type="submit"
                           variant="contained"
                         >
