@@ -21,33 +21,11 @@ import React, { useEffect , useState } from 'react';
 import { store } from '../../redux/store';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import Swal from 'sweetalert2';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-const deleteId=(e:any)=>{
 
-  Swal.fire({
-    title: 'Are you sure want to delete?',
-    text: "You won't be able to revert this!",
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonColor: '#3085d6',
-    cancelButtonColor: '#d33',
-    confirmButtonText: 'Yes , confirm !'
-  }).then((result) => {
-    if (result.isConfirmed) {
-      store.dispatch(deleteCompany(e)).then((res: any) => {
-        const result = res.json();
-      }); 
-      window.location.reload();
-      Swal.fire(
-        'Deleted!',
-        'Your file has been deleted.',
-        'success'
-      )
-  
-    }
-    
-  })
-}
+var companies:any=[];
 
 const mdTheme = createTheme();
 const columns: GridColDef[] = [
@@ -96,22 +74,59 @@ const columns: GridColDef[] = [
         <Button  sx={{ minWidth: 40 }}  component={Link} to={'/companies/view/'+params.row.id} > <VisibilityIcon  /> </Button>
         <Button onClick={()=>{deleteId(params.row.id)}}  sx={{ minWidth: 40 }}   > <DeleteIcon  /> </Button>
         <Button  sx={{ minWidth: 40 }}  component={Link} to={'/companies/document/'+params.row.id} > <FileCopyIcon  /> </Button>
-        {console.log("my params id", params.row.id)}
+        
         </>
       );
    }
   },
 ];
 
+const deleteId=(e:any)=>{
+
+  Swal.fire({
+    title: 'Are you sure want to delete?',
+    text: "You won't be able to revert this!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes , confirm !'
+  }).then((result:any) => {
+    if (result.isConfirmed) {
+      store.dispatch(deleteCompany(e)).then((res: any) => {
+        if(res.payload.status==true){
+         toast.success(res.payload.message);
+          //  store.dispatch(getCompanies()).then((res: any) => {
+          //   if (res && res.payload.companies) {
+          //     companies=res.payload.companies;
+          //     //setCompanies(res.payload.companies);
+          //   } 
+          // }); 
+          setTimeout(() => {
+            window.location.reload();
+          }, 3000);
+        
+        }else{
+             toast.error(res.payload.message);
+        }
+      }); 
+    }
+  })
+}
+
+
 function CompanyList() {
-  const [companies,setCompanies] = useState([]);
+  const [companiesss,setCompanies] = useState([]);
   
   useEffect(() => {
     if(companies.length == 0){
       store.dispatch(getCompanies()).then((res: any) => {
-        console.log(res,"jhiogho")
         if (res && res.payload.companies) {
+          companies=(res.payload.companies);
+
+         //console.log(companies);
           setCompanies(res.payload.companies);
+          //console.log('sdfs',companiesss)
         } 
       }); 
     }
@@ -162,6 +177,7 @@ function CompanyList() {
           </Container>
         </Box>
       </Box>
+     
     </ThemeProvider>
   );
 }
