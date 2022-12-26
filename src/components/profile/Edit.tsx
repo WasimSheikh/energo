@@ -23,17 +23,17 @@ import React, { useEffect, useState } from 'react';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import { store } from '../../redux/store';
-import { updateUser, getUser, getCompanies } from '../../redux/store/reducers/slices/UserSlice';
+import { updateUserProfile, getUser, getCompanies } from '../../redux/store/reducers/slices/UserSlice';
 
 const mdTheme = createTheme();
 
 function EditProfile() {
+
   const navigate = useNavigate();
   const mdTheme = createTheme();
   const theme = useTheme();
   const params = useParams();
   const [id,setId] = useState('');
-  const [company_id,setCompanyId] = useState('');
   const [email,setEmail] = useState('');
   const [phone,setPhone] = useState('');
   const [address1,setAddress] = useState('');
@@ -44,39 +44,46 @@ function EditProfile() {
   const [postalCode,setPostalCode] = useState('');
   const [firstName,setFirstName] = useState('');
   const [lastName,setLastName] = useState('');
-  const [permission, setPermission] = useState('');
-  const [globalUser, setGlobalUser] = useState('');
   const [onload,setOnload] = useState(false);
   const [errorMessages, setErrorMessages] = useState('');
-  const [companies, setCompanies] = React.useState([]);
-
+  const [changePassword, setChangePassword] =useState(false);
   const [boxValue,setBoxValue] = useState(false);
-  
-  const [dirtyFields, setDirtyFields] = useState({
-    company_id: false,
-  });
 
+  const [dirtyFields, setDirtyFields] = useState({
+    companyname:false,
+    first_name:false,
+    last_name:false,
+    email:false,
+    address:false,
+    street:false,
+    city:false,
+    country:false,
+    password:false,
+    permission:false,
+    postalCode:false,
+    phone:false,
+  
+  });
+  
   function showPassword(data:any){
+    setChangePassword(data);
+    if(data==false){
+      setPassword('')
+    }
     setBoxValue(data)
   }
-
-
-  const selectChange = (event: SelectChangeEvent) => {
-    setCompanyId(event.target.value);
+  const isValidData = ():boolean => {
+    const validateFields = ifEmpty( firstName && lastName && phone && address1 && street && city && country  && postalCode );
+    return validateFields;
   };
-
-  const radioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPermission((event.target as HTMLInputElement).value);
-  };
-    
+  
   const handleSubmit = (e:any) => {
     e.preventDefault();
+    if(isValidData()){
     const formData = {
       id:id,
-      company_id:company_id,
       first_name: firstName,
       last_name:lastName,
-      global_user:globalUser,
       phone:phone,
       email:email,
       address:address1,
@@ -85,32 +92,47 @@ function EditProfile() {
       country:country,
       zipcode:postalCode,
       password:password,
-      permission: permission,
-    }     
-    store.dispatch(updateUser(formData)).then((res: any) => {
-      console.log(res)
+      change_password:changePassword,
+    }   
+  
+    store.dispatch(updateUserProfile(formData)).then((res: any) => {
       if(res.payload.status == true){
         setErrorMessages('');
-        navigate("/users");
+        navigate("/EditProfile");
       }else{
         setErrorMessages(res.payload?.message);
       }
     });                                     
   };
+}
+  const renderErrorMessage = () =>
+  errorMessages && (
+    <div className="error">{errorMessages}</div>
+  );
+
+  const ifEmpty= (val: string): boolean => {
+
+    return (val !== undefined && val.length > 0);// return true;
+}
+
+const getError = (msg: string): JSX.Element => {
+  return (
+    <span className="text-13 d-inline-block ml-1 text_13 text-danger">
+      {msg}
+    </span>
+  );
+};
+
 const user_id = localStorage.getItem('user_id')
   useEffect(() => {
     if(onload==false){
       const userId = user_id
-      // const userId = window.location.href.split('/')[5]
-      console.log(user_id,"user_id",userId)
       const formData = {id:userId};  
       store.dispatch(getUser(formData)).then((res: any) => {
-        console.log(res,"7777755")
-
           setOnload(true);
+          console.log(res,"12345")
           if(res && res.payload){
               setId(res.payload.user?.id);
-              setCompanyId(res.payload.user?.company_id);
               setEmail(res.payload.user?.email);
               setPhone(res.payload.user?.phone);
               setAddress(res.payload.user?.address?.address);
@@ -120,25 +142,11 @@ const user_id = localStorage.getItem('user_id')
               setCity(res.payload.user?.address?.city);
               setCountry(res.payload.user?.address?.country);
               setPostalCode(res.payload.user?.address?.zipcode);
-              setPermission(res.payload.user?.permission);
-              setPassword(res.payload.user?.password);
-              setGlobalUser(res.payload.user?.globalUser);
-              console.log(res.payload.user.is_global,"res.payload.company.globalUser")
-              if(res.payload.company?.is_global == '0'){
-                (document.getElementById('checkBoxuser')as any).checked = true;
-               }else{
-                (document.getElementById('checkBoxuser')as any).checked = false;
-               }
-
-          } 
-          console.log(res.payload,":::::::::::::::::::")
-      }); 
-    //   store.dispatch(getCompanies()).then((res: any) => { 
-    //     if (res && res.payload.companies) {
-    //       setCompanies(res.payload.companies);
-    //     } 
-    //  }); 
-    }
+            
+               
+            } 
+          }); 
+         }
    });
 
 
@@ -170,44 +178,8 @@ const user_id = localStorage.getItem('user_id')
                 </Typography>
                 <Divider />
                   <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
-                  <Grid container spacing={2} rowSpacing={1} >
-                      <Grid item xs={6} sm={6} mt={2}>
-                      <FormControl fullWidth >
-                      <InputLabel id="company_name_label">Company Name</InputLabel>
-                      <Select
-                        labelId="company_name_label"
-                        required
-                        id="company_name"
-                        value={company_id}
-                        label="Company Name"
-                        onChange={selectChange}
-                        onBlur={(e) =>{
-                          setDirtyFields((dirty) => ({
-                              ...dirty,
-                              companyName: false,
-                          }));
-                        }}
-                      >
-                      <MenuItem value="">-Select-</MenuItem>
-                          {companies.map((opt:any) => (  
-                            <MenuItem key={opt.id} value={opt.id}>
-                            {opt.title}
-                            </MenuItem>
-                          ))} 
-                       </Select>
-                    </FormControl>
-                      </Grid>
-                      <Grid item xs={2} sm={6} mt={2}>
-                      <FormControlLabel
-                            control={<Checkbox  
-                            onChange={(e) => {
-                              setGlobalUser(e.target.value);
-                            }} 
-                            name="global_user" value="yes" id='checkBoxuser' />}
-                            label="Global User"
-                            sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
-                        />
-                      </Grid>
+                   <Grid container spacing={2} rowSpacing={1} >
+                      
                       <Grid item xs={6} sm={6}>
                           <TextField
                             margin="normal"
@@ -220,8 +192,13 @@ const user_id = localStorage.getItem('user_id')
                             fullWidth
                             onChange={(e) => {
                               setFirstName(e.target.value);
+                              setDirtyFields((dirty) => ({
+                                ...dirty,
+                                first_name: !ifEmpty(e.target.value),
+                              }));
                             }}
                           />
+                             {dirtyFields["first_name"] && getError("FirstName is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                           <TextField
@@ -235,8 +212,13 @@ const user_id = localStorage.getItem('user_id')
                             fullWidth
                             onChange={(e) => {
                               setLastName(e.target.value);
+                              setDirtyFields((dirty) => ({
+                                ...dirty,
+                                last_name: !ifEmpty(e.target.value),
+                              }));
                             }}
                           />
+                             {dirtyFields["last_name"] && getError("LastName is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                         <TextField
@@ -249,8 +231,13 @@ const user_id = localStorage.getItem('user_id')
                             name="phone"
                             onChange={(e) => {
                              setPhone(e.target.value);
-                            }}
+                             setDirtyFields((dirty) => ({
+                              ...dirty,
+                              phone: !ifEmpty(e.target.value),
+                            }));
+                          }}
                         />
+                           {dirtyFields["phone"] && getError("Phone is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}> 
                       </Grid>
@@ -265,8 +252,13 @@ const user_id = localStorage.getItem('user_id')
                               name="address1"
                               onChange={(e) => {
                                 setAddress(e.target.value);
+                                setDirtyFields((dirty) => ({
+                                  ...dirty,
+                                  address: !ifEmpty(e.target.value),
+                                }));
                               }}
-                        />
+                            />
+                               {dirtyFields["address"] && getError("Address is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                         <TextField
@@ -279,8 +271,13 @@ const user_id = localStorage.getItem('user_id')
                               name="address2"
                               onChange={(e) => {
                                 setStreet(e.target.value);
+                                setDirtyFields((dirty) => ({
+                                  ...dirty,
+                                  street: !ifEmpty(e.target.value),
+                                }));
                               }}
-                        />
+                            />
+                               {dirtyFields["street"] && getError("Street is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                         <TextField
@@ -293,8 +290,13 @@ const user_id = localStorage.getItem('user_id')
                               name="city"
                               onChange={(e) => {
                                 setCity(e.target.value);
+                                setDirtyFields((dirty) => ({
+                                  ...dirty,
+                                  city: !ifEmpty(e.target.value),
+                                }));
                               }}
-                        />
+                            />
+                               {dirtyFields["city"] && getError("City is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                       <TextField
@@ -307,8 +309,13 @@ const user_id = localStorage.getItem('user_id')
                             name="postalcode"
                             onChange={(e) => {
                               setPostalCode(e.target.value);
+                              setDirtyFields((dirty) => ({
+                                ...dirty,
+                                zipcode: !ifEmpty(e.target.value),
+                              }));
                             }}
-                        />
+                          />
+                             {dirtyFields["postalCode"] && getError("Zipcode is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                       <TextField
@@ -321,8 +328,13 @@ const user_id = localStorage.getItem('user_id')
                             name="country"
                             onChange={(e) => {
                               setCountry(e.target.value);
+                              setDirtyFields((dirty) => ({
+                                ...dirty,
+                                country: !ifEmpty(e.target.value),
+                              }));
                             }}
-                      /> 
+                          />
+                             {dirtyFields["country"] && getError("Country is requried")}
                       </Grid>
                         <Grid item xs={6} sm={6}>
                       </Grid>
@@ -343,56 +355,45 @@ const user_id = localStorage.getItem('user_id')
                             value={email}
                             label="Email"
                             name="email" 
-                            onChange={(e) => {
-                              setEmail(e.target.value);
-                            }} 
+                            InputProps={{
+                              readOnly: true
+                            }}
+                    
                         />
                           <FormControlLabel
                             control={<Checkbox  
                             onChange={(e) => {
                               showPassword(e.target.checked);
                             }} 
+
                             id='checkbx'
+                            value={changePassword}
                             name="Do you want to change password ?" />}
                             label="Do you want to change password ? "
                             sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
                         />
+                     
                       {boxValue &&  <TextField
                         margin="normal"
                         required
                         fullWidth
                         name="password"
-                        value=""
+                        value={password}
                         label="Password"
                         type="text"
                         id="password"
                         onChange={(e) => {
-                          setPassword(e.target.value);
+                          setPassword (e.target.value)
                         }} 
                       />}
+                      
                       </Grid>
-                      <Grid item xs={6} >
-                          <Typography component="h6" color="primary" variant="h6" sx={{ mt: 2 }}  gutterBottom>
-                            Roles/Permission
-                            </Typography>
-                            <FormControl>
-                                <RadioGroup
-                                    aria-labelledby="demo-controlled-radio-buttons-group"
-                                    name="controlled-radio-buttons-group"
-                                    value={permission}
-                                    onChange={radioChange}
-                                  >
-                                    
-                                  <FormControlLabel value="admin" control={<Radio />} label="Admin" />
-                                  <FormControlLabel value="author" control={<Radio />} label="Author" />
-                                </RadioGroup>
-                            </FormControl>
-                      </Grid>
+                     
                      </Grid>
                     
                     <Divider />
                       <Toolbar  sx={{ ml: 0 ,pl:"0 !important"}}>
-                          <Button
+                          <Button    disabled={!isValidData()}
                           type="submit"
                           variant="contained"
                         >

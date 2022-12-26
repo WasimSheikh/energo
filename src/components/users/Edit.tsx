@@ -51,7 +51,7 @@ function UserEdit() {
   const [onload,setOnload] = useState(false);
   const [errorMessages, setErrorMessages] = useState('');
   const [companies, setCompanies] = React.useState([]);
-
+  const [changePassword, setChangePassword] =useState(false);
   const [boxValue,setBoxValue] = useState(false);
   
 
@@ -71,6 +71,10 @@ function UserEdit() {
   });
 
   function showPassword(data:any){
+    setChangePassword(data);
+    if(data==false){
+      setPassword('')
+    }
     setBoxValue(data)
   }
 
@@ -106,6 +110,7 @@ function UserEdit() {
       zipcode:postalCode,
       password:password,
       permission: permission,
+      change_password:changePassword,
     }     
     store.dispatch(updateUser(formData)).then((res: any) => {
       console.log(res)
@@ -409,7 +414,7 @@ const getError = (msg: string): JSX.Element => {
                               }));
                             }}
                           />
-                             {dirtyFields["country"] && getError("country is requried")}
+                             {dirtyFields["country"] && getError("Country is requried")}
                       </Grid>
                         <Grid item xs={6} sm={6}>
                       </Grid>
@@ -449,7 +454,7 @@ const getError = (msg: string): JSX.Element => {
                             label="Do you want to change password ? "
                             // sx={{ : { fontSize: 28 } }}
                         />
-                      {boxValue &&  <TextField
+                     {boxValue &&  <TextField
                         margin="normal"
                         required
                         fullWidth
@@ -459,7 +464,7 @@ const getError = (msg: string): JSX.Element => {
                         type="text"
                         id="password"
                         onChange={(e) => {
-                          setPassword(e.target.value);
+                          setPassword (e.target.value)
                         }} 
                       />}
                       </Grid>
