@@ -21,24 +21,27 @@ import { shareDocuments } from '../../redux/store/reducers/slices/UserSlice';
 import { useEffect, useState } from 'react';
 
 const mdTheme = createTheme();
-function ShareAdd() {
+function ShareAdd(): JSX.Element {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [documents, setDocuments] = useState([]);
+  const [documents, setDocuments] = useState([16,19]);
 
   const [errorMessages, setErrorMessages] = useState('');
 
   const cards = [1, 2];
-  const handleSubmit = (event: any) => {
-    event.preventDefault();
+  const handleSubmit = () => {
+    alert('ggg')
+    // e.preventDefault();
     const formData = {
       name: name,
       email: email,
       description: description,
       documents: documents
     }
+    console.log(formData,"formData")
     store.dispatch(shareDocuments(formData)).then((res: any) => {
+      console.log(res,"55555")
       if (res.payload.status == true) {
         setErrorMessages('');
         //const that = this.context.router.history.push("/dashboard");  
@@ -74,7 +77,7 @@ function ShareAdd() {
                     Documents / Share Files
                   </Typography>
                   <Divider />
-                  <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
+                  <Box component="form" noValidate  sx={{ mt: 1 }}>
                     <Grid container spacing={2} rowSpacing={1} >
                       <Grid item xs={5} >
                         <Container sx={{ py: 3, paddingTop: "18px" }}  >
@@ -108,6 +111,10 @@ function ShareAdd() {
                           autoFocus
                           label="Name"
                           fullWidth
+                          value={name}
+          onChange={(e) => {
+            setName(e.target.value);
+          }}
                         />
                         <TextField
                           margin="normal"
@@ -116,7 +123,10 @@ function ShareAdd() {
                           id="email"
                           label="Email"
                           name="email"
-                          autoFocus
+                          value={email}
+                          onChange={(e) => {
+                            setEmail(e.target.value);
+                          }}
                         />
                         <TextField
                           margin="normal"
@@ -127,6 +137,10 @@ function ShareAdd() {
                           id="description"
                           label="Reason for sharing/Requesting"
                           name="description"
+                          value={description}
+                          onChange={(e) => {
+                            setDescription(e.target.value);
+                          }}
                         />
                       </Grid>
                     </Grid>
@@ -136,6 +150,7 @@ function ShareAdd() {
                     <Button
                       type="submit"
                       variant="contained"
+                      onClick={handleSubmit}
                     >
                       Submit
                     </Button>

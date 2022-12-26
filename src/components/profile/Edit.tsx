@@ -49,25 +49,17 @@ function EditProfile() {
   const [onload,setOnload] = useState(false);
   const [errorMessages, setErrorMessages] = useState('');
   const [companies, setCompanies] = React.useState([]);
+
+  const [boxValue,setBoxValue] = useState(false);
   
   const [dirtyFields, setDirtyFields] = useState({
     company_id: false,
   });
 
-
-  const [file, setFile] = useState<File>();
-
-  const handleFileChange = (e:any) => {
-    if (e.target.files) {
-      setFile(e.target.files[0]);
-    }
-  };
-
-  const handleUploadClick = () => {
-    if (!file) {
-      return;
-    }
+  function showPassword(data:any){
+    setBoxValue(data)
   }
+
 
   const selectChange = (event: SelectChangeEvent) => {
     setCompanyId(event.target.value);
@@ -96,7 +88,7 @@ function EditProfile() {
       permission: permission,
     }     
     store.dispatch(updateUser(formData)).then((res: any) => {
-      console.log(res,468654465465)
+      console.log(res)
       if(res.payload.status == true){
         setErrorMessages('');
         navigate("/users");
@@ -105,19 +97,40 @@ function EditProfile() {
       }
     });                                     
   };
-
+const user_id = localStorage.getItem('user_id')
   useEffect(() => {
     if(onload==false){
-      const userId = window.location.href.split('/')[5]
+      const userId = user_id
+      // const userId = window.location.href.split('/')[5]
+      console.log(user_id,"user_id",userId)
       const formData = {id:userId};  
+
+
       store.dispatch(getUser(formData)).then((res: any) => {
+        console.log(res,"7777755")
           setOnload(true);
           if(res && res.payload){
               setId(res.payload.user?.id);
+              setCompanyId(res.payload.user?.company_id);
               setEmail(res.payload.user?.email);
+              setPhone(res.payload.user?.phone);
+              setAddress(res.payload.user?.address?.address);
+              setStreet(res.payload.user?.address?.street);
               setFirstName(res.payload.user?.first_name);
               setLastName(res.payload.user?.last_name);
+              setCity(res.payload.user?.address?.city);
+              setCountry(res.payload.user?.address?.country);
+              setPostalCode(res.payload.user?.address?.zipcode);
+              setPermission(res.payload.user?.permission);
               setPassword(res.payload.user?.password);
+              setGlobalUser(res.payload.user?.globalUser);
+              console.log(res.payload.user.is_global,"res.payload.company.globalUser")
+              if(res.payload.company?.is_global == '0'){
+                (document.getElementById('checkBoxuser')as any).checked = true;
+               }else{
+                (document.getElementById('checkBoxuser')as any).checked = false;
+               }
+
           } 
           console.log(res.payload,":::::::::::::::::::")
       }); 
@@ -129,8 +142,9 @@ function EditProfile() {
     }
    });
 
+
   return (
-    <ThemeProvider theme={mdTheme}>
+    <ThemeProvider theme={mdTheme}> 
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
         <Header />
@@ -158,6 +172,43 @@ function EditProfile() {
                 <Divider />
                   <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
                   <Grid container spacing={2} rowSpacing={1} >
+                      <Grid item xs={6} sm={6} mt={2}>
+                      <FormControl fullWidth >
+                      <InputLabel id="company_name_label">Company Name</InputLabel>
+                      <Select
+                        labelId="company_name_label"
+                        required
+                        id="company_name"
+                        value={company_id}
+                        label="Company Name"
+                        onChange={selectChange}
+                        onBlur={(e) =>{
+                          setDirtyFields((dirty) => ({
+                              ...dirty,
+                              companyName: false,
+                          }));
+                        }}
+                      >
+                      <MenuItem value="">-Select-</MenuItem>
+                          {companies.map((opt:any) => (  
+                            <MenuItem key={opt.id} value={opt.id}>
+                            {opt.title}
+                            </MenuItem>
+                          ))} 
+                       </Select>
+                    </FormControl>
+                      </Grid>
+                      <Grid item xs={2} sm={6} mt={2}>
+                      <FormControlLabel
+                            control={<Checkbox  
+                            onChange={(e) => {
+                              setGlobalUser(e.target.value);
+                            }} 
+                            name="global_user" value="yes" id='checkBoxuser' />}
+                            label="Global User"
+                            sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
+                        />
+                      </Grid>
                       <Grid item xs={6} sm={6}>
                           <TextField
                             margin="normal"
@@ -189,16 +240,74 @@ function EditProfile() {
                           />
                       </Grid>
                       <Grid item xs={6} sm={6}>
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="phone"
+                            value={phone}
+                            label="Phone"
+                            name="phone"
+                            onChange={(e) => {
+                             setPhone(e.target.value);
+                            }}
+                        />
+                      </Grid>
+                      <Grid item xs={6} sm={6}> 
+                      </Grid>
+                      <Grid item xs={6} sm={6}>
+                        <TextField
+                              margin="normal"
+                              required
+                              fullWidth
+                              id="address"
+                              value={address1}
+                              label="Address"
+                              name="address1"
+                              onChange={(e) => {
+                                setAddress(e.target.value);
+                              }}
+                        />
+                      </Grid>
+                      <Grid item xs={6} sm={6}>
+                        <TextField
+                              margin="normal"
+                              required
+                              fullWidth
+                              value={street}
+                              id="street 1"
+                              label="Street"
+                              name="address2"
+                              onChange={(e) => {
+                                setStreet(e.target.value);
+                              }}
+                        />
+                      </Grid>
+                      <Grid item xs={6} sm={6}>
+                        <TextField
+                              margin="normal"
+                              required
+                              fullWidth
+                              value={city}
+                              id="city"
+                              label="City"
+                              name="city"
+                              onChange={(e) => {
+                                setCity(e.target.value);
+                              }}
+                        />
+                      </Grid>
+                      <Grid item xs={6} sm={6}>
                       <TextField
                             margin="normal"
                             required
                             fullWidth
-                            id="email"
-                            value={email}
-                            label="email"
-                            name="email"
+                            id="zipcode"
+                            value={postalCode}
+                            label="Zipcode"
+                            name="postalcode"
                             onChange={(e) => {
-                              setEmail(e.target.value);
+                              setPostalCode(e.target.value);
                             }}
                         />
                       </Grid>
@@ -207,18 +316,79 @@ function EditProfile() {
                             margin="normal"
                             required
                             fullWidth
-                            id="password"
-                            value={password}
-                            label="password"
-                            name="password"
+                            id="country"
+                            value={country}
+                            label="Country"
+                            name="country"
                             onChange={(e) => {
-                              setPassword(e.target.value);
+                              setCountry(e.target.value);
                             }}
                       /> 
                       </Grid>
-                      <Grid item xs={6} sm={6}>
-                    <input type="file" onChange={handleFileChange} />
-                        </Grid>
+                        <Grid item xs={6} sm={6}>
+                      </Grid>
+                    </Grid>
+                    <Typography component="h2" variant="h6" sx={{ mt: 1}} color="primary" gutterBottom>
+                        Login Information
+                    </Typography>
+                    <Box>
+                      Create login information for the user.
+                    </Box>
+                    <Grid container spacing={2} rowSpacing={1} >
+                      <Grid item xs={6} >
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="email"
+                            value={email}
+                            label="Email"
+                            name="email" 
+                            onChange={(e) => {
+                              setEmail(e.target.value);
+                            }} 
+                        />
+                          <FormControlLabel
+                            control={<Checkbox  
+                            onChange={(e) => {
+                              showPassword(e.target.checked);
+                            }} 
+                            id='checkbx'
+                            name="Do you want to change password ?" />}
+                            label="Do you want to change password ? "
+                            sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
+                        />
+                      {boxValue &&  <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        name="password"
+                        value=""
+                        label="Password"
+                        type="text"
+                        id="password"
+                        onChange={(e) => {
+                          setPassword(e.target.value);
+                        }} 
+                      />}
+                      </Grid>
+                      <Grid item xs={6} >
+                          <Typography component="h6" color="primary" variant="h6" sx={{ mt: 2 }}  gutterBottom>
+                            Roles/Permission
+                            </Typography>
+                            <FormControl>
+                                <RadioGroup
+                                    aria-labelledby="demo-controlled-radio-buttons-group"
+                                    name="controlled-radio-buttons-group"
+                                    value={permission}
+                                    onChange={radioChange}
+                                  >
+                                    
+                                  <FormControlLabel value="admin" control={<Radio />} label="Admin" />
+                                  <FormControlLabel value="author" control={<Radio />} label="Author" />
+                                </RadioGroup>
+                            </FormControl>
+                      </Grid>
                      </Grid>
                     
                     <Divider />
@@ -229,7 +399,7 @@ function EditProfile() {
                         >
                         Update
                           </Button>
-                        <Button variant="contained" component={Link} to="/users" sx={{ ml: 1 }} >Cancel </Button>
+                        <Button variant="contained" component={Link} to="/users" sx={{ ml: 1 }} >Cancel</Button>
                       </Toolbar> 
                       </Box>
                 </Paper>
