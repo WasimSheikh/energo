@@ -26,9 +26,36 @@ function RoleEdit() {
     const [title,setTitle] = useState('');
     const [onload,setOnload] = useState(false);
     const [errorMessages, setErrorMessages] = useState('');
-
+    const [dirtyFields, setDirtyFields] = useState({
+      title: false,
+       
+    });
+    const renderErrorMessage = () =>
+    errorMessages && (
+      <div className="error">{errorMessages}</div>
+    );
+  
+    const ifEmpty= (val: string): boolean => {
+  
+      return (val !== undefined && val.length > 0);// return true;
+  }
+  
+  const getError = (msg: string): JSX.Element => {
+    return (
+      <span className="text-13 d-inline-block ml-1 text_13 text-danger">
+        {msg}
+      </span>
+    );
+  };
+  const isValidData = ():boolean => {
+   
+    const validateFields = ifEmpty(title);
+    
+    return validateFields;
+  };
     const handleSubmit = (e:any) => {
         e.preventDefault();
+        if(isValidData()){
         const formData = {
           id:id,
           name:title
@@ -42,7 +69,7 @@ function RoleEdit() {
           }
         });           
   };
-
+    }
   useEffect(() => {
     if(onload==false){
       setOnload(true);
@@ -97,13 +124,18 @@ function RoleEdit() {
                             value={title}
                             onChange={(e) => {
                               setTitle(e.target.value);
+                              setDirtyFields((dirty) => ({
+                                ...dirty,
+                                title: !ifEmpty(e.target.value),
+                              }));
                             }}
                           />
+                            {dirtyFields["title"] && getError("Title is requried")}
                       </Grid>
                       </Grid>
                       <Divider />
                       <Toolbar  sx={{ ml: 0 ,pl:"0 !important"}}>
-                          <Button
+                          <Button disabled={!isValidData()}
                           type="submit"
                           variant="contained"
                         >

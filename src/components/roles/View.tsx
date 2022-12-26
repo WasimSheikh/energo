@@ -41,11 +41,25 @@ function CompanyView() {
         }); 
         store.dispatch(getPermissionParentChlid()).then((res: any) => {
           if (res && res.payload?.permissionparent) {
+            console.log(res.payload.permissionparent[0].chlid,"::::::::::::::::::",res.payload.permissionparent,"___________",res.payload.permissionparent[0]);
             setPermissions(res.payload?.permissionparent);
           } 
         }); 
       }
   });
+
+  function viewcheck (e:any){
+    console.log(e.checked)
+    if (e.checked == true){
+      (document.getElementById("0child")as any).checked = true;
+      (document.getElementById("1child")as any).checked = true;
+    }else{
+      (document.getElementById("0child")as any).checked = false;
+      (document.getElementById("1child")as any).checked = false;
+    }
+   
+
+  }
 
   // const handleChange = (value:any) => { 
   //   let array = permissionsId;
@@ -112,17 +126,21 @@ function CompanyView() {
                             <Grid>
                               <FormControlLabel
                                   control={<Checkbox  
-                                  name={permission.name} value={permission.id} />}
+                                  name={permission.name} value={permission.id} 
+                                  onChange={(e)=>{viewcheck(e.target)}}/>}
                                   label={permission.name}
                                   sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
                               />
                             </Grid>
-                            {permission.chlid.map((value:any) => (
+                            {permission.chlid.map((value:any,i:any) => (
                               <Grid  sx={{ ml: 5 }}>
                               {/* <input type="checkbox"  ></input> */}
                               <FormControlLabel
-                                  control={<Checkbox  
-                                  name={value.name} value={value.id} />}
+                                  control={
+                                    <input type="checkbox"  id={i + 'child'}/>
+                                  // <Checkbox  
+                                  // name={value.name} value={value.id} />
+                                }
                                   label={value.name}
                                   onChange={(e) => {
                                     //handleChange(value.id);
