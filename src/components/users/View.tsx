@@ -29,7 +29,6 @@ function UserView() {
   const [street,setStreet] = useState('');
   const [city,setCity] = useState('');
   const [country,setCountry] = useState('');
-  const [password,setPassword] = useState('');
   const [postalCode,setPostalCode] = useState('');
   const [firstName,setFirstName] = useState('');
   const [lastName,setLastName] = useState('');
@@ -56,8 +55,11 @@ function UserView() {
               setCountry(res.payload.user?.address?.country);
               setPostalCode(res.payload.user?.address?.zipcode);
               setPermission(res.payload.user?.permission);
-              setPassword(res.payload.user?.password);
-              setGlobalUser(res.payload.user?.globalUser);
+              if(res.payload.user?.globalUser===0){
+                setGlobalUser('No');
+              }else{
+                setGlobalUser('Yes');
+              }
            } 
        }); 
     }
@@ -129,7 +131,7 @@ function UserView() {
                     <Grid container spacing={2} rowSpacing={1} >
                       <Grid item xs={6} >
                         <div> Email : <span>{email}</span></div>
-                        <div> Password : <span>{password}</span></div>
+                        
                       </Grid>
                       <Grid item xs={6} >
                           <Typography component="h6" color="primary" variant="h6" sx={{ mt: 2 }}  gutterBottom>
