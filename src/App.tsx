@@ -24,12 +24,17 @@ import Permissions from './components/permissions/Listing';
 import AddPermission from './components/permissions/Add';
 import EditPermission from './components/permissions/Edit';
 import ViewPermission from './components/permissions/View';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 function App() {
   const navigate = useNavigate();
   const [login, setIsLogin] = React.useState(false);
   const [onload,setOnload] = React.useState(false);
+
+
+
+  
+  
 
   function IsLoggedIn(){
     let access_token = localStorage.getItem("access_token");
@@ -60,7 +65,7 @@ function App() {
           <Route path="companies/document/:companyId" element={<DocumentCompany />} />
           <Route path="companies/document/share" element={<Share />} />
           <Route path="companies/document/view/:documentId" element={<DocumentView />} />
-          <Route path="users" element={<Users />} />
+          <Route path="users" element={<Users />} /> 
           <Route path="users/add" element={<AddUser />} />
           <Route path="users/view/:userId" element={<ViewUser />} />
           <Route path="users/edit/:userId" element={<EditUser />} />

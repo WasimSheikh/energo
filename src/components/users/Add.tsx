@@ -80,6 +80,7 @@ function UserAdd() {
       if(res.payload.status == true){
         setErrorMessages('');
         navigate("/users");
+        console.log(res , "create users")
       }else {
         setErrorMessages(res.payload?.message);
       }
@@ -92,10 +93,12 @@ function UserAdd() {
        store.dispatch(getCompanies()).then((res: any) => { 
           if (res && res.payload.companies) {
             setCompanies(res.payload.companies);
+            
           } 
        }); 
       }
    });
+
 
   return (
     <ThemeProvider theme={mdTheme}>
@@ -158,7 +161,9 @@ function UserAdd() {
                             onChange={(e) => {
                               setGlobalUser(e.target.value);
                             }} 
-                            name="global_user" value="yes" />}
+                            name="global_user"
+                             value={globalUser}
+                             />}
                             label="Global User"
                             sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
                         />

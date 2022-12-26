@@ -24,8 +24,12 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import { store } from '../../redux/store';
 import { updateUser, getUser, getCompanies } from '../../redux/store/reducers/slices/UserSlice';
+import { red } from '@mui/material/colors';
 
 const mdTheme = createTheme();
+
+
+
 
 function UserEdit() {
   const navigate = useNavigate();
@@ -49,10 +53,24 @@ function UserEdit() {
   const [onload,setOnload] = useState(false);
   const [errorMessages, setErrorMessages] = useState('');
   const [companies, setCompanies] = React.useState([]);
+
+  const [checkbox, setCheckbox] = useState(false);
+  const [boxValue , setBoxValue] = useState(false)
+
   
   const [dirtyFields, setDirtyFields] = useState({
     company_id: false,
   });
+
+
+  const showPassword =()=>{
+    console.log(checkbox,"checkbox")
+    if(checkbox == true){
+      setBoxValue(false)
+    }else{
+      setBoxValue(true)
+    }
+  }
 
   const selectChange = (event: SelectChangeEvent) => {
     setCompanyId(event.target.value);
@@ -61,7 +79,10 @@ function UserEdit() {
   const radioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPermission((event.target as HTMLInputElement).value);
   };
-    
+  function checkBoxValue(data:any){
+    setGlobalUser(data.target.checked)
+}
+
   const handleSubmit = (e:any) => {
     e.preventDefault();
     const formData = {
@@ -69,7 +90,7 @@ function UserEdit() {
       company_id:company_id,
       first_name: firstName,
       last_name:lastName,
-      global_user:globalUser,
+      is_global:globalUser,
       phone:phone,
       email:email,
       address:address1,
@@ -81,6 +102,7 @@ function UserEdit() {
       permission: permission,
     }     
     store.dispatch(updateUser(formData)).then((res: any) => {
+      // console.log(res)
       if(res.payload.status == true){
         setErrorMessages('');
         navigate("/users");
@@ -89,6 +111,8 @@ function UserEdit() {
       }
     });                                     
   };
+
+
 
   useEffect(() => {
     if(onload==false){
@@ -109,8 +133,18 @@ function UserEdit() {
               setCountry(res.payload.user?.address?.country);
               setPostalCode(res.payload.user?.address?.zipcode);
               setPermission(res.payload.user?.permission);
-              setPassword(res.payload.user?.password);
-              setGlobalUser(res.payload.user?.globalUser);
+
+              // console.log(res.payload.user , "orjfwe" , res.payload)
+         
+              // setPassword(res.payload.user?.password);
+              setPassword("")
+               
+              setGlobalUser(res.payload.user?.is_global);
+              if(res.payload.user.is_global== '0'){
+                (document.getElementById('checkBox')as any).checked = true;
+               }else{
+                (document.getElementById('checkBox')as any).checked = false;
+               }
           } 
       }); 
       store.dispatch(getCompanies()).then((res: any) => { 
@@ -121,8 +155,14 @@ function UserEdit() {
     }
    });
 
+  
+  
+
+   
+
+
   return (
-    <ThemeProvider theme={mdTheme}>
+    <ThemeProvider theme={mdTheme}> 
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
         <Header />
@@ -178,11 +218,16 @@ function UserEdit() {
                       </Grid>
                       <Grid item xs={2} sm={6} mt={2}>
                       <FormControlLabel
-                            control={<Checkbox  
+                            control={
+                              <input type='checkbox' id="checkBox"  name="global_user"   
                             onChange={(e) => {
-                              setGlobalUser(e.target.value);
+                              checkBoxValue(e);
                             }} 
-                            name="global_user" value="yes" />}
+                           />
+                             // <Checkbox  
+                            // id="checkbox" 
+                            // name="global_user" />
+                          }
                             label="Global User"
                             sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
                         />
@@ -326,19 +371,30 @@ function UserEdit() {
                               setEmail(e.target.value);
                             }} 
                         />
-                        <TextField
+                          <FormControlLabel
+                            control={<Checkbox  
+                            onChange={(e) => {
+                              setCheckbox(e.target.checked);
+                            }} 
+                           onClick={showPassword}
+                            name="Do you want to change password ?" />}
+                            label="Do you want to change password ? "
+                            sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
+                        />
+                     {boxValue &&  <TextField
                         margin="normal"
                         required
                         fullWidth
                         name="password"
-                        value=""
+                        value={password}
                         label="Password"
                         type="text"
                         id="password"
                         onChange={(e) => {
                           setPassword(e.target.value);
                         }} 
-                      />
+                      />}
+                    
                       </Grid>
                       <Grid item xs={6} >
                           <Typography component="h6" color="primary" variant="h6" sx={{ mt: 2 }}  gutterBottom>
@@ -351,8 +407,19 @@ function UserEdit() {
                                     value={permission}
                                     onChange={radioChange}
                                   >
-                                  <FormControlLabel value="admin" control={<Radio />} label="Admin" />
-                                  <FormControlLabel value="author" control={<Radio />} label="Author" />
+                                    
+                                  <FormControlLabel
+                                   value="admin" 
+                                   control={
+                                    <Radio id="permission1 "/>
+                                    //  <input type='checkbox' id="permission1"   name='global_user' />
+                                     } label="Admin" />
+
+                                  <FormControlLabel
+                                   value="author" 
+                                   control={<Radio id="permission2" />
+                                  //  <input type='checkbox' id="permission2"    name='global_user' />
+                                   }  label="Author" />
                                 </RadioGroup>
                             </FormControl>
                       </Grid>
@@ -366,7 +433,7 @@ function UserEdit() {
                         >
                         Update
                           </Button>
-                        <Button variant="contained" component={Link} to="/users" sx={{ ml: 1 }} >Cancel </Button>
+                        <Button variant="contained" component={Link} to="/users" sx={{ ml: 1 }} >Cancel</Button>
                       </Toolbar> 
                       </Box>
                 </Paper>

@@ -35,17 +35,36 @@ function CompanyView() {
         store.dispatch(getRole(formData)).then((res: any) => {
           setOnload(true);
             if (res && res.payload) {
+              console.log(res.payload ,"getrole")
                 setId(res.payload.role?.id);
                 setTitle(res.payload.role?.name);
+                // console.log(res.payload.role?.name ,"getrole")
             } 
         }); 
         store.dispatch(getPermissionParentChlid()).then((res: any) => {
+       
           if (res && res.payload?.permissionparent) {
+            console.log( res.payload?.permissionparent,"getpermission" ,  res.payload?.permissionparent)
             setPermissions(res.payload?.permissionparent);
           } 
         }); 
       }
   });
+
+
+  function allchecked(e:any){
+    if(e.checked===true){
+      (document.getElementById("0childs")as any).checked = true ;
+      (document.getElementById("1childs")as any).checked = true ; 
+    }
+    else{
+     ( document.getElementById("0childs")as any).checked = false ;
+     ( document.getElementById("1childs")as any).checked = false
+      ;
+
+    }    
+  }
+ 
 
   // const handleChange = (value:any) => { 
   //   let array = permissionsId;
@@ -111,21 +130,37 @@ function CompanyView() {
                             <>
                             <Grid>
                               <FormControlLabel
-                                  control={<Checkbox  
-                                  name={permission.name} value={permission.id} />}
+                                  control={
+                                  <Checkbox  
+                                  name={permission.name} 
+                                  value={permission.id} 
+                                  onChange={(e:any)=>{allchecked(e.target)}}
+                                  />
+                                }
                                   label={permission.name}
                                   sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
                               />
                             </Grid>
-                            {permission.chlid.map((value:any) => (
+                            {permission.chlid.map((value:any , i : any) => (
                               <Grid  sx={{ ml: 5 }}>
-                              {/* <input type="checkbox"  ></input> */}
+                           
                               <FormControlLabel
-                                  control={<Checkbox  
-                                  name={value.name} value={value.id} />}
+                                  control={
+                                    <input type="checkbox"
+                                     id={i + 'childs'} 
+                                    // className='childs'
+                                     name={value.name} 
+                                     value={value.id}
+                                     
+                                      />
+                                  // <Checkbox  
+                                  // name={value.name} 
+                                  // value={value.id} 
+                                  // id='childs'/>
+                                }
                                   label={value.name}
                                   onChange={(e) => {
-                                    //handleChange(value.id);
+                                  //   handleChange(value.id);
                                   }} 
                                   sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
                               />
