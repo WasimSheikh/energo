@@ -41,6 +41,7 @@ function CompanyView() {
         }); 
         store.dispatch(getPermissionParentChlid()).then((res: any) => {
           if (res && res.payload?.permissionparent) {
+            console.log(res.payload.permissionparent[0].chlid,"::::::::::::::::::",res.payload.permissionparent,"___________",res.payload.permissionparent[0]);
             setPermissions(res.payload?.permissionparent);
           } 
         }); 

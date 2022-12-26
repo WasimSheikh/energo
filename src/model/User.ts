@@ -34,6 +34,7 @@ export interface User {
     country?:string;
     city?:string;
     zip?: string;
+    profile_picture?:any;
      
 }
 

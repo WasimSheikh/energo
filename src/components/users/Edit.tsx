@@ -29,7 +29,6 @@ const mdTheme = createTheme();
 
 
 
-
 function UserEdit() {
   const navigate = useNavigate();
   const mdTheme = createTheme();
@@ -55,8 +54,20 @@ function UserEdit() {
 
   const [boxValue,setBoxValue] = useState(false);
   
+
   const [dirtyFields, setDirtyFields] = useState({
-    company_id: false,
+    first_name:false,
+    companyname:false,
+  last_name:false,
+  email:false,
+  address:false,
+  street:false,
+  city:false,
+  country:false,
+  password:false,
+  permission:false,
+  postalCode:false,
+  phone:false,
   });
 
   function showPassword(data:any){
@@ -71,15 +82,19 @@ function UserEdit() {
   const radioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPermission((event.target as HTMLInputElement).value);
   };
-    
+  const isValidData = ():boolean => {
+    const validateFields = ifEmpty( firstName && lastName && phone && address1 && street && city && country && permission && postalCode );
+    return validateFields;
+  };
   const handleSubmit = (e:any) => {
     e.preventDefault();
+    if(isValidData()){
     const formData = {
       id:id,
       company_id:company_id,
       first_name: firstName,
       last_name:lastName,
-      global_user:globalUser,
+      is_global:globalUser,
       phone:phone,
       email:email,
       address:address1,
@@ -100,6 +115,27 @@ function UserEdit() {
       }
     });                                     
   };
+}
+  function checkBoxValue(data:any){
+    setGlobalUser(data.target.checked)
+}
+  const renderErrorMessage = () =>
+  errorMessages && (
+    <div className="error">{errorMessages}</div>
+  );
+
+  const ifEmpty= (val: string): boolean => {
+
+    return (val !== undefined && val.length > 0);// return true;
+}
+
+const getError = (msg: string): JSX.Element => {
+  return (
+    <span className="text-13 d-inline-block ml-1 text_13 text-danger">
+      {msg}
+    </span>
+  );
+};
 
   useEffect(() => {
     if(onload==false){
@@ -120,10 +156,18 @@ function UserEdit() {
               setCountry(res.payload.user?.address?.country);
               setPostalCode(res.payload.user?.address?.zipcode);
               setPermission(res.payload.user?.permission);
-              setPassword(res.payload.user?.password);
+             // setPassword(res.payload.user?.password);
               setGlobalUser(res.payload.user?.globalUser);
+              console.log(res.payload.user,44444,res.payload.user.is_global)
+              if(res.payload.user.is_global == '1'){
+                (document.getElementById('checkBox')as any).checked = true;
+               }else{
+                (document.getElementById('checkBox')as any).checked = false;
+               }
+               
           } 
       }); 
+
       store.dispatch(getCompanies()).then((res: any) => { 
         if (res && res.payload.companies) {
           setCompanies(res.payload.companies);
@@ -188,16 +232,24 @@ function UserEdit() {
                        </Select>
                     </FormControl>
                       </Grid>
-                      <Grid item xs={2} sm={6} mt={2}>
+                      <Grid item xs={6} sm={6} mt={2}>
                       <FormControlLabel
-                            control={<Checkbox  
+                            control={
+                            // onChange={(e) => {
+                            //   setGlobalUser(e.target.value);
+                            // }} 
+                            // name="global_user" value="yes" />}
+                            // label="Global User"
+                            // sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
+                            <input  type= 'checkbox' name="global_user" id = 'checkBox'  
                             onChange={(e) => {
-                              setGlobalUser(e.target.value);
-                            }} 
-                            name="global_user" value="yes" />}
-                            label="Global User"
+                              checkBoxValue(e);
+                            }}    />
+                          }
+                            label="Global User" 
                             sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
-                        />
+                        
+                          />
                       </Grid>
                       <Grid item xs={6} sm={6}>
                           <TextField
@@ -211,8 +263,13 @@ function UserEdit() {
                             fullWidth
                             onChange={(e) => {
                               setFirstName(e.target.value);
+                              setDirtyFields((dirty) => ({
+                                ...dirty,
+                                first_name: !ifEmpty(e.target.value),
+                              }));
                             }}
                           />
+                             {dirtyFields["first_name"] && getError("firstName is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                           <TextField
@@ -226,8 +283,13 @@ function UserEdit() {
                             fullWidth
                             onChange={(e) => {
                               setLastName(e.target.value);
+                                setDirtyFields((dirty) => ({
+                                ...dirty,
+                                last_name: !ifEmpty(e.target.value),
+                              }));
                             }}
                           />
+                             {dirtyFields["last_name"] && getError("lastName is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                         <TextField
@@ -240,8 +302,13 @@ function UserEdit() {
                             name="phone"
                             onChange={(e) => {
                              setPhone(e.target.value);
-                            }}
+                             setDirtyFields((dirty) => ({
+                              ...dirty,
+                              phone: !ifEmpty(e.target.value),
+                            }));
+                          }}
                         />
+                           {dirtyFields["phone"] && getError("Phone is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}> 
                       </Grid>
@@ -256,8 +323,13 @@ function UserEdit() {
                               name="address1"
                               onChange={(e) => {
                                 setAddress(e.target.value);
+                                setDirtyFields((dirty) => ({
+                                  ...dirty,
+                                  address: !ifEmpty(e.target.value),
+                                }));
                               }}
-                        />
+                            />
+                               {dirtyFields["address"] && getError("address is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                         <TextField
@@ -270,8 +342,13 @@ function UserEdit() {
                               name="address2"
                               onChange={(e) => {
                                 setStreet(e.target.value);
+                                setDirtyFields((dirty) => ({
+                                  ...dirty,
+                                  street: !ifEmpty(e.target.value),
+                                }));
                               }}
-                        />
+                            />
+                               {dirtyFields["street"] && getError("street is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                         <TextField
@@ -284,8 +361,13 @@ function UserEdit() {
                               name="city"
                               onChange={(e) => {
                                 setCity(e.target.value);
+                                setDirtyFields((dirty) => ({
+                                  ...dirty,
+                                  city: !ifEmpty(e.target.value),
+                                }));
                               }}
-                        />
+                            />
+                               {dirtyFields["city"] && getError("city is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                       <TextField
@@ -298,8 +380,13 @@ function UserEdit() {
                             name="postalcode"
                             onChange={(e) => {
                               setPostalCode(e.target.value);
+                              setDirtyFields((dirty) => ({
+                                ...dirty,
+                                postalCode: !ifEmpty(e.target.value),
+                              }));
                             }}
-                        />
+                          />
+                             {dirtyFields["postalCode"] && getError("postalCode is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                       <TextField
@@ -312,8 +399,13 @@ function UserEdit() {
                             name="country"
                             onChange={(e) => {
                               setCountry(e.target.value);
+                              setDirtyFields((dirty) => ({
+                                ...dirty,
+                                country: !ifEmpty(e.target.value),
+                              }));
                             }}
-                      /> 
+                          />
+                             {dirtyFields["country"] && getError("country is requried")}
                       </Grid>
                         <Grid item xs={6} sm={6}>
                       </Grid>
@@ -336,8 +428,13 @@ function UserEdit() {
                             name="email" 
                             onChange={(e) => {
                               setEmail(e.target.value);
-                            }} 
-                        />
+                              setDirtyFields((dirty) => ({
+                                ...dirty,
+                                email: !ifEmpty(e.target.value),
+                              }));
+                            }}
+                          />
+                             {dirtyFields["email"] && getError("email is requried")}
                           <FormControlLabel
                             control={<Checkbox  
                             onChange={(e) => {
@@ -346,14 +443,14 @@ function UserEdit() {
                             id='checkbx'
                             name="Do you want to change password ?" />}
                             label="Do you want to change password ? "
-                            sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
+                            // sx={{ : { fontSize: 28 } }}
                         />
                       {boxValue &&  <TextField
                         margin="normal"
                         required
                         fullWidth
                         name="password"
-                        value=""
+                        value={password}
                         label="Password"
                         type="text"
                         id="password"
@@ -374,7 +471,7 @@ function UserEdit() {
                                     onChange={radioChange}
                                   >
                                     
-                                  <FormControlLabel value="admin" control={<Radio />} label="Admin" />
+                                  <FormControlLabel value="admin" control={<Radio />}  label="Admin" />
                                   <FormControlLabel value="author" control={<Radio />} label="Author" />
                                 </RadioGroup>
                             </FormControl>
@@ -383,7 +480,8 @@ function UserEdit() {
                     
                     <Divider />
                       <Toolbar  sx={{ ml: 0 ,pl:"0 !important"}}>
-                          <Button
+                      <Button 
+                           disabled={!isValidData()}
                           type="submit"
                           variant="contained"
                         >

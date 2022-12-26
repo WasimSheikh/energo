@@ -105,6 +105,7 @@ const user_id = localStorage.getItem('user_id')
       console.log(user_id,"user_id",userId)
       const formData = {id:userId};  
 
+
       store.dispatch(getUser(formData)).then((res: any) => {
         console.log(res,"7777755")
           setOnload(true);
@@ -129,13 +130,15 @@ const user_id = localStorage.getItem('user_id')
                }else{
                 (document.getElementById('checkBoxuser')as any).checked = false;
                }
+
           } 
+          console.log(res.payload,":::::::::::::::::::")
       }); 
-      store.dispatch(getCompanies()).then((res: any) => { 
-        if (res && res.payload.companies) {
-          setCompanies(res.payload.companies);
-        } 
-     }); 
+    //   store.dispatch(getCompanies()).then((res: any) => { 
+    //     if (res && res.payload.companies) {
+    //       setCompanies(res.payload.companies);
+    //     } 
+    //  }); 
     }
    });
 

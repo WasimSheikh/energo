@@ -137,6 +137,7 @@ const Header = (): JSX.Element => {
         label="Age"
         onChange={handleChange}
       >
+
         <MenuItem component={Link} to="/ProfileEdit">Profile</MenuItem>
         <MenuItem component={Link} to="/">Logout</MenuItem>
       </Select>

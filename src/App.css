@@ -12,7 +12,9 @@
     animation: App-logo-float infinite 3s ease-in-out;
   }
 }
-
+.css-37hgmf-MuiFormControlLabel-root .MuiFormControlLabel-label {
+  font-size: 15px;
+}
 .App-header {
   min-height: 100vh;
   display: flex;
