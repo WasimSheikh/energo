@@ -28,6 +28,8 @@ import EditProfile from "./components/profile/Edit";
 import Navgiate from "./components/common/Header";
 import React, { useEffect } from 'react';
 import ShareAdd from './components/companies/DocumentView';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   const navigate = useNavigate();
@@ -80,6 +82,7 @@ function App() {
         }
         
       </Routes>
+       <ToastContainer/>
       </>
   );
 }
