@@ -136,6 +136,20 @@ export const updateUser = createAsyncThunk('Update_user', async (user: User) => 
     });
 })
 
+export const updateUserProfile = createAsyncThunk('Update_user', async (user: User) => {
+    
+    return await fetch(apiEndPoint+'/updateUserProfile', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
+        },
+        body: JSON.stringify(user)
+    }).then(res => {
+        return res.json()
+    });
+})
 export const getRoles = createAsyncThunk('get_Roles', async () => {
     return await fetch(apiEndPoint+'/getRoles', {
         method: 'GET',
