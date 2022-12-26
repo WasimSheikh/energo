@@ -76,7 +76,7 @@ function App() {
           {/* <Route path="documents" element={<Documents />} /> */}
           {/* <Route path="documents/share" element={<Share />} /> */}
           <Route path="notifications" element={<Notifications />} /> 
-          <Route path="profileedit" element={<EditProfile />} /> 
+          <Route path="profile" element={<EditProfile />} /> 
           {/* <Route path="dashboard" element={</Navgiate>} />  */}
           </>
         }

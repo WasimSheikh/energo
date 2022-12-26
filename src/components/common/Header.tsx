@@ -125,7 +125,7 @@ const Header = (): JSX.Element => {
                   'aria-labelledby': 'basic-button',
                 }}
                style={{top:"40px",left: '90%'}}>
-                <MenuItem onClick={() => { OpneProfile() }} component={Link} to="/ProfileEdit">Profile</MenuItem>
+                <MenuItem onClick={() => { OpneProfile() }} component={Link} to="/profile">Profile</MenuItem>
                 <MenuItem onClick={Logout}><Link to={{ pathname: "/" }}>Logout</Link></MenuItem>
               </Menu>
 

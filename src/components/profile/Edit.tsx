@@ -73,7 +73,7 @@ function EditProfile() {
     setBoxValue(data)
   }
   const isValidData = ():boolean => {
-    const validateFields = ifEmpty( firstName && lastName && phone && address1 && street && city && country  && postalCode );
+    const validateFields = ifEmpty( firstName && lastName && phone && address1 && street && city && country  && postalCode) && (changePassword==false || ifEmpty(password));
     return validateFields;
   };
   
@@ -130,7 +130,7 @@ const user_id = localStorage.getItem('user_id')
       const formData = {id:userId};  
       store.dispatch(getUser(formData)).then((res: any) => {
           setOnload(true);
-          console.log(res,"12345")
+          
           if(res && res.payload){
               setId(res.payload.user?.id);
               setEmail(res.payload.user?.email);
@@ -174,7 +174,7 @@ const user_id = localStorage.getItem('user_id')
               <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
                 <Typography component="h2" variant="h6" color="primary" gutterBottom>
-                 Edit User
+                 Profile
                 </Typography>
                 <Divider />
                   <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
@@ -384,8 +384,14 @@ const user_id = localStorage.getItem('user_id')
                         id="password"
                         onChange={(e) => {
                           setPassword (e.target.value)
-                        }} 
-                      />}
+                          setDirtyFields((dirty) => ({
+                            ...dirty,
+                            password: !ifEmpty(e.target.value),
+                          }));
+                        }}
+                      />
+                      }
+                        {dirtyFields["password"] && getError("Password is requried")}
                       
                       </Grid>
                      
