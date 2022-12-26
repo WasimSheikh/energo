@@ -11,6 +11,8 @@ import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { Link , useParams ,useNavigate} from "react-router-dom";
 import { Avatar, Button, Menu, MenuItem } from "@mui/material";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import '../common/common.css'
 
 
@@ -67,16 +69,10 @@ const Header = (): JSX.Element => {
   };
 
   const Logout = () => {
-    // toast.success("Logout successfully")
-    // localStorage.removeItem("token")
-    // localStorage.removeItem("user_name")
-    // localStorage.removeItem("user_email")
-    // localStorage.removeItem("user_phone")
-    // localStorage.removeItem("user_password")
-    // setTimeout(() => {
-    //   // @ts-ignore
-    //   window.location.reload(false);
-    // }, 1000);
+    toast.success("Logout successfully")
+    localStorage.removeItem("token")
+    localStorage.removeItem("user_id")
+    navigate('/')
   }
 
     return <>
@@ -147,6 +143,7 @@ const Header = (): JSX.Element => {
       </Select>
     </FormControl> */}
           </Toolbar>
+          <ToastContainer/>
         </AppBar>
     </>;
   };

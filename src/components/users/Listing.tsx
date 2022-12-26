@@ -11,7 +11,7 @@ import Header from '../common/Header';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import Button from '@mui/material/Button';
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 import { store } from '../../redux/store';
 import { deleteUser,getUsers } from '../../redux/store/reducers/slices/UserSlice';
@@ -20,12 +20,16 @@ import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Swal from 'sweetalert2';
+// import { Link , useParams ,useNavigate} from "react-router-dom";
 
 
 
 
 
 const deleteId=(e:any)=>{
+
+
+
   Swal.fire({
     title: 'Are you sure want to delete?',
     text: "You won't be able to revert this!",
@@ -38,13 +42,15 @@ const deleteId=(e:any)=>{
     if (result.isConfirmed) {
       store.dispatch(deleteUser(e)).then((res: any) => {
         const result = res.json();
+        console.log(result,"result");
+
       }); 
-      window.location.reload();
-      Swal.fire(
-        'Deleted!',
-        'Your file has been deleted.',
-        'success'
-      )
+      // window.location.reload();
+      // Swal.fire(
+      //   'Deleted!',
+      //   'Your file has been deleted.',
+      //   'success'
+      // )
     }
   })
 }

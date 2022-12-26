@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { AppUser, Permission, Role, User, Company } from './../../../../model/User';
+import { AppUser, Permission, Role, User, Company ,ShareEmail} from './../../../../model/User';
 
 const localEndPoint="http://localhost:8080";
 const buildEndPoint="/apis"
@@ -47,20 +47,18 @@ export const updateRole = createAsyncThunk('update_role', async (role: Role) => 
     });
 })
 
-export const shareDocuments = createAsyncThunk('share_Documents', async (user: User) => {
-    console.log(user);
-    
-    // return await fetch(apiEndPoint+'/user/create', {
-    //     method: 'POST',
-    //     headers: {
-    //         'Accept': 'application/json',
-    //         'Content-Type': 'application/json',
-    //         'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
-    //     },
-    //     body: JSON.stringify(user)
-    // }).then(res => {
-    //     return res.json()
-    // });
+export const shareDocuments = createAsyncThunk('share_Documents', async (ShareEmail: ShareEmail) => {
+    return await fetch(apiEndPoint+'/shareDocuments', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
+        },
+        body: JSON.stringify(ShareEmail)
+    }).then(res => {
+        return res.json()
+    });
 })
 
 export const login = createAsyncThunk('login', async (user: User) => {
@@ -423,7 +421,7 @@ export const uploadeImage = createAsyncThunk('uploade_Image', async (data:any) =
             'Content-Type': 'application/json',
             'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
         },
-        body: JSON.stringify(data)
+        body: data
     }).then(res => {
         return res.json()
     });

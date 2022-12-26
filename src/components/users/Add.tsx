@@ -41,64 +41,92 @@ function UserAdd() {
   const [postalCode,setPostalCode] = useState('');
   const [firstName,setFirstName] = useState('');
   const [lastName,setLastName] = useState('');
+  const [profilePicture,setProfilePicture] = useState('files');
   const [permission, setPermission] = React.useState('');
   const [globalUser, setGlobalUser] = React.useState('');
   const [onload,setOnload] = useState(false);
   const [errorMessages, setErrorMessages] = useState('');
   const [companies, setCompanies] = React.useState([]);
-  
+   const [file, setFile] = useState();
   const [dirtyFields, setDirtyFields] = useState({
     first_name:false,
     companyname:false,
-last_name:false,
-email:false,
-address:false,
-street:false,
-city:false,
-country:false,
-password:false,
-permission:false,
-postalCode:false,
-phone:false,
-  });
 
+    last_name:false,
+    email:false,
+    address:false,
+    street:false,
+    city:false,
+    country:false,
+    password:false,
+    permission:false,
+    postalCode:false,
+    phone:false,
+
+  });
+  const getBase64 = (file:any) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      console.log(reader.result,"11111111");
+      reader.onerror = (error) => reject(error);
+    });
+  };
+
+  const handleFileChange = (e:any) => {
+    if (e.target.files) {
+      setFile(e.target.files[0]);
+      var image = e.target.files[0]
+      getBase64(image)
+    }
+  };
+
+
+  const isValidData = ():boolean => {
+    const validateFields = ifEmpty( firstName && lastName && phone && address && street && city && country && permission && postalCode );
+    return validateFields;
+  };
 
   const selectChange = (event: SelectChangeEvent) => {
     setCompanyId(event.target.value);
   };
-
   const radioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPermission((event.target as HTMLInputElement).value);
   };
 
-  
   const handleSubmit = (e:any) => {
     e.preventDefault();
-    const formData = {
-      company_id:company_id,
-      first_name: firstName,
-      last_name:lastName,
-      global_user:globalUser,
-      phone:phone,
-      email:email,
-      address:address,
-      street:street,
-      city:city,
-      country:country,
-      password:password,
-      permission: permission,
-      zipcode:postalCode,
-    }    
-     
-    store.dispatch(createUser(formData)).then((res: any) => {
-      if(res.payload.status == true){
-        setErrorMessages('');
-        console.log(res,4544554)
-        navigate("/users");
-      }else {
-        setErrorMessages(res.payload?.message);
-      }
-    });                                     
+    if(isValidData()){
+      const formData = {
+        company_id:company_id,
+        first_name: firstName,
+        last_name:lastName,
+        global_user:globalUser,
+        phone:phone,
+        email:email,
+        address:address,
+        street:street,
+        city:city,
+        country:country,
+        password:password,
+        permission: permission,
+        zipcode:postalCode,
+        profile_picture:file,   
+      } 
+      store.dispatch(createUser(formData)).then((res: any) => {
+        if(res.payload.status == true){
+          setErrorMessages('');
+          console.log(res,4544554)
+          navigate("/users");
+        }else {
+          setErrorMessages(res.payload?.message);
+        }
+      });                               
+    }else{
+      console.log('sdfssff');
+    }      
+
   };
   const renderErrorMessage = () =>
   errorMessages && (
@@ -106,7 +134,6 @@ phone:false,
   );
 
   const ifEmpty= (val: string): boolean => {
-
     return (val !== undefined && val.length > 0);// return true;
 }
 
@@ -118,6 +145,8 @@ const getError = (msg: string): JSX.Element => {
   );
 };
   useEffect(() => {
+
+    isValidData();
     if(onload==false){
       setOnload(true);
        store.dispatch(getCompanies()).then((res: any) => { 
@@ -164,6 +193,7 @@ const getError = (msg: string): JSX.Element => {
                         labelId="company_name_label"
                         required
                         id="company_name"
+                        autoFocus
                         value={company_id}
                         label="Company Name"
                         onChange={selectChange}
@@ -202,7 +232,7 @@ const getError = (msg: string): JSX.Element => {
                             id="first_name"
                             required
                             name="first_name"
-                            autoFocus
+                            
                             label="First Name"
                             fullWidth
                             onChange={(e) => {
@@ -213,7 +243,9 @@ const getError = (msg: string): JSX.Element => {
                               }));
                             }}
                           />
-                             {dirtyFields["first_name"] && getError("firstName is requried")}
+
+                             {dirtyFields["first_name"] && getError("FirstName is requried")}
+
                       </Grid>
                       <Grid item xs={6} sm={6}>
                           <TextField
@@ -221,7 +253,7 @@ const getError = (msg: string): JSX.Element => {
                             id="last_name"
                             required
                             name="last_name"
-                            autoFocus
+                            
                             label="Last Name"
                             fullWidth
                             onChange={(e) => {
@@ -232,7 +264,9 @@ const getError = (msg: string): JSX.Element => {
                               }));
                             }}
                           />
-                             {dirtyFields["last_name"] && getError("lastName is requried")}
+
+                             {dirtyFields["last_name"] && getError("LastName is requried")}
+
                       </Grid>
                       <Grid item xs={6} sm={6}>
                         <TextField
@@ -250,7 +284,9 @@ const getError = (msg: string): JSX.Element => {
                             }));
                           }}
                         />
-                           {dirtyFields["phone"] && getError("phone is requried")}
+
+                           {dirtyFields["phone"] && getError("Phone is requried")}
+
                       </Grid>
                       <Grid item xs={6} sm={6}> 
                       </Grid>
@@ -270,7 +306,9 @@ const getError = (msg: string): JSX.Element => {
                                 }));
                               }}
                             />
-                               {dirtyFields["address"] && getError("address is requried")}
+
+                               {dirtyFields["address"] && getError("Address is requried")}
+
                       </Grid>
                       <Grid item xs={6} sm={6}>
                         <TextField
@@ -288,7 +326,9 @@ const getError = (msg: string): JSX.Element => {
                                 }));
                               }}
                             />
-                               {dirtyFields["street"] && getError("street is requried")}
+
+                               {dirtyFields["street"] && getError("Street is requried")}
+
                       </Grid>
                       <Grid item xs={6} sm={6}>
                         <TextField
@@ -306,7 +346,9 @@ const getError = (msg: string): JSX.Element => {
                                 }));
                               }}
                             />
-                               {dirtyFields["city"] && getError("city is requried")}
+
+                               {dirtyFields["city"] && getError("City is requried")}
+
                       </Grid>
                       <Grid item xs={6} sm={6}>
                       <TextField
@@ -324,7 +366,9 @@ const getError = (msg: string): JSX.Element => {
                               }));
                             }}
                           />
-                             {dirtyFields["postalCode"] && getError("postalCode is requried")}
+
+                             {dirtyFields["postalCode"] && getError("PostalCode is requried")}
+
                       </Grid>
                       <Grid item xs={6} sm={6}>
                       <TextField
@@ -342,7 +386,9 @@ const getError = (msg: string): JSX.Element => {
                               }));
                             }}
                           />
-                             {dirtyFields["country"] && getError("country is requried")}
+
+                             {dirtyFields["country"] && getError("Country is requried")}
+
                         </Grid>
                         <Grid item xs={6} sm={6}>
                        </Grid>
@@ -363,9 +409,14 @@ const getError = (msg: string): JSX.Element => {
                             label="Email"
                             name="email" 
                             onChange={(e) => {
-                              setEmail(e.target.value);
-                            }} 
-                        />
+                              setCountry(e.target.value);
+                              setDirtyFields((dirty) => ({
+                                ...dirty,
+                                email: !ifEmpty(e.target.value),
+                              }));
+                            }}
+                          />
+                             {dirtyFields["email"] && getError("Email is requried")}
                         <TextField
                         margin="normal"
                         required
@@ -379,6 +430,7 @@ const getError = (msg: string): JSX.Element => {
                         }} 
                       />
                       </Grid>
+                     
                       <Grid item xs={6} >
                           <Typography component="h6" color="primary" variant="h6" sx={{ mt: 2 }}  gutterBottom>
                             Roles/Permission
@@ -395,11 +447,21 @@ const getError = (msg: string): JSX.Element => {
                                   </RadioGroup>
                                 </FormControl>
                       </Grid>
+                      <Grid item xs={6} sm={6}>
+                        {/* <Button variant="contained" component="label" sx={{ mb: 3 }}> */}
+                     
+                        <p>  Upload profile</p>
+                          {/* <input type="file"  name='logo' hidden accept="image/*" multiple  /> */}
+                          <input type="file"   name='file' onChange={handleFileChange}
+                        />
+                    {/* </Button> */}
+                      </Grid>
                      </Grid>
                     
                     <Divider />
                       <Toolbar  sx={{ ml: 0 ,pl:"0 !important"}}>
-                          <Button
+                          <Button 
+                           disabled={!isValidData()}
                           type="submit"
                           variant="contained"
                         >
