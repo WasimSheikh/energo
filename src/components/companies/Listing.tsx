@@ -28,6 +28,7 @@ import 'react-toastify/dist/ReactToastify.css';
 var companies:any=[];
 
 const mdTheme = createTheme();
+
 const columns: GridColDef[] = [
   { field: 'id',
    headerName: 'Id',
@@ -55,12 +56,20 @@ const columns: GridColDef[] = [
     //valueGetter: (params: GridValueGetterParams) =>
     //`${params.row.firstName || ''} ${params.row.lastName || ''}`,
   },
-  {
+   {
     field: 'is_active',
     headerName: 'Status',
-    width: 90,
-    valueGetter: (params: GridValueGetterParams) =>
-    `${params.row.is_active == '1' ? 'active': 'In-active' }`,
+    width: 180,
+    sortable: false,
+    renderCell: (params) => {
+      return (
+        <>
+       
+    <Button onClick={()=>{statusUpdate(params.row.id)}}  sx={{ minWidth: 40 }}   >{params.row.is_active == '1' ? 'active': 'In-active' } </Button>
+        
+        </>
+      );
+   }
   },
   {
     field: 'action',
@@ -80,6 +89,21 @@ const columns: GridColDef[] = [
    }
   },
 ];
+
+
+const statusUpdate=(e:any)=>{
+  console.log(e);
+    // store.dispatch(statusUpdate(e)).then((res: any) => {
+    // if(res.payload.status==true){
+    //  toast.success(res.payload.message);
+    //   setTimeout(() => {
+    //     window.location.reload();
+    //   }, 3000);
+    // }else{
+    //      toast.error(res.payload.message);
+    // }
+  //}); 
+}
 
 const deleteId=(e:any)=>{
 
@@ -123,8 +147,7 @@ function CompanyList() {
       store.dispatch(getCompanies()).then((res: any) => {
         if (res && res.payload.companies) {
           companies=(res.payload.companies);
-
-         //console.log(companies);
+          //console.log(companies);
           setCompanies(res.payload.companies);
           //console.log('sdfs',companiesss)
         } 
