@@ -128,8 +128,10 @@ function CompanyEdit() {
                setCountry(res.payload.company?.address?.country);
                setPostalCode(res.payload.company?.address?.zipcode);
                setLogo(res.payload.company?.logo);
+
                setchecked(res.payload.company?.is_headquater)
             
+
                setIsHeadauator(res.payload.company?.is_headquater)
 
                if(res.payload.company.is_headquater == '1'){

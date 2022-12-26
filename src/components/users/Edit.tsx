@@ -86,6 +86,8 @@ function UserEdit() {
     const validateFields = ifEmpty( firstName && lastName && phone && address1 && street && city && country && permission && postalCode );
     return validateFields;
   };
+  
+  
   const handleSubmit = (e:any) => {
     e.preventDefault();
     if(isValidData()){
@@ -115,7 +117,9 @@ function UserEdit() {
       }
     });                                     
   };
+
 }
+
   function checkBoxValue(data:any){
     setGlobalUser(data.target.checked)
 }
@@ -164,7 +168,7 @@ const getError = (msg: string): JSX.Element => {
                }else{
                 (document.getElementById('checkBox')as any).checked = false;
                }
-               
+
           } 
       }); 
 

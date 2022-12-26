@@ -51,6 +51,7 @@ function UserAdd() {
   const [dirtyFields, setDirtyFields] = useState({
     first_name:false,
     companyname:false,
+
     last_name:false,
     email:false,
     address:false,
@@ -61,6 +62,7 @@ function UserAdd() {
     permission:false,
     postalCode:false,
     phone:false,
+
   });
   const getBase64 = (file:any) => {
     return new Promise((resolve, reject) => {
@@ -80,17 +82,19 @@ function UserAdd() {
     }
   };
 
-console.log(getBase64);
+
   const isValidData = ():boolean => {
     const validateFields = ifEmpty( firstName && lastName && phone && address && street && city && country && permission && postalCode );
     return validateFields;
   };
+
   const selectChange = (event: SelectChangeEvent) => {
     setCompanyId(event.target.value);
   };
   const radioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPermission((event.target as HTMLInputElement).value);
   };
+
   const handleSubmit = (e:any) => {
     e.preventDefault();
     if(isValidData()){
@@ -122,14 +126,17 @@ console.log(getBase64);
     }else{
       console.log('sdfssff');
     }      
+
   };
   const renderErrorMessage = () =>
   errorMessages && (
     <div className="error">{errorMessages}</div>
   );
+
   const ifEmpty= (val: string): boolean => {
     return (val !== undefined && val.length > 0);// return true;
 }
+
 const getError = (msg: string): JSX.Element => {
   return (
     <span className="text-13 d-inline-block ml-1 text_13 text-danger">
@@ -236,7 +243,9 @@ const getError = (msg: string): JSX.Element => {
                               }));
                             }}
                           />
+
                              {dirtyFields["first_name"] && getError("FirstName is requried")}
+
                       </Grid>
                       <Grid item xs={6} sm={6}>
                           <TextField
@@ -255,7 +264,9 @@ const getError = (msg: string): JSX.Element => {
                               }));
                             }}
                           />
+
                              {dirtyFields["last_name"] && getError("LastName is requried")}
+
                       </Grid>
                       <Grid item xs={6} sm={6}>
                         <TextField
@@ -273,7 +284,9 @@ const getError = (msg: string): JSX.Element => {
                             }));
                           }}
                         />
+
                            {dirtyFields["phone"] && getError("Phone is requried")}
+
                       </Grid>
                       <Grid item xs={6} sm={6}> 
                       </Grid>
@@ -293,7 +306,9 @@ const getError = (msg: string): JSX.Element => {
                                 }));
                               }}
                             />
+
                                {dirtyFields["address"] && getError("Address is requried")}
+
                       </Grid>
                       <Grid item xs={6} sm={6}>
                         <TextField
@@ -311,7 +326,9 @@ const getError = (msg: string): JSX.Element => {
                                 }));
                               }}
                             />
+
                                {dirtyFields["street"] && getError("Street is requried")}
+
                       </Grid>
                       <Grid item xs={6} sm={6}>
                         <TextField
@@ -329,7 +346,9 @@ const getError = (msg: string): JSX.Element => {
                                 }));
                               }}
                             />
+
                                {dirtyFields["city"] && getError("City is requried")}
+
                       </Grid>
                       <Grid item xs={6} sm={6}>
                       <TextField
@@ -347,7 +366,9 @@ const getError = (msg: string): JSX.Element => {
                               }));
                             }}
                           />
+
                              {dirtyFields["postalCode"] && getError("PostalCode is requried")}
+
                       </Grid>
                       <Grid item xs={6} sm={6}>
                       <TextField
@@ -365,7 +386,9 @@ const getError = (msg: string): JSX.Element => {
                               }));
                             }}
                           />
+
                              {dirtyFields["country"] && getError("Country is requried")}
+
                         </Grid>
                         <Grid item xs={6} sm={6}>
                        </Grid>

@@ -104,10 +104,9 @@ const user_id = localStorage.getItem('user_id')
       // const userId = window.location.href.split('/')[5]
       console.log(user_id,"user_id",userId)
       const formData = {id:userId};  
-
-
       store.dispatch(getUser(formData)).then((res: any) => {
         console.log(res,"7777755")
+
           setOnload(true);
           if(res && res.payload){
               setId(res.payload.user?.id);
