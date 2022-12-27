@@ -56,8 +56,8 @@ function UserEdit() {
   
 
   const [dirtyFields, setDirtyFields] = useState({
-    first_name:false,
-    companyname:false,
+  first_name:false,
+  companyname:false,
   last_name:false,
   email:false,
   address:false,
@@ -68,6 +68,7 @@ function UserEdit() {
   permission:false,
   postalCode:false,
   phone:false,
+  
   });
 
   function showPassword(data:any){
@@ -78,7 +79,6 @@ function UserEdit() {
     setBoxValue(data)
   }
 
-
   const selectChange = (event: SelectChangeEvent) => {
     setCompanyId(event.target.value);
   };
@@ -87,7 +87,7 @@ function UserEdit() {
     setPermission((event.target as HTMLInputElement).value);
   };
   const isValidData = ():boolean => {
-    const validateFields = ifEmpty( firstName && lastName && phone && address1 && street && city && country && permission && postalCode );
+    const validateFields = ifEmpty( firstName && lastName && phone && address1 && street && city && country && permission && postalCode) && (changePassword==false || ifEmpty(password) );
     return validateFields;
   };
   
@@ -465,8 +465,14 @@ const getError = (msg: string): JSX.Element => {
                         id="password"
                         onChange={(e) => {
                           setPassword (e.target.value)
-                        }} 
-                      />}
+                          setDirtyFields((dirty) => ({
+                            ...dirty,
+                            password: !ifEmpty(e.target.value),
+                          }));
+                        }}
+                      />
+                      }
+                      {dirtyFields["password"] && boxValue && getError("Password is requried")}
                       </Grid>
                       <Grid item xs={6} >
                           <Typography component="h6" color="primary" variant="h6" sx={{ mt: 2 }}  gutterBottom>
@@ -477,23 +483,19 @@ const getError = (msg: string): JSX.Element => {
                                     aria-labelledby="demo-controlled-radio-buttons-group"
                                     name="controlled-radio-buttons-group"
                                     value={permission}
-                                    onChange={radioChange}
-                                  >
-                                    
-                                  <FormControlLabel value="admin" control={<Radio />}  label="Admin" />
+                                    onChange={radioChange}>
+                                   <FormControlLabel value="admin" control={<Radio />}  label="Admin" />
                                   <FormControlLabel value="author" control={<Radio />} label="Author" />
                                 </RadioGroup>
                             </FormControl>
                       </Grid>
                      </Grid>
-                    
                     <Divider />
                       <Toolbar  sx={{ ml: 0 ,pl:"0 !important"}}>
                       <Button 
                            disabled={!isValidData()}
                           type="submit"
-                          variant="contained"
-                        >
+                          variant="contained">
                         Update
                           </Button>
                         <Button variant="contained" component={Link} to="/users" sx={{ ml: 1 }} >Cancel</Button>
