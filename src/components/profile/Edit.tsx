@@ -67,8 +67,10 @@ function EditProfile() {
   
   function showPassword(data:any){
     setChangePassword(data);
+ 
     if(data==false){
       setPassword('')
+     
     }
     setBoxValue(data)
   }
@@ -365,14 +367,14 @@ const user_id = localStorage.getItem('user_id')
                             onChange={(e) => {
                               showPassword(e.target.checked);
                             }} 
-
+                           
                             id='checkbx'
                             value={changePassword}
                             name="Do you want to change password ?" />}
                             label="Do you want to change password ? "
                             sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
                         />
-                     
+                      
                       {boxValue &&  <TextField
                         margin="normal"
                         required
@@ -391,7 +393,7 @@ const user_id = localStorage.getItem('user_id')
                         }}
                       />
                       }
-                        {dirtyFields["password"] && getError("Password is requried")}
+                       {dirtyFields["password"] && boxValue && getError("Password is requried")}
                       
                       </Grid>
                      
