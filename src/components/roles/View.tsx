@@ -20,6 +20,7 @@ import Checkbox from '@mui/material/Checkbox';
 
 function CompanyView() {
   const mdTheme = createTheme();
+  const theme = useTheme();
   const params = useParams();
   const [id,setId] = useState('');
   const [permissionsId,setPermissionsId] = useState([]);
@@ -41,38 +42,31 @@ function CompanyView() {
         }); 
         store.dispatch(getPermissionParentChlid()).then((res: any) => {
           if (res && res.payload?.permissionparent) {
-            console.log(res.payload.permissionparent[0].chlid,"::::::::::::::::::",res.payload.permissionparent,"___________",res.payload.permissionparent[0]);
-            setPermissions(res.payload?.permissionparent);
+             setPermissions(res.payload?.permissionparent);
           } 
         }); 
       }
   });
 
-  function viewcheck (e:any){
-    console.log(e.checked)
-    if (e.checked == true){
-      (document.getElementById("0child")as any).checked = true;
-      (document.getElementById("1child")as any).checked = true;
-    }else{
-      (document.getElementById("0child")as any).checked = false;
-      (document.getElementById("1child")as any).checked = false;
-    }
-   
 
-  }
+  var permissionRole:any =[];
+  const givePermissionToRole = (value:any) => { 
+   if (!permissionRole.includes(value)){
+     if((document.getElementById(value+'child')as any).checked == true){
+        permissionRole.push(value);
+     }
+  }else{
+     permissionRole = permissionRole.filter((res:any)=>{
+       return res != value
+     })
+   }
+ }; 
 
-  // const handleChange = (value:any) => { 
-  //   let array = permissionsId;
-  // //  array.push(value);
-  //   //setPermissionsId(array);
-  // }; 
-
-  const theme = useTheme();
   const handleSubmit = (e:any) => {
     e.preventDefault();
-    const formData = {
-      id:id,
-      permissions_id:permissionsId,
+    const formData:any = {
+      role_id:id,
+      permissions_ids:permissionRole,
     }
     store.dispatch(createRolehasPermission(formData)).then((res: any) => {
       if (res.payload.status == true) {
@@ -124,26 +118,26 @@ function CompanyView() {
                           {permissions.map((permission:any) => (  
                             <>
                             <Grid>
-                              <FormControlLabel
-                                  control={<Checkbox  
-                                  name={permission.name} value={permission.id} 
-                                  onChange={(e)=>{viewcheck(e.target)}}/>}
-                                  label={permission.name}
-                                  sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
-                              />
+                              
+                            <Grid item xs={6} sm={6}> 
+                              <Box className='font-weight-bold' >{permission.name}</Box>
+                          </Grid>
+
+                              
                             </Grid>
                             {permission.chlid.map((value:any,i:any) => (
                               <Grid  sx={{ ml: 5 }}>
                               {/* <input type="checkbox"  ></input> */}
+
+                             
                               <FormControlLabel
                                   control={
-                                    <input type="checkbox"  id={i + 'child'}/>
-                                  // <Checkbox  
-                                  // name={value.name} value={value.id} />
-                                }
+                                  <Checkbox  
+                                      name={value.name} value={value.id} id={value.id + 'child'}  />
+                                  }
                                   label={value.name}
                                   onChange={(e) => {
-                                    //handleChange(value.id);
+                                    givePermissionToRole(value.id);
                                   }} 
                                   sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
                               />
