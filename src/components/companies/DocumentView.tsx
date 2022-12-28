@@ -15,7 +15,7 @@ import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import PermMediaIcon from "@mui/icons-material/PermMedia";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { store } from "../../redux/store";
 import {
   getDocuments,
@@ -23,14 +23,19 @@ import {
 } from "../../redux/store/reducers/slices/UserSlice";
 // import DocumentCompany from './components/companies/Documents';
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 const mdTheme = createTheme();
 
 type addData ={
-  data:string;
+  route: any
+  
 }
 
 export default function ShareAdd(props:addData) {
+  const params = useParams();
+  const location = useLocation();
+  console.log(props ,"oooooooooo")
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -67,7 +72,7 @@ export default function ShareAdd(props:addData) {
   };
 
   useEffect(() => {
-    console.log(props.data,"props")
+    console.log(params.documentId,"params")
     store.dispatch(getDocuments(data)).then((res: any) => {
       console.log(res.payload.folders.media, "jjjjjjjjjjmedia");
       setDocuments(res.payload.folders.media)

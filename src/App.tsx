@@ -24,12 +24,10 @@ import Permissions from './components/permissions/Listing';
 import AddPermission from './components/permissions/Add';
 import EditPermission from './components/permissions/Edit';
 import ViewPermission from './components/permissions/View';
-import EditProfile from "./components/profile/Edit";
+import ProfileEdit from "./components/profile/Edit";
 import Navgiate from "./components/common/Header";
 import React, { useEffect } from 'react';
 import ShareAdd from './components/companies/DocumentView';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   const navigate = useNavigate();
@@ -40,10 +38,15 @@ function App() {
     let access_token = localStorage.getItem("access_token");
     return (access_token != '' && access_token != null ) ? true : false;
   }
+
   useEffect(() => {
      if(onload==false){
         setIsLogin(IsLoggedIn());
         setOnload(true);
+        if(login==false){
+          alert('You are not Login')
+         navigate("/");
+        }
      } 
   }); 
 
@@ -60,7 +63,7 @@ function App() {
           <Route path="companies/edit/:companyId" element={<EditCompany />} />
           <Route path="companies/document/:companyId" element={<DocumentCompany />} />
           <Route path="companies/document/share" element={<Share />} />
-          <Route path="companies/document/view/:documentId" element={<ShareAdd data="ajay jatwa"/>} />
+          <Route path="companies/document/view/:documentId" element={<ShareAdd route=''/>} />
           <Route path="users" element={<Users />} />
           <Route path="users/add" element={<AddUser />} />
           <Route path="users/view/:userId" element={<ViewUser />} />
@@ -76,13 +79,12 @@ function App() {
           {/* <Route path="documents" element={<Documents />} /> */}
           {/* <Route path="documents/share" element={<Share />} /> */}
           <Route path="notifications" element={<Notifications />} /> 
-          <Route path="profile" element={<EditProfile />} /> 
+          <Route path="ProfileEdit" element={<ProfileEdit />} /> 
           {/* <Route path="dashboard" element={</Navgiate>} />  */}
           </>
         }
         
       </Routes>
-       <ToastContainer/>
       </>
   );
 }

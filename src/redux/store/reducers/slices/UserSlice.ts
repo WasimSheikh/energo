@@ -4,6 +4,7 @@ import { AppUser, Permission, Role, User, Company ,ShareEmail} from './../../../
 const localEndPoint="http://localhost:8080";
 const buildEndPoint="/apis"
 const apiEndPoint='https://laravel.cppatidar.com/energo/backend/api'//detectEnvURL();
+var token = localStorage.getItem("access_token");
 
 export const createUser = createAsyncThunk('Create_user', async (user: User) => {
     return await fetch(apiEndPoint+'/createUser', {
@@ -11,7 +12,7 @@ export const createUser = createAsyncThunk('Create_user', async (user: User) => 
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
+              'Authorization': `${token}`,
         },
         body: JSON.stringify(user)
     }).then(res => {
@@ -25,7 +26,7 @@ export const createRole = createAsyncThunk('Create_role', async (role: Role) => 
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
+              'Authorization': `${token}`,
         },
         body: JSON.stringify(role)
     }).then(res => {
@@ -39,7 +40,7 @@ export const updateRole = createAsyncThunk('update_role', async (role: Role) => 
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
+              'Authorization': `${token}`,
         },
         body: JSON.stringify(role)
     }).then(res => {
@@ -53,7 +54,7 @@ export const shareDocuments = createAsyncThunk('share_Documents', async (ShareEm
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
+              'Authorization': `${token}`,
         },
         body: JSON.stringify(ShareEmail)
     }).then(res => {
@@ -85,7 +86,7 @@ export const login = createAsyncThunk('login', async (user: User) => {
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
+              'Authorization': `${token}`,
         },
         body: JSON.stringify(user)
     }).then(res => {
@@ -99,7 +100,7 @@ export const createCompany = createAsyncThunk('Create_company', async (company: 
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
+              'Authorization': `${token}`,
         },
         body: JSON.stringify(company)
     }).then(res => {
@@ -113,7 +114,7 @@ export const updateCompany = createAsyncThunk('Update_company', async (company: 
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
+              'Authorization': `${token}`,
         },
         body: JSON.stringify(company)
     }).then(res => {
@@ -128,7 +129,7 @@ export const updateUser = createAsyncThunk('Update_user', async (user: User) => 
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
+              'Authorization': `${token}`,
         },
         body: JSON.stringify(user)
     }).then(res => {
@@ -143,7 +144,7 @@ export const updateUserProfile = createAsyncThunk('Update_user', async (user: Us
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
+              'Authorization': `${token}`,
         },
         body: JSON.stringify(user)
     }).then(res => {
@@ -156,7 +157,7 @@ export const getRoles = createAsyncThunk('get_Roles', async () => {
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
+              'Authorization': `${token}`,
         },
     }).then(res => {
         return res.json()
@@ -169,7 +170,7 @@ export const getUsers = createAsyncThunk('get_Users', async () => {
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
+              'Authorization': `${token}`,
         },
     }).then(res => {
         return res.json()
@@ -182,7 +183,7 @@ export const getCompanies = createAsyncThunk('get_Companies', async () => {
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
+              'Authorization': `${token}`,
         },
     }).then(res => {
         return res.json()
@@ -195,7 +196,7 @@ export const getCompany = createAsyncThunk('get_Company', async (company: Compan
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
+              'Authorization': `${token}`,
         },
         body: JSON.stringify(company)
     }).then(res => {
@@ -212,7 +213,7 @@ export const deleteCompany = createAsyncThunk('delete_Company', async (company: 
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
+              'Authorization': `${token}`,
         },
 
         
@@ -231,7 +232,7 @@ export const deleteUser = createAsyncThunk('delete_User', async (user: any) => {
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
+              'Authorization': `${token}`,
         },
 
         
@@ -252,7 +253,7 @@ export const deleteUser = createAsyncThunk('delete_User', async (user: any) => {
 //         headers: {
 //             'Accept': 'application/json',
 //             'Content-Type': 'application/json',
-//             'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
+//               'Authorization': `${token}`,
 //         },
 
         
@@ -267,7 +268,7 @@ export const getUser = createAsyncThunk('get_User', async (user: User) => {
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
+              'Authorization': `${token}`,
         },
         body: JSON.stringify(user)
     }).then(res => {
@@ -281,7 +282,7 @@ export const getRole = createAsyncThunk('get_Role', async (role: Role) => {
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
+              'Authorization': `${token}`,
         },
         body: JSON.stringify(role)
     }).then(res => {
@@ -295,7 +296,7 @@ export const getPermission = createAsyncThunk('get_Permission', async (permissio
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
+              'Authorization': `${token}`,
         },
         body: JSON.stringify(permission)
     }).then(res => {
@@ -309,7 +310,7 @@ export const getPermissions = createAsyncThunk('get_Permissions', async () => {
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
+              'Authorization': `${token}`,
         },
     }).then(res => {
         return res.json()
@@ -322,7 +323,7 @@ export const getPermissionParent = createAsyncThunk('get_Permissions_parent', as
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
+              'Authorization': `${token}`,
         },
     }).then(res => {
         return res.json()
@@ -335,7 +336,7 @@ export const getPermissionParentChlid = createAsyncThunk('get_Permissions_parent
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
+              'Authorization': `${token}`,
         },
     }).then(res => {
         return res.json()
@@ -348,7 +349,7 @@ export const createPermission = createAsyncThunk('create_Permission', async (per
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
+              'Authorization': `${token}`,
         },
         body: JSON.stringify(permission)
     }).then(res => {
@@ -362,7 +363,7 @@ export const createRolehasPermission = createAsyncThunk('create_Role_has_Permiss
        headers: {
            'Accept': 'application/json',
            'Content-Type': 'application/json',
-           'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
+             'Authorization': `${token}`,
        },
        body: JSON.stringify(role)
    }).then(res => {
@@ -378,7 +379,7 @@ export const updatePermission = createAsyncThunk('update_Permission', async (per
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
+              'Authorization': `${token}`,
         },
         body: JSON.stringify(permission)
     }).then(res => {
@@ -391,7 +392,7 @@ export const createCompanyFolder = createAsyncThunk('create_Company_Folder', asy
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
+              'Authorization': `${token}`,
         },
         body: JSON.stringify(company_id)
     }).then(res => {
@@ -399,13 +400,17 @@ export const createCompanyFolder = createAsyncThunk('create_Company_Folder', asy
     });
 })
 
+
+
+
+
 export const getCompanyFolder = createAsyncThunk('get_Company_Folders', async (company_id:any) => {
     return await fetch(apiEndPoint+'/getCompanyFolders', {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
+            'Authorization': `${token}`,
         },
         body: JSON.stringify(company_id)
     }).then(res => {
@@ -420,7 +425,7 @@ export const getDocuments = createAsyncThunk('get_Documents', async (data:any) =
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
+              'Authorization': `${token}`,
         },
         body: JSON.stringify(data)
     }).then(res => {
@@ -433,7 +438,7 @@ export const uploadeImage = createAsyncThunk('uploade_Image', async (data:any) =
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'bwf-secret':'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJCV0YtdWkiLCJpYXQiOjE2MjMxOTE0NjcsInN1YiI6IkJXRl9VSSIsImlzcyI6IkFEIiwiZXhwIjoxNjIzMTkxNDY3fQ.W-uttMeN-lJW9ltRDi6SO0elmow7qWJ5hqd52kvnFis'
+              'Authorization': `${token}`,
         },
         body: data
     }).then(res => {

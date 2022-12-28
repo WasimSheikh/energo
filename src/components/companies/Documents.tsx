@@ -60,6 +60,7 @@ function DocumentList() {
     const [ showFolder, setShowFolder]= useState([])
     const [ addFolders, setAddFolders]= useState([])
     const [ folderId, setFolderId]= useState('')
+    const [image,setImage]=useState()
 
 
     var documentss:any = documents;
@@ -86,23 +87,17 @@ function DocumentList() {
         }
       });           
     };
-
-    // const getBase64 = (file) => {
-    //   return new Promise((resolve, reject) => {
-    //     const reader = new FileReader();
-    //     reader.readAsDataURL(file);
-    //     reader.onload = () => resolve(reader.result);
-    //     reader.onerror = (error) => reject(error);
-    //   });
-    // };
-    const getBase64 = (file:any) => {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        console.log(reader.result,"oooooo")
-        reader.onerror = (error) => reject(error);
-      });
+    const getBase64 = (file:FileList|null) => {
+      if(file){
+        const fileRef =file[0] || ""
+        const fileType :string = fileRef.type || ""
+        console.log(fileType,"file upload type",fileRef)
+        const reader = new FileReader()
+        reader.readAsBinaryString(fileRef)
+        reader.onload = (ev:any)=>{
+          setFile(`data:${fileType};base64,${btoa(ev.target.result)}`)
+        }
+      }
     };
     
     
@@ -112,35 +107,31 @@ function DocumentList() {
      var folderIds = JSON.stringify(folderId)
      var company_id = params.companyId
      var company_ids = JSON.stringify(company_id)
-    //  var documentone = JSON.stringify(imageUrl)
-      console.log(fileInput.current);
-      if (!fileInput) return;
-      alert(`Selected file - ${fileInput.current.files[0].name}`);
-      var documents1 = fileInput.current.files[0]
-      var reader = new FileReader();
-   reader.readAsDataURL(documents1);
-   console.log(reader.result,"reader")
-   reader.onload = function () {
-     console.log(reader.result);
-        imageUrl = reader.result
-   };
+
+         //  var documentone = JSON.stringify(imageUrl)
+      // console.log(fileInput.current);
+      // if (!fileInput) return;
+      // alert(`Selected file - ${fileInput.current.files[0].name}`);
+      // var documents1 = fileInput.current.files[0]
+  //     var reader = new FileReader();
+  //  reader.readAsDataURL(documents1);
+  //  console.log(reader.result,"reader")
+  //  reader.onload = function () {
+  //    console.log(reader.result);
+  //       imageUrl = reader.result
+  //  };
+
       // const formData = new FormData();
       // formData.append("company_id",company_ids);
-      // formData.append("folder_id",folderIds);
-      // formData.append("documents",imageUrl);
+      // formData.append("folder_id",folderId);
+      // formData.append("documents",documents1);
 
-      console.log()
-      var formdata = new FormData();
-      formdata.append("folder_id", "16");
-      formdata.append("company_id", "6");
-      formdata.append("documents", fileInput.current.files[0])
-
-      // const formData:any = {
-      //   'company_id':company_id,
-      //   'folder_id':folderIds,
-      //   'documents':imageUrl,
-      // }
-      store.dispatch(uploadeImage(formdata)).then((res: any) => {
+      const formData:any = {
+        'company_id':company_id,
+        'folder_id':folderId,
+        'documents':documents,
+      }
+      store.dispatch(uploadeImage(formData)).then((res: any) => {
         setCompanyFolder(res.response)
         if (res.payload.status == true) {
           toast.success(res.message)
@@ -150,24 +141,6 @@ function DocumentList() {
       });           
     };
     
-////////////////////////////////////
-// var token = localStorage.getItem("token");
-// const formData = new FormData();
-// // @ts-ignore
-// formData.append("user_profile",user_profile);
-// formData.append("user_name",user_name ? user_name : name);
-// // console.log(formData,"requestOptionsrequestOptions")
-// var result = await fetch(`${BASE_URL}/update-profile`,{
-// method: 'PUT',
-// headers: {
-//   "Authorization": `Bearer ${token}`
-// },
-// body:formData
-// });
-// var results = await result.json();
-////////////////////////////////////
-
-
     var newArray:any =[]
     var finalArray:any=[]
       var player_id:any = []
@@ -226,7 +199,7 @@ function DocumentList() {
       navigate("/companies/document/share")
     }
     function viewDocument(id:any){
-      navigate(`/companies/document/view/${id}`)
+      navigate(`/companies/document/view/${id}CID${params.companyId}`)
     }
 
   return (
@@ -262,7 +235,7 @@ function DocumentList() {
                   <Container sx={{ py: 3  ,paddingTop:"18px"}}  >
                     {/* End hero unit */}
                     <Grid container spacing={2}  sx={{paddingTop:"0px" }} >
-                      {showFolder.map((card:any, i:any) => (
+                      {showFolder?.map((card:any, i:any) => (
                         <Grid item key={card.id}  xs={12} sm={6} md={4}  sx={{paddingTop:"0px" }} >
                           <Card  className='' sx={{ height: "100%" ,boxShadow:'none' ,border:"1px solid black"}}  id={i + 'card'}>
                             <CardContent sx={{paddingTop:"6px", pb:'6px !important' }} >
@@ -285,7 +258,7 @@ function DocumentList() {
                   </Container>
                   <Divider />
                   <Toolbar  sx={{ ml: 0 ,pl:"0 !important"}}>
-                    <Button variant="contained"  onClick={()=>{sendFolder()}} disabled={!addFolders}  >Share </Button>
+                    <Button variant="contained"  onClick={()=>{sendFolder()}} >Share </Button>
                     <Button variant="contained" component={Link} to="/companies/document/share" sx={{ ml: 1 }} >Request </Button>
                     <Button variant="contained" component={Link} to="/companies" sx={{ ml: 1 }} >Cancel </Button>
                   </Toolbar>   
@@ -347,8 +320,8 @@ function DocumentList() {
       <form onSubmit={UploadDocument} className="form-group mt-2">
       <label>
         Upload file:
-        </label>
-        <input type="file" ref={fileInput}  className="form-control" multiple/>
+        </label> 
+        <input type="file" ref={fileInput} onChange={(e)=>{getBase64(e.target.files)}} className="form-control" multiple/>
      
       <br />
       <div className="text-center">

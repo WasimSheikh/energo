@@ -134,12 +134,10 @@ function CompanyView() {
                             </Grid>
                             {permission.chlid.map((value:any,i:any) => (
                               <Grid  sx={{ ml: 5 }}>
-                              {/* <input type="checkbox"  ></input> */}
                               <FormControlLabel
                                   control={
-                                    <input type="checkbox"  id={i + 'child'}/>
-                                  // <Checkbox  
-                                  // name={value.name} value={value.id} />
+                                    // <input type="checkbox"  id={i + 'child'}/>
+                                  <Checkbox name={value.name} value={value.id} id={i + 'child'} />
                                 }
                                   label={value.name}
                                   onChange={(e) => {
