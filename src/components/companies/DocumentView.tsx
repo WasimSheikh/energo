@@ -123,8 +123,8 @@ export default function ShareAdd(props:addData) {
                         <div className="row">
                         {documents.map((res:any)=>{
                           return(
-                            <div className="col-md-3 mb-2" key={res.id}>
-                            <div className="card">
+                            <div className="col-md-3 mb-2" >
+                            <div className="card" key={res.id}>
                               <a href={res.original_url} download>
                               <img
                               className="card-img-top mh-100 mw-100"

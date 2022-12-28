@@ -28,6 +28,8 @@ import ProfileEdit from "./components/profile/Edit";
 import Navgiate from "./components/common/Header";
 import React, { useEffect } from 'react';
 import ShareAdd from './components/companies/DocumentView';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   const navigate = useNavigate();
@@ -40,11 +42,11 @@ function App() {
   }
 
   useEffect(() => {
+    var token =  localStorage.getItem('access_token')
      if(onload==false){
         setIsLogin(IsLoggedIn());
         setOnload(true);
-        if(login==false){
-          alert('You are not Login')
+        if(token ==null){
          navigate("/");
         }
      } 
@@ -85,6 +87,7 @@ function App() {
         }
         
       </Routes>
+      <ToastContainer/>
       </>
   );
 }

@@ -27,8 +27,7 @@ import TextField from '@mui/material/TextField';
 import React, { ChangeEvent, useEffect, useState, useRef } from 'react';
 import { useParams } from "react-router-dom";
 import { createCompanyFolder, getCompanyFolder, uploadeImage } from '../../redux/store/reducers/slices/UserSlice';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import {  toast } from 'react-toastify';
 import { store } from '../../redux/store';
 import {useNavigate} from "react-router-dom"
 import { json } from 'stream/consumers';
@@ -317,7 +316,7 @@ function DocumentList() {
         </DialogActions>
         </form> */}
       <div className="card px-4">
-      <form onSubmit={UploadDocument} className="form-group mt-2">
+      <form onSubmit={UploadDocument} className="form-group mt-2" encType="multipart/form-data" >
       <label>
         Upload file:
         </label> 
@@ -331,7 +330,6 @@ function DocumentList() {
     </form>
       </div>
       </BootstrapDialog>
-      <ToastContainer/>
     </ThemeProvider>
   );
 }

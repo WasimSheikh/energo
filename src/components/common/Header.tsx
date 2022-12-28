@@ -56,10 +56,7 @@ const Header = (): JSX.Element => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open1 = Boolean(anchorEl);
 
-  const OpneProfile = () => {
-    // setOpenProfile("Profile")
-    setAnchorEl(null);
-  }
+
 
   const profileClick = (event:any) => {
     setAnchorEl(event.currentTarget);
@@ -125,7 +122,7 @@ const Header = (): JSX.Element => {
                   'aria-labelledby': 'basic-button',
                 }}
                style={{top:"40px",left: '90%'}}>
-                <MenuItem onClick={() => { OpneProfile() }} component={Link} to="/profile">Profile</MenuItem>
+                <MenuItem  component={Link} to="/profile">Profile</MenuItem>
                 <MenuItem onClick={Logout}><Link to={{ pathname: "/" }}>Logout</Link></MenuItem>
               </Menu>
 
