@@ -445,8 +445,22 @@ export const uploadeImage = createAsyncThunk('uploade_Image', async (data:any) =
         return res.json()
     });
 })
-export const statusUpdate = createAsyncThunk('statusUpdate', async (data:any) => {
-    return await fetch(apiEndPoint+'/statusUpdate', {
+export const statusUpdate = createAsyncThunk('status_User', async (data:any) => {
+    return await fetch(apiEndPoint+'/statusUser', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+              'Authorization': `${token}`,
+        },
+        body: JSON.stringify(data)
+    }).then(res => {
+        return res.json()
+    });
+})
+
+export const statusCompany = createAsyncThunk('status_Company', async (data:any) => {
+    return await fetch(apiEndPoint+'/statusCompany', {
         method: 'POST',
         headers: {
             'Accept': 'application/json',

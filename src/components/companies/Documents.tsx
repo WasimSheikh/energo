@@ -33,6 +33,7 @@ import {useNavigate} from "react-router-dom"
 import { json } from 'stream/consumers';
 import '../common/common.css'
 import DocumentView from './DocumentView'
+import { messageService } from '../../app/_services/message.service';
 
 
 const mdTheme = createTheme();
@@ -61,6 +62,11 @@ function DocumentList() {
     const [ folderId, setFolderId]= useState('')
     const [image,setImage]=useState()
 
+  const sendMessage =()=> {
+      // send message to subscribers via observable subject
+      messageService.sendMessage('Message from Home Page Component to App Component!');
+      navigate("/companies/document/share")
+  }
 
     var documentss:any = documents;
     const handleAdd = (e:any) => {
@@ -139,10 +145,26 @@ function DocumentList() {
         }
       });           
     };
+
+  //   var arrayNew:any =[];
+  //  const handleChange = (value:any) => { 
+  //    if (!arrayNew.includes(value)){
+  //      console.log(arrayNew.includes(value),"ppppp")
+  //      if((document.getElementById(value+'child')as any).checked == true){
+  //        arrayNew.push(value);
+  //      }
+  //    }else{
+  //      arrayNew = arrayNew.filter((res:any)=>{
+  //        return res != value
+  //      })
+  //    }
+  //  }; 
+
+
     
     var newArray:any =[]
     var finalArray:any=[]
-      var player_id:any = []
+      var filderIds:any = []
 
     function addFolder(event:any,i:any,e:any) {
       newArray.push(event.id)
@@ -151,10 +173,10 @@ function DocumentList() {
       if(e.checked == true){
         var data = (document.getElementById(i+'card')as any);
         data.classList.add("Active");
-        player_id.push(event.id)
+        filderIds.push(event.id)
       }else{
         cardID.classList.remove("Active");
-        finalArray = player_id.filter((id:any) => id != ID);
+        finalArray = filderIds.filter((id:any) => id != ID);
         setAddFolders(finalArray);
 
       }
@@ -198,7 +220,8 @@ function DocumentList() {
       navigate("/companies/document/share")
     }
     function viewDocument(id:any){
-      navigate(`/companies/document/view/${id}CID${params.companyId}`)
+      messageService.sendMessage('Message from Home Page Component to App Component!');
+      navigate(`/companies/document/view/${id}`)
     }
 
   return (
@@ -242,7 +265,7 @@ function DocumentList() {
                                 <Checkbox className='documentselect' onClick={(e)=>{addFolder(card,i,e.target);}} />
                                 <PermMediaIcon   sx={{ width: '20%' , height: '20%'}} />
                                 <Typography variant="h6" color="inherit"  sx={{pl:1 ,lineHeight:'19px'}} >
-                                <Typography  onClick={()=>{viewDocument(card.id)}}><a href="javascript:void(0)">{card.title}</a></Typography>
+                                <Typography  onClick={()=>{viewDocument(card.id)}}><a href="#">{card.title}</a></Typography>
                                   <Typography  sx={{color:"#808080d1", fontSize:'13px'}} >
                                   Uploaded 2022-02-02
                                 </Typography>
@@ -257,7 +280,7 @@ function DocumentList() {
                   </Container>
                   <Divider />
                   <Toolbar  sx={{ ml: 0 ,pl:"0 !important"}}>
-                    <Button variant="contained"  onClick={()=>{sendFolder()}} >Share </Button>
+                    <Button variant="contained"  onClick={()=>{sendMessage()}} >Share </Button>
                     <Button variant="contained" component={Link} to="/companies/document/share" sx={{ ml: 1 }} >Request </Button>
                     <Button variant="contained" component={Link} to="/companies" sx={{ ml: 1 }} >Cancel </Button>
                   </Toolbar>   

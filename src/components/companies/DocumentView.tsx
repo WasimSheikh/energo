@@ -24,6 +24,7 @@ import {
 // import DocumentCompany from './components/companies/Documents';
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { messageService } from "../../app/_services/message.service";
 
 const mdTheme = createTheme();
 
@@ -70,8 +71,14 @@ export default function ShareAdd(props:addData) {
     company_id: 6,
     folder_id: 16,
   };
+  
 
   useEffect(() => {
+    console.log("123456---ajay",messageService.getMessage().subscribe((res)=> console.log(res)))
+    messageService.getMessage().subscribe((res:any)=>{
+         console.log("123456---jatwa")
+      console.log(res,"service")
+    })
     console.log(params.documentId,"params")
     store.dispatch(getDocuments(data)).then((res: any) => {
       console.log(res.payload.folders.media, "jjjjjjjjjjmedia");

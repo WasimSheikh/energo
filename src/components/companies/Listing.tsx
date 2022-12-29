@@ -16,13 +16,12 @@ import EditIcon from '@mui/icons-material/Edit';
 import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { deleteCompany,getCompanies } from '../../redux/store/reducers/slices/UserSlice';
+import { deleteCompany,getCompanies, statusCompany, } from '../../redux/store/reducers/slices/UserSlice';
 import React, { useEffect , useState } from 'react';
 import { store } from '../../redux/store';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import Swal from 'sweetalert2';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 
 
 var companies:any=[];
@@ -64,8 +63,8 @@ const columns: GridColDef[] = [
     renderCell: (params) => {
       return (
         <>
-       
-    <Button onClick={()=>{statusUpdate(params.row.id)}}  sx={{ minWidth: 40 }}   >{params.row.is_active == '1' ? 'active': 'In-active' } </Button>
+         {params.row.is_active == '1' && <a href='#' onClick={()=>{statusUpdateCompany(params.row.id)}} > <span className='badge badge-success'>active</span></a>}
+    {params.row.is_active == '0' &&  <a href='#' onClick={()=>{statusUpdateCompany(params.row.id)}} > <span className='badge badge-danger'>Inactive</span></a>}
         
         </>
       );
@@ -91,18 +90,21 @@ const columns: GridColDef[] = [
 ];
 
 
-const statusUpdate=(e:any)=>{
-  console.log(e);
-    // store.dispatch(statusUpdate(e)).then((res: any) => {
-    // if(res.payload.status==true){
-    //  toast.success(res.payload.message);
-    //   setTimeout(() => {
-    //     window.location.reload();
-    //   }, 3000);
-    // }else{
-    //      toast.error(res.payload.message);
-    // }
-  //}); 
+const statusUpdateCompany=(e:any)=>{
+  const formData= {
+    id : e
+  }
+  console.log(e,"formData",formData);
+    store.dispatch(statusCompany(formData)).then((res: any) => {
+    if(res.payload.status==true){
+     toast.success(res.payload.message);
+     setTimeout(() => {
+      window.location.reload();
+    }, 1000);
+    }else{
+         toast.error(res.payload.message);
+    }
+  }); 
 }
 
 const deleteId=(e:any)=>{

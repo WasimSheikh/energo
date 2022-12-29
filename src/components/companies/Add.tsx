@@ -99,7 +99,7 @@ function CompanyAdd() {
       </span>
     );
   };
-    
+
 
 return (
     <ThemeProvider theme={mdTheme}>

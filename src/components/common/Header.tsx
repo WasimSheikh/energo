@@ -66,9 +66,9 @@ const Header = (): JSX.Element => {
   };
 
   const Logout = () => {
-    toast.success("Logout successfully")
-    localStorage.removeItem("token")
+    localStorage.removeItem("access_token")
     localStorage.removeItem("user_id")
+    toast.success("Logout successfully")
     navigate('/')
   }
 
@@ -123,7 +123,10 @@ const Header = (): JSX.Element => {
                 }}
                style={{top:"40px",left: '90%'}}>
                 <MenuItem  component={Link} to="/profile">Profile</MenuItem>
-                <MenuItem onClick={Logout}><Link to={{ pathname: "/" }}>Logout</Link></MenuItem>
+                <MenuItem onClick={Logout}>
+                  {/* <Link to={{ pathname: "/" }}>Logout</Link> */}
+                  Logout
+                  </MenuItem>
               </Menu>
 
             {/* <FormControl sx={{ m: 1, minWidth: 20 }} size="small">

@@ -14,13 +14,14 @@ import Button from '@mui/material/Button';
 import { Link,useNavigate } from "react-router-dom";
 import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 import { store } from '../../redux/store';
-import { deleteUser,getUsers } from '../../redux/store/reducers/slices/UserSlice';
+import { deleteUser,getUsers, statusUpdate } from '../../redux/store/reducers/slices/UserSlice';
 import React, { useEffect , useState } from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Swal from 'sweetalert2';
 // import { Link , useParams ,useNavigate} from "react-router-dom";
+import { toast } from 'react-toastify';
 
 
 
@@ -86,13 +87,27 @@ const columns: GridColDef[] = [
     headerName: 'Phone',
     width: 150,
   },
+  // {
+  //   field: 'is_active',
+  //   headerName: 'Status',
+  //   width: 90,
+  //   valueGetter: (params: GridValueGetterParams) =>
+  //   `${params.row.is_active ? "Active":"Inactive"}`,
+  // }, 
   {
     field: 'is_active',
     headerName: 'Status',
     width: 90,
-    valueGetter: (params: GridValueGetterParams) =>
-    `${params.row.is_active ? "Active":"Inactive"}`,
-  }, 
+    sortable: false,
+    renderCell: (params) => {
+      return (
+        <>
+            {params.row.is_active == '1' && <a href='#'  onClick={()=>{statusUpdateUser(params.row.id)}}  > <span className='badge badge-success'>active</span></a>}
+    {params.row.is_active == '0' &&  <a href='#'  onClick={()=>{statusUpdateUser(params.row.id)}}  > <span className='badge badge-danger'>Inactive</span></a>}
+    </>
+      );
+   }
+  },
   {
     field: 'action',
     headerName: 'Action',
@@ -113,6 +128,23 @@ const columns: GridColDef[] = [
    }
   },
 ];
+
+const statusUpdateUser=(e:any)=>{
+  const formData= {
+    id : e
+  }
+  console.log(e,"formData",formData);
+    store.dispatch(statusUpdate(formData)).then((res: any) => {
+    if(res.payload.status==true){
+     toast.success(res.payload.message);
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    }else{
+         toast.error(res.payload.message);
+    }
+  }); 
+}
 
 function UserList() {
 
