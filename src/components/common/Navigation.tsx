@@ -17,6 +17,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import ContentPasteSearchIcon from '@mui/icons-material/ContentPasteSearch';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import { Link } from "react-router-dom";
+import PublicIcon from '@mui/icons-material/Public';
 
 
 const Navigation = (): JSX.Element => {
@@ -127,6 +128,13 @@ const Navigation = (): JSX.Element => {
               </ListItemIcon>
               <ListItemText primary="Permissions" />
             </ListItemButton>
+            {/* <ListItemButton component={Link} to="/countries">
+              <ListItemIcon>
+                <PublicIcon />
+              </ListItemIcon>
+              <ListItemText primary="countries" />
+            </ListItemButton> */}
+
 
             </React.Fragment>
           </List>

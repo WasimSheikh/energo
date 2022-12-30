@@ -24,7 +24,23 @@ import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
 
 
-var companies:any=[];
+
+function CompanyList() {
+  const [companiesss,setCompanies] = useState([]);
+  
+const getCompanyData =()=>{
+  store.dispatch(getCompanies()).then((res: any) => {
+    if (res && res.payload.companies) {
+      //console.log(companies);
+      setCompanies(res.payload.companies);
+    } 
+  }); 
+}
+
+
+  useEffect(() => {
+    getCompanyData();
+  },[]);
 
 const mdTheme = createTheme();
 
@@ -98,9 +114,8 @@ const statusUpdateCompany=(e:any)=>{
     store.dispatch(statusCompany(formData)).then((res: any) => {
     if(res.payload.status==true){
      toast.success(res.payload.message);
-     setTimeout(() => {
-      window.location.reload();
-    }, 1000);
+     setCompanies([]);
+     getCompanyData();
     }else{
          toast.error(res.payload.message);
     }
@@ -122,16 +137,8 @@ const deleteId=(e:any)=>{
       store.dispatch(deleteCompany(e)).then((res: any) => {
         if(res.payload.status==true){
          toast.success(res.payload.message);
-          //  store.dispatch(getCompanies()).then((res: any) => {
-          //   if (res && res.payload.companies) {
-          //     companies=res.payload.companies;
-          //     //setCompanies(res.payload.companies);
-          //   } 
-          // }); 
-          setTimeout(() => {
-            window.location.reload();
-          }, 3000);
-        
+              setCompanies([]);
+              getCompanyData();
         }else{
              toast.error(res.payload.message);
         }
@@ -140,23 +147,11 @@ const deleteId=(e:any)=>{
   })
 }
 
+  /////////////////////////////////////
 
-function CompanyList() {
-  const [companiesss,setCompanies] = useState([]);
-  
-  useEffect(() => {
-    if(companies.length == 0){
-      store.dispatch(getCompanies()).then((res: any) => {
-        if (res && res.payload.companies) {
-          companies=(res.payload.companies);
-          //console.log(companies);
-          setCompanies(res.payload.companies);
-          //console.log('sdfs',companiesss)
-        } 
-      }); 
-    }
-  });
-  
+
+
+
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>
@@ -189,7 +184,7 @@ function CompanyList() {
                 <Divider />
                 <Box sx={{ height: 400, width: '100%' }}>
                   <DataGrid
-                    rows={companies}
+                    rows={companiesss}
                     columns={columns}
                     pageSize={5}
                     rowsPerPageOptions={[5]}

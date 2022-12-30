@@ -24,19 +24,14 @@ import {
 // import DocumentCompany from './components/companies/Documents';
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { messageService } from "../../app/_services/message.service";
+import { subject } from "../../app/_services/message.service";
 
 const mdTheme = createTheme();
 
-type addData ={
-  route: any
-  
-}
 
-export default function ShareAdd(props:addData) {
+export default function ShareAdd() {
   const params = useParams();
   const location = useLocation();
-  console.log(props ,"oooooooooo")
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -44,6 +39,7 @@ export default function ShareAdd(props:addData) {
   const [folderName, setFolderName] = useState('');
   const [errorMessages, setErrorMessages] = useState("");
   const cards = [1, 2];
+  const [companyID,setCompanyId]=useState('')
 
   const handleSubmit = (event: any) => {
     event.preventDefault();
@@ -68,18 +64,14 @@ export default function ShareAdd(props:addData) {
   }
 
   const data = {
-    company_id: 6,
-    folder_id: 16,
+    company_id: '6',
+    folder_id: params.documentId,
   };
-  
-
   useEffect(() => {
-    console.log("123456---ajay",messageService.getMessage().subscribe((res)=> console.log(res)))
-    messageService.getMessage().subscribe((res:any)=>{
-         console.log("123456---jatwa")
-      console.log(res,"service")
+    subject.subscribe((res:any)=>{
+      console.log(res,"5555")
+      console.log(res,"params.documentId",params.documentId)
     })
-    console.log(params.documentId,"params")
     store.dispatch(getDocuments(data)).then((res: any) => {
       console.log(res.payload.folders.media, "jjjjjjjjjjmedia");
       setDocuments(res.payload.folders.media)
@@ -87,6 +79,7 @@ export default function ShareAdd(props:addData) {
     });
 
   },[]);
+
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: "flex" }}>
@@ -130,13 +123,13 @@ export default function ShareAdd(props:addData) {
                         <div className="row">
                         {documents.map((res:any)=>{
                           return(
-                            <div className="col-md-3 mb-2" >
-                            <div className="card" key={res.id}>
+                            <div className="col-md-3 mb-2" key={res.id}>
+                            <div className="card" >
                               <a href={res.original_url} download>
                               <img
                               className="card-img-top mh-100 mw-100"
                               src={res.original_url} 
-                              alt="Card image cap" style={{height: '150px'}}/>
+                              alt="Card image cap" style={{height: '150px'}} key={res.id}/>
                               </a>
                           
                              <div className="card-body text-center">

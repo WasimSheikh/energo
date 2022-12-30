@@ -33,7 +33,7 @@ import {useNavigate} from "react-router-dom"
 import { json } from 'stream/consumers';
 import '../common/common.css'
 import DocumentView from './DocumentView'
-import { messageService } from '../../app/_services/message.service';
+import { subject } from '../../app/_services/message.service';
 
 
 const mdTheme = createTheme();
@@ -63,8 +63,6 @@ function DocumentList() {
     const [image,setImage]=useState()
 
   const sendMessage =()=> {
-      // send message to subscribers via observable subject
-      messageService.sendMessage('Message from Home Page Component to App Component!');
       navigate("/companies/document/share")
   }
 
@@ -83,10 +81,10 @@ function DocumentList() {
         setCompanyFolder(res.response)
         if (res.payload.status == true) {
           toast.success(res.payload.message);
-          setTimeout(() => {
+          // setTimeout(() => {
             console.log((`/companies/document/${params.companyId}`),"000000000000000000")
-            navigate(`/companies`)
-          }, 2000);
+            navigate(`/companies/document/${params.companyId}`)
+          // }, 2000);
         } else {
           toast.error(res.payload.message)
         }
@@ -220,7 +218,7 @@ function DocumentList() {
       navigate("/companies/document/share")
     }
     function viewDocument(id:any){
-      messageService.sendMessage('Message from Home Page Component to App Component!');
+      subject.next(params.companyId)
       navigate(`/companies/document/view/${id}`)
     }
 
@@ -265,12 +263,12 @@ function DocumentList() {
                                 <Checkbox className='documentselect' onClick={(e)=>{addFolder(card,i,e.target);}} />
                                 <PermMediaIcon   sx={{ width: '20%' , height: '20%'}} />
                                 <Typography variant="h6" color="inherit"  sx={{pl:1 ,lineHeight:'19px'}} >
-                                <Typography  onClick={()=>{viewDocument(card.id)}}><a href="#">{card.title}</a></Typography>
+                                <Typography  onClick={()=>{viewDocument(card.id)}} style={{cursor: 'pointer'}}>{card.title}</Typography>
                                   <Typography  sx={{color:"#808080d1", fontSize:'13px'}} >
                                   Uploaded 2022-02-02
                                 </Typography>
                                 </Typography>
-                                <ControlPointIcon sx={{ width: '15%' , height: '20%' ,color:'#000' ,ml:'20px'}} onClick={()=>{handleClickOpenFolder(card.id)}} />
+                                <ControlPointIcon sx={{ width: '15%' , height: '20%' ,color:'#000' ,ml:'20px'}} onClick={()=>{handleClickOpenFolder(card.id)}} style={{cursor: 'pointer'}}/>
                                 </Toolbar>
                             </CardContent>
                           </Card>
