@@ -27,6 +27,28 @@ import { toast } from 'react-toastify';
 
 
 
+
+function UserList() {
+
+  const [users,setUsers] = useState([]);
+
+  const userList = ()=>{
+    store.dispatch(getUsers()).then((res: any) => {
+      if (res && res.payload.users) {
+        setUsers(res.payload.users);
+      } 
+    }); 
+  }
+
+  useEffect(() => {
+    if(users.length == 0){
+      userList();
+    }
+  },[]);
+
+  
+// aad delete function inside to main component function 
+
 const deleteId=(e:any)=>{
 
 
@@ -42,16 +64,15 @@ const deleteId=(e:any)=>{
   }).then((result) => {
     if (result.isConfirmed) {
       store.dispatch(deleteUser(e)).then((res: any) => {
-        const result = res.json();
-        console.log(result,"result");
-
+        console.log(res.payload.message,"result");
+        if(res.payload.status == true){
+          toast.success(res.payload.message)
+          setUsers([]);
+          userList();
+        }else{
+          toast.error(res.payload.message)
+        }
       }); 
-      // window.location.reload();
-      // Swal.fire(
-      //   'Deleted!',
-      //   'Your file has been deleted.',
-      //   'success'
-      // )
     }
   })
 }
@@ -87,13 +108,6 @@ const columns: GridColDef[] = [
     headerName: 'Phone',
     width: 150,
   },
-  // {
-  //   field: 'is_active',
-  //   headerName: 'Status',
-  //   width: 90,
-  //   valueGetter: (params: GridValueGetterParams) =>
-  //   `${params.row.is_active ? "Active":"Inactive"}`,
-  // }, 
   {
     field: 'is_active',
     headerName: 'Status',
@@ -134,29 +148,14 @@ const statusUpdateUser=(e:any)=>{
     store.dispatch(statusUpdate(formData)).then((res: any) => {
     if(res.payload.status==true){
      toast.success(res.payload.message);
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
+     setUsers([]);
+     userList();
     }else{
          toast.error(res.payload.message);
     }
   }); 
 }
-
-function UserList() {
-
-  const [users,setUsers] = useState([]);
-  useEffect(() => {
-    if(users.length == 0){
-      store.dispatch(getUsers()).then((res: any) => {
-        if (res && res.payload.users) {
-          setUsers(res.payload.users);
-        } 
-      }); 
-    }
-  });
-
-  
+// aad delete function inside to main component function 
 
  
   return (

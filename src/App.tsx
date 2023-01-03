@@ -30,15 +30,26 @@ import React, { useEffect } from 'react';
 import ShareAdd from './components/companies/DocumentView';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ContriesList from './components/countries/Listing';
+import CountiesAdd from './components/countries/Add';
+import CountiesEdit from './components/countries/Edit';
+import CountriesView from './components/countries/View';
+import DocumentList from './components/companies/Documents';
 
 function App() {
   const navigate = useNavigate();
   const [login, setIsLogin] = React.useState(false);
   const [onload,setOnload] = React.useState(false);
+  const [documenets,setDocuments] = React.useState([]);
 
   function IsLoggedIn(){
     let access_token = localStorage.getItem("access_token");
     return (access_token != '' && access_token != null ) ? true : false;
+  }
+
+  function shareDataF(data:any){
+    setDocuments(data)
+    console.log("app.tsx",documenets)
   }
 
   useEffect(() => {
@@ -63,9 +74,9 @@ function App() {
           <Route path="companies/add" element={<AddCompany />} />
           <Route path="companies/view/:companyId" element={<ViewCompany />} />
           <Route path="companies/edit/:companyId" element={<EditCompany />} />
-          <Route path="companies/document/:companyId" element={<DocumentCompany />} />
-          <Route path="companies/document/share" element={<Share />} />
-          <Route path="companies/document/view/:documentId" element={<ShareAdd />} />
+          <Route path="companies/document/:companyId" element={<DocumentList documents = {shareDataF}/>} />
+          <Route path="companies/document/share/:companyId" element={<Share shareData={documenets} />} />
+          <Route path="companies/document/view/:documentId/:companyId" element={<ShareAdd  />} />
           <Route path="users" element={<Users />} />
           <Route path="users/add" element={<AddUser />} />
           <Route path="users/view/:userId" element={<ViewUser />} />
@@ -78,6 +89,10 @@ function App() {
           <Route path="permissions/add" element={<AddPermission />} />
           <Route path="permissions/edit/:permissionId" element={<EditPermission />} />
           <Route path="permissions/view/:permissionId" element={<ViewPermission />} />
+          <Route path="countries" element={<ContriesList />} />
+          <Route path="countries/add" element={<CountiesAdd/>} />
+          <Route path="countries/edit/:countriesId" element={<CountiesEdit />} />
+          <Route path="countries/view/:countriesId" element={<CountriesView/>} />
           {/* <Route path="documents" element={<Documents />} /> */}
           {/* <Route path="documents/share" element={<Share />} /> */}
           <Route path="notifications" element={<Notifications />} /> 

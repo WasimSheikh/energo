@@ -15,7 +15,7 @@ import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import PermMediaIcon from "@mui/icons-material/PermMedia";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { store } from "../../redux/store";
 import {
   getDocuments,
@@ -25,6 +25,9 @@ import {
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { subject } from "../../app/_services/message.service";
+import { toast } from "react-toastify";
+import DownloadForOfflineIcon from '@mui/icons-material/DownloadForOffline';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
 const mdTheme = createTheme();
 
@@ -38,9 +41,9 @@ export default function ShareAdd() {
   const [documents, setDocuments] = useState([]);
   const [folderName, setFolderName] = useState('');
   const [errorMessages, setErrorMessages] = useState("");
-  const cards = [1, 2];
+  const cards = [1];
   const [companyID,setCompanyId]=useState('')
-
+  const navigate = useNavigate();
   const handleSubmit = (event: any) => {
     event.preventDefault();
     const formData = {
@@ -59,26 +62,45 @@ export default function ShareAdd() {
     });
   };
 
-  const childToParent = () => {
-    alert("This is an alert from the Child Component")
+  const callcompony = ()=>{
+    const data = {
+      company_id: params.companyId,
+      folder_id: params.documentId,
+    };
+    console.log(data,"data-------------")
+    store.dispatch(getDocuments(data)).then((res: any) => {
+      if(res.payload.status == true){
+        setDocuments(res.payload.folders.media)
+        setFolderName(res.payload.folders.title)
+        // toast.success(res.payload.message)
+      }else{
+        toast.error(res.payload.message)
+      }
+      console.log(res.payload, "jjjjjjjjjjmedia");
+
+    });
+}
+  useEffect(() => {
+    callcompony()
+  },[]);
+
+  function back(){
+    navigate(`/companies/document/${params.companyId}`)
   }
 
-  const data = {
-    company_id: '6',
-    folder_id: params.documentId,
-  };
-  useEffect(() => {
-    subject.subscribe((res:any)=>{
-      console.log(res,"5555")
-      console.log(res,"params.documentId",params.documentId)
-    })
-    store.dispatch(getDocuments(data)).then((res: any) => {
-      console.log(res.payload.folders.media, "jjjjjjjjjjmedia");
-      setDocuments(res.payload.folders.media)
-      setFolderName(res.payload.folders.title)
-    });
+const imagesData = cards.map((card)=>{
+  return(
+    <div className="container">
+      <div className="alert alert-primary" role="alert">
+          No documents found please upload documents!
+      </div>
+      {/* <div className="text-center">
+      <Link to="/companies/document/6">Click here to upload documents</Link>
+      </div> */}
+    </div>
 
-  },[]);
+  )
+})
 
   return (
     <ThemeProvider theme={mdTheme}>
@@ -121,24 +143,25 @@ export default function ShareAdd() {
                     <Grid container spacing={2} rowSpacing={1}>
                       <Grid item xs={12} sx={{ mb: "20px !important" }}>
                         <div className="row">
-                        {documents.map((res:any)=>{
+                        {documents.length > 0 ? documents?.map((res:any)=>{
                           return(
                             <div className="col-md-3 mb-2" key={res.id}>
                             <div className="card" >
-                              <a href={res.original_url} download>
+                              {/* <a href={res.original_url} download> */}
                               <img
                               className="card-img-top mh-100 mw-100"
                               src={res.original_url} 
                               alt="Card image cap" style={{height: '150px'}} key={res.id}/>
-                              </a>
+                              {/* </a> */}
                           
                              <div className="card-body text-center">
-                             <Link to={res.original_url} target="_blank" download>Download</Link>
+                             <Link to={res.original_url} target="_blank" download>  <DownloadForOfflineIcon/></Link>
+                             <a href={res.original_url} target="_blank" > <VisibilityIcon  /></a>
                              </div>
                           </div>
                             </div>
                           )
-                        })}
+                        }):imagesData}
                         </div>
                       </Grid>
                     </Grid>
@@ -147,11 +170,12 @@ export default function ShareAdd() {
                   <Toolbar sx={{ ml: 0, pl: "0 !important" }} className="mt-4">
                     <Button
                       variant="contained"
-                      component={Link}
-                      to="/companies/document/6"
+                      // component={Link}
+                      // to="/companies/document/"
                       sx={{ ml: 1 }}
+                      onClick={back}
                     >
-                      Cancel{" "}
+                      Back{" "}
                     </Button>
                   </Toolbar>
                 </Paper>
