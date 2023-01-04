@@ -181,7 +181,6 @@ function getRolehasPermissiondata(){
 
     function sendMessage(){
       props.documents(foldersData)
-      // sendFolder.next('This message from Documents components')
       navigate("/companies/document/share/"+params.companyId)
     }
     function viewDocument(id:any){
@@ -191,13 +190,10 @@ function getRolehasPermissiondata(){
   
     const noFolders = noData.map((card:any)=>{
       return(
-        <div className="container">
+        <div className="container mt-4">
           <div className="alert alert-primary" role="alert">
               No folders found please add folders!
           </div>
-          {/* <div className="text-center">
-          <Link to="/companies/document/6">Click here to upload documents</Link>
-          </div> */}
         </div>
     
       )
