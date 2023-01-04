@@ -386,6 +386,19 @@ export const updatePermission = createAsyncThunk('update_Permission', async (per
         return res.json()
     });
 })
+export const deletePermission = createAsyncThunk('deletePermission', async (data:any) => {
+    return await fetch(apiEndPoint+'/deletePermission', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+              'Authorization': `${token}`,
+        },
+        body: JSON.stringify(data)
+    }).then(res => {
+        return res.json()
+    });
+})
 export const createCompanyFolder = createAsyncThunk('create_Company_Folder', async (company_id:any) => {
     return await fetch(apiEndPoint+'/createCompanyFolder', {
         method: 'POST',
@@ -488,6 +501,181 @@ export const getRolehasPermission = createAsyncThunk('getRolehasPermission', asy
         return res.json()
     });
 })
+
+// add some country api code here
+export const createCountry = createAsyncThunk('createCountry', async (data:any) => {
+    return await fetch(apiEndPoint+'/createCountry', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+              'Authorization': `${token}`,
+        },
+        body: JSON.stringify(data)
+    }).then(res => {
+        return res.json()
+    });
+})
+export const getCountries = createAsyncThunk('getCountries', async () => {
+    return await fetch(apiEndPoint+'/getCountries', {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+              'Authorization': `${token}`,
+        },
+    }).then(res => {
+        return res.json()
+    });
+})
+
+export const getCountry = createAsyncThunk('getCountry', async (data:any) => {
+    return await fetch(apiEndPoint+'/getCountry', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+              'Authorization': `${token}`,
+        },
+        body: JSON.stringify(data)
+    }).then(res => {
+        return res.json()
+    });
+})
+export const updateCountry = createAsyncThunk('updateCountry', async (data:any) => {
+    return await fetch(apiEndPoint+'/updateCountry', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+              'Authorization': `${token}`,
+        },
+        body: JSON.stringify(data)
+    }).then(res => {
+        return res.json()
+    });
+})
+
+export const deleteCountry = createAsyncThunk('deleteCountry', async (data:any) => {
+    return await fetch(apiEndPoint+'/deleteCountry', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+              'Authorization': `${token}`,
+        },
+        body: JSON.stringify(data)
+    }).then(res => {
+        return res.json()
+    });
+})
+
+export const StatusCountry = createAsyncThunk('StatusCountry', async (data:any) => {
+    return await fetch(apiEndPoint+'/statusCountry', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+              'Authorization': `${token}`,
+        },
+        body: JSON.stringify(data)
+    }).then(res => {
+        return res.json()
+    });
+})
+// add some city api code here
+export const getCities = createAsyncThunk('getCities', async () => {
+    return await fetch(apiEndPoint+'/getCities', {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+              'Authorization': `${token}`,
+        },
+    }).then(res => {
+        return res.json()
+    });
+})
+
+export const getCountryStates = createAsyncThunk('getCountryStates', async (data:any) => {
+    return await fetch(apiEndPoint+'/getCountryStates', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+              'Authorization': `${token}`,
+        },
+        body: JSON.stringify(data)
+    }).then(res => {
+        return res.json()
+    });
+})
+export const createCity = createAsyncThunk('createCity', async (data:any) => {
+    return await fetch(apiEndPoint+'/createCity', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+              'Authorization': `${token}`,
+        },
+        body: JSON.stringify(data)
+    }).then(res => {
+        return res.json()
+    });
+})
+export const getCity = createAsyncThunk('getCity', async (data:any) => {
+    return await fetch(apiEndPoint+'/getCity', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+              'Authorization': `${token}`,
+        },
+        body: JSON.stringify(data)
+    }).then(res => {
+        return res.json()
+    });
+})
+export const updateCity = createAsyncThunk('updateCity', async (data:any) => {
+    return await fetch(apiEndPoint+'/updateCity', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+              'Authorization': `${token}`,
+        },
+        body: JSON.stringify(data)
+    }).then(res => {
+        return res.json()
+    });
+})
+export const deleteCity = createAsyncThunk('deleteCity', async (data:any) => {
+    return await fetch(apiEndPoint+'/deleteCity', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+              'Authorization': `${token}`,
+        },
+        body: JSON.stringify(data)
+    }).then(res => {
+        return res.json()
+    });
+})
+export const statusCity = createAsyncThunk('statusCity', async (data:any) => {
+    return await fetch(apiEndPoint+'/statusCity', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+              'Authorization': `${token}`,
+        },
+        body: JSON.stringify(data)
+    }).then(res => {
+        return res.json()
+    });
+})
+// add some city api code here
 
 const INIT_STATE: AppUser = {
     currUser: {

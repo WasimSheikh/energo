@@ -12,14 +12,11 @@ import Footer from '../common/Footer';
 import Header from '../common/Header';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import { Link, useNavigate } from "react-router-dom";
-import { createPermission, createRole, getPermissionParent } from '../../redux/store/reducers/slices/UserSlice';
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { createCountry, getCountries, getCountry } from '../../redux/store/reducers/slices/UserSlice';
 import { store } from '../../redux/store';
 import React, { useState ,useEffect } from 'react';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+import { SelectChangeEvent } from '@mui/material/Select';
 import { toast } from 'react-toastify';
 
 
@@ -28,51 +25,14 @@ const mdTheme = createTheme();
 export default function CountiesAdd() {
 
   const navigate = useNavigate();
+  const params = useParams();
   const [name,setName] = useState('');
-  const [parent,setParent] = useState('');
-  const [url,setUrl] = useState('');
   const [errorMessages, setErrorMessages] = useState('');
-  const [countries, setCountries] = useState([
-    {
-        Id: "1",
-        Name: "Finland",
-        DisplayName: "Finland"
-      },
-      {
-        Id: "2",
-        Name: "Bangladesh",
-        DisplayName: "Bangladesh"
-      },
-      {
-        Id: "3",
-        Name: "India",
-        DisplayName: "India"
-      },
-      {
-        Id: "5",
-        Name: "USA",
-        DisplayName: "USA"
-      },
-      {
-        Id: "6",
-        Name: "Canada",
-        DisplayName: "Canada"
-      },
-      {
-        Id: "7",
-        Name: "Australia",
-        DisplayName: "Australia"
-      }
-  ]);
+  const [country, setCountry] = useState('');
   const [onload,setOnload] = useState(false);
   const [dirtyFields, setDirtyFields] = useState({
     name: false,
-    parent:false,
-    url:false,
   });
-  const selectChange = (event: SelectChangeEvent) => {
-    setParent(event.target.value);
-  };
 
   const renderErrorMessage = () =>
   errorMessages && (
@@ -92,40 +52,42 @@ const getError = (msg: string): JSX.Element => {
   );
 };
 const isValidData = ():boolean => {
-  console.log(name,parent,"kkkkkkkkk");
   const validateFields = ifEmpty( name );
-  
   return validateFields;
 };
   const handleSubmit = (e:any) => {
     e.preventDefault();
     if(isValidData()){
     const formData = {
-      name:name,
-      parent:parent,
-      guard_name:'web',
+      title:name,
     }
-    toast.error('Add Api pending')
-    // store.dispatch(createPermission(formData)).then((res: any) => {
-    //   if (res.payload.status == true) {
-    //     setErrorMessages('');
-    //     navigate("/permissions");
-    //   } else {
-    //     setErrorMessages(res.payload?.message);
-    //   }
-    // });           
+    store.dispatch(createCountry(formData)).then((res: any) => {
+      console.log(res,"ttttt")
+      if (res.payload.status == true) {
+        toast.success(res.payload.message)
+        navigate("/countries");
+      } else {
+        toast.error(res.payload?.message);
+      }
+    });           
   };
   }
+  console.log(params.countriesId,"params.countriesId")
   useEffect(() => {
-    if(onload==false){
-      setOnload(true);
-    //   store.dispatch(getPermissionParent()).then((res: any) => {
-    //     if (res && res.payload?.permissionparent) {
-    //       setCountries(res.payload?.permissionparent);
-    //     } 
-    //   });
+    if(params.countriesId != null){
+      const formData ={
+        country_id:params.countriesId
+      }
+      store.dispatch(getCountry(formData)).then((res: any) => {
+        console.log(res)
+        if (res.payload.status == 'true') {
+          setCountry(res.payload.country);
+        }else{
+          toast.error(res.payload.message)
+        }
+      });
     }
-  });
+  },[]);
 
   return (
     <ThemeProvider theme={mdTheme}>
@@ -151,68 +113,31 @@ const isValidData = ():boolean => {
               <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
                 <Typography component="h2" variant="h6" color="primary" gutterBottom>
-                Add Countries
+                Add Country
                 </Typography>
                 <Divider />
                 <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
                   <Grid container spacing={2} rowSpacing={1} >
                       <Grid item xs={6} sm={6} mt={2}>
-                          <FormControl fullWidth >
-                          <InputLabel id="parent">Countries</InputLabel>
-                          <Select
-                            labelId="parent"
-                            required
-                            id="parent"
-                            value={parent}
-                            label="Parent Category"
-                            onChange={selectChange}
-                          >
-                          <MenuItem value="">-Select-</MenuItem>
-                            {countries.map((opt:any) => (  
-                              <MenuItem key={opt.Id} value={opt.Id}>
-                              {opt.Name}
-                              </MenuItem>
-                            ))} 
-                          </Select>
-                        </FormControl>
                         <Grid item xs={12} sm={12}>
                           <TextField
                             margin="normal"
                             id="title"
                             required
-                            name="city"
-                            label="City"
+                            name="Country"
+                            label="Country"
                             fullWidth
                             value={name}
                             onChange={(e) => {
                               setName(e.target.value);
                               setDirtyFields((dirty) => ({
                                 ...dirty,
-                                parent: !ifEmpty(e.target.value),
+                                name: !ifEmpty(e.target.value),
                               }));
                             }}
                           />
-                            {dirtyFields["parent"] && getError("Title is requried")}
+                            {dirtyFields["name"] && getError("Country is requried")}
                       </Grid>
-                      {/* <Grid item xs={12} sm={12} sx={{ mb: 2}}>
-                          <TextField
-                            margin="normal"
-                            id="url"
-                            required
-                            name="url"
-                            label="Url"
-                            fullWidth
-                            value={url}
-                            onChange={(e) => {
-                              setUrl(e.target.value);
-                              setDirtyFields((dirty) => ({
-                                ...dirty,
-                                url: !ifEmpty(e.target.value),
-                              }));
-                            }}
-                          />
-                            {dirtyFields["url"] && getError("Url is requried")}
-                      </Grid> */}
                       </Grid>
                       </Grid>
                       <Divider />

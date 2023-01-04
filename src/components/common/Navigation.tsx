@@ -128,12 +128,18 @@ const Navigation = (): JSX.Element => {
               </ListItemIcon>
               <ListItemText primary="Permissions" />
             </ListItemButton>
-            {/* <ListItemButton component={Link} to="/countries">
+            <ListItemButton component={Link} to="/countries">
               <ListItemIcon>
                 <PublicIcon />
               </ListItemIcon>
-              <ListItemText primary="countries" />
-            </ListItemButton> */}
+              <ListItemText primary="Countries" />
+            </ListItemButton>
+            <ListItemButton component={Link} to="/cities">
+              <ListItemIcon>
+                <PublicIcon />
+              </ListItemIcon>
+              <ListItemText primary="Cities" />
+            </ListItemButton>
             </React.Fragment>
           </List>
         </Drawer>

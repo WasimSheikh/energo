@@ -15,11 +15,32 @@ import { Link } from "react-router-dom";
 import EditIcon from '@mui/icons-material/Edit';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { getPermissions } from '../../redux/store/reducers/slices/UserSlice';
+import { getPermissions ,deletePermission} from '../../redux/store/reducers/slices/UserSlice';
 import React, { useEffect , useState } from 'react';
 import { store } from '../../redux/store';
+import Swal from 'sweetalert2';
+import { toast } from 'react-toastify';
 
-const mdTheme = createTheme();
+
+
+function CompanyList() {
+  const [permissions,setPermissions] = useState([]);
+
+  function getPermissionList(){
+    if(permissions.length == 0){
+      store.dispatch(getPermissions()).then((res: any) => {
+        if (res && res.payload?.permissions) {
+          setPermissions(res.payload?.permissions);
+        } 
+      }); 
+    }
+  }
+
+  useEffect(() => {
+    getPermissionList();
+  });
+
+  const mdTheme = createTheme();
 const columns: GridColDef[] = [
   {
     field: 'id',
@@ -50,24 +71,40 @@ const columns: GridColDef[] = [
       return (
         <>
         <Button  sx={{ minWidth: 40 }}  component={Link} to={'/permissions/edit/'+params.row.id} > <EditIcon  /> </Button>
-        <Button  sx={{ minWidth: 40 }}   component={Link} to={'/permissions/view/'+params.row.id} > <DeleteIcon  /> </Button>
+        <Button  sx={{ minWidth: 40 }}   onClick={()=>{deletePermissionById(params.row.id)}} > <DeleteIcon  /> </Button>
         </>
       );
    }
   },
 ];
 
-function CompanyList() {
-  const [permissions,setPermissions] = useState([]);
-  useEffect(() => {
-    if(permissions.length == 0){
-      store.dispatch(getPermissions()).then((res: any) => {
-        if (res && res.payload?.permissions) {
-          setPermissions(res.payload?.permissions);
-        } 
-      }); 
-    }
-  });
+const deletePermissionById=(e:any)=>{
+  const formData ={
+    permission_id :e
+  }
+    Swal.fire({
+      title: 'Are you sure want to delete?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes , confirm !'
+    }).then((result:any) => {
+      if (result.isConfirmed) {
+        store.dispatch(deletePermission(formData)).then((res: any) => {
+          if(res.payload.status==true){
+           toast.success(res.payload.message);
+           setPermissions([]);
+           getPermissionList();
+          }else{
+               toast.error(res.payload.message);
+          }
+        }); 
+      }
+    })
+  }
+    
   
   return (
     <ThemeProvider theme={mdTheme}>

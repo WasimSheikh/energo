@@ -148,7 +148,7 @@ const imagesData = cards.map((card)=>{
                               <img
                               className="card-img-top mh-100 mw-100"
                               src={res.original_url} 
-                              alt="Card image cap" style={{height: '150px'}} key={res.id}/>
+                              alt="Card image cap" style={{height: '150px'}} />
                               {/* </a> */}
                           
                              <div className="card-body text-center">

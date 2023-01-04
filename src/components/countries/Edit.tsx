@@ -13,13 +13,10 @@ import Header from '../common/Header';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { Link, useParams,useNavigate } from "react-router-dom";
-import { getPermission, getPermissionParent, updatePermission } from '../../redux/store/reducers/slices/UserSlice';
+import { getCountry, updateCountry } from '../../redux/store/reducers/slices/UserSlice';
 import { store } from '../../redux/store';
-import React, { useEffect, useState } from 'react';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
 const mdTheme = createTheme();
 const names = [
@@ -34,21 +31,13 @@ export default function CountiesEdit() {
   
     const navigate = useNavigate();
     const params = useParams();
-    const [id,setId] = useState('');
+    const [id,setId] = useState(params.countriesId);
     const [title,setTitle] = useState('');
-    const [parent,setParent] = useState('');
-    const [url,setUrl] = useState('');
     const [onload,setOnload] = useState(false);
     const [errorMessages, setErrorMessages] = useState('');
-    const [permissions, setPermissions] = useState([]);
     const [dirtyFields, setDirtyFields] = useState({
       name: false,
-      parent:false,
-      url:false,
     });
-    const selectChange = (event: SelectChangeEvent) => {
-      setParent(event.target.value);
-    };
     const renderErrorMessage = () =>
     errorMessages && (
       <div className="error">{errorMessages}</div>
@@ -64,24 +53,22 @@ export default function CountiesEdit() {
     );
   };
   const isValidData = ():boolean => {
-    const validateFields = ifEmpty( title && url);
+    const validateFields = ifEmpty( title );
     return validateFields;
   };
     const handleSubmit = (e:any) => {
         e.preventDefault();
         if(isValidData()){
         const formData = {
-          id:id,
-          name:title,
-          url:url,
-          parent:parent
+          country_id:id,
+          title:title,
         }  
-        store.dispatch(updatePermission(formData)).then((res: any) => {
+        store.dispatch(updateCountry(formData)).then((res: any) => {
             if (res.payload.status == true) {
-              setErrorMessages('');
-              navigate("/permissions");
+              toast.success(res.payload?.message);
+              navigate("/countries");
             } else {
-              setErrorMessages(res.payload?.message);
+              toast.error(res.payload?.message);
             }
         });           
   };
@@ -89,22 +76,12 @@ export default function CountiesEdit() {
   useEffect(() => {
     if(onload==false){
       setOnload(true);
-      const permissionId = window.location.href.split('/')[5]
-      const formData = {id:permissionId};  
-        store.dispatch(getPermissionParent()).then((res: any) => {
-          if (res && res.payload?.permissionparent) {
-            setPermissions(res.payload?.permissionparent);
-          } 
-        });
-        // store.dispatch(getPermission(formData)).then((res: any) => {
-        //     if (res && res.payload) {
-        //         setId(res.payload.permission?.id);
-        //         setTitle(res.payload.permission?.name);
-        //         setUrl(res.payload.permission?.url);
-        //         setParent(res.payload.permission?.parent)
-        //     } 
-        // }); 
-        
+      const formData ={
+        country_id:params.countriesId
+      }
+      store.dispatch(getCountry(formData)).then((res: any) => {
+          setTitle(res.payload.country.title)
+      });
     }
   });
   return (
@@ -131,68 +108,31 @@ export default function CountiesEdit() {
               <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
                 <Typography component="h2" variant="h6" color="primary" gutterBottom>
-                Edit Permission
+                Edit Country
                 </Typography>
                 <Divider />
                   <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
                   <Grid container spacing={2} rowSpacing={1} >
                   <Grid item xs={6} sm={6} mt={2}>
-                      <FormControl fullWidth >
-                      <InputLabel id="company_name_label">Category</InputLabel>
-                      <Select
-                        labelId="parent"
-                        required
-                        id="parent"
-                        value={parent}
-                        label="Countries"
-                        onChange={selectChange}
-                      >
-                      <MenuItem value="">-Select-</MenuItem>
-                        {permissions.map((opt:any) => (  
-                          <MenuItem key={opt.id} value={opt.id}>
-                          {opt.name}
-                          </MenuItem>
-                        ))} 
-                      </Select>
-                      </FormControl>
                       <Grid>
                           <TextField
                             margin="normal"
                             id="title"
                             required
                             name="title"
-                            label="City"
+                            label="Country"
                             fullWidth
                             value={title}
                             onChange={(e) => {
                               setTitle(e.target.value);
                               setDirtyFields((dirty) => ({
                                 ...dirty,
-                                parent: !ifEmpty(e.target.value),
+                                name: !ifEmpty(e.target.value),
                               }));
                             }}
                           />
-                            {dirtyFields["parent"] && getError("Title is requried")}
+                            {dirtyFields["name"] && getError("Country is requried")}
                       </Grid>
-                      {/* <Grid item xs={12} sm={12} sx={{ mb: 2}}>
-                          <TextField
-                            margin="normal"
-                            id="url"
-                            required
-                            name="url"
-                            label="Url"
-                            fullWidth
-                            value={url}
-                            onChange={(e) => {
-                              setUrl(e.target.value);
-                              setDirtyFields((dirty) => ({
-                                ...dirty,
-                                url: !ifEmpty(e.target.value),
-                              }));
-                            }}
-                          />
-                            {dirtyFields["url"] && getError("Url is requried")}
-                      </Grid> */}
                     </Grid>
                     </Grid>
                     <Divider />
