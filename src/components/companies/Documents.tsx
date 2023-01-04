@@ -26,14 +26,14 @@ import CloseIcon from '@mui/icons-material/Close'
 import TextField from '@mui/material/TextField';
 import React, { ChangeEvent, useEffect, useState, useRef } from 'react';
 import { useParams } from "react-router-dom";
-import { createCompanyFolder, getCompanyFolder, uploadeImage } from '../../redux/store/reducers/slices/UserSlice';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { createCompanyFolder, getCompanyFolder, uploadeImage ,getRolehasPermission} from '../../redux/store/reducers/slices/UserSlice';
+import {  toast } from 'react-toastify';
 import { store } from '../../redux/store';
 import {useNavigate} from "react-router-dom"
 import { json } from 'stream/consumers';
 import '../common/common.css'
 import DocumentView from './DocumentView'
+import { sendFolder, subject } from '../../app/_services/message.service';
 
 
 const mdTheme = createTheme();
@@ -46,9 +46,12 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     },
 }));
 
+type data={
+  documents:any
+}
 
 
-function DocumentList() {
+export default function DocumentList(props:data) {
   const navigate = useNavigate();
   const fileInput = useRef<any | null>(null);
   const params = useParams();
@@ -60,9 +63,12 @@ function DocumentList() {
     const [ showFolder, setShowFolder]= useState([])
     const [ addFolders, setAddFolders]= useState([])
     const [ folderId, setFolderId]= useState('')
+    const [image,setImage]=useState()
 
-
-    var documentss:any = documents;
+    
+    var noData:any=[1]
+    var newArray:any =[]
+    var foldersData:any =[]
     const handleAdd = (e:any) => {
       console.log(params.companyId,"params")
       e.preventDefault();
@@ -72,37 +78,28 @@ function DocumentList() {
       }
       console.log(formData,"formData")
       store.dispatch(createCompanyFolder(formData)).then((res: any) => {
-        console.log(res,"jjjj")
-        // toast.success(res.payload.message);
         setCompanyFolder(res.response)
         if (res.payload.status == true) {
           toast.success(res.payload.message);
-          setTimeout(() => {
-            console.log((`/companies/document/${params.companyId}`),"000000000000000000")
-            navigate(`/companies`)
-          }, 2000);
+          handleClose()
+          getCpmpanyFolder();
+            // navigate(`/companies/document/${params.companyId}`)
         } else {
           toast.error(res.payload.message)
         }
       });           
     };
-
-    // const getBase64 = (file) => {
-    //   return new Promise((resolve, reject) => {
-    //     const reader = new FileReader();
-    //     reader.readAsDataURL(file);
-    //     reader.onload = () => resolve(reader.result);
-    //     reader.onerror = (error) => reject(error);
-    //   });
-    // };
-    const getBase64 = (file:any) => {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        console.log(reader.result,"oooooo")
-        reader.onerror = (error) => reject(error);
-      });
+    const getBase64 = (file:FileList|null) => {
+      if(file){
+        const fileRef =file[0] || ""
+        const fileType :string = fileRef.type || ""
+        console.log(fileType,"file upload type",fileRef)
+        const reader = new FileReader()
+        reader.readAsBinaryString(fileRef)
+        reader.onload = (ev:any)=>{
+          setFile(`data:${fileType};base64,${btoa(ev.target.result)}`)
+        }
+      }
     };
     
     
@@ -112,80 +109,38 @@ function DocumentList() {
      var folderIds = JSON.stringify(folderId)
      var company_id = params.companyId
      var company_ids = JSON.stringify(company_id)
-    //  var documentone = JSON.stringify(imageUrl)
-      console.log(fileInput.current);
-      if (!fileInput) return;
-      alert(`Selected file - ${fileInput.current.files[0].name}`);
-      var documents1 = fileInput.current.files[0]
-      var reader = new FileReader();
-   reader.readAsDataURL(documents1);
-   console.log(reader.result,"reader")
-   reader.onload = function () {
-     console.log(reader.result);
-        imageUrl = reader.result
-   };
-      // const formData = new FormData();
-      // formData.append("company_id",company_ids);
-      // formData.append("folder_id",folderIds);
-      // formData.append("documents",imageUrl);
-
-      console.log()
-      var formdata = new FormData();
-      formdata.append("folder_id", "16");
-      formdata.append("company_id", "6");
-      formdata.append("documents", fileInput.current.files[0])
-
-      // const formData:any = {
-      //   'company_id':company_id,
-      //   'folder_id':folderIds,
-      //   'documents':imageUrl,
-      // }
-      store.dispatch(uploadeImage(formdata)).then((res: any) => {
+      const formData:any = {
+        'company_id':company_id,
+        'folder_id':folderId,
+        'documents':documents,
+      }
+      store.dispatch(uploadeImage(formData)).then((res: any) => {
         setCompanyFolder(res.response)
         if (res.payload.status == true) {
           toast.success(res.message)
+          navigate(`/companies/document/${params.companyId}`)
+          handleCloseFolder()
         } else {
           toast.error(res.message)
         }
       });           
     };
-    
-////////////////////////////////////
-// var token = localStorage.getItem("token");
-// const formData = new FormData();
-// // @ts-ignore
-// formData.append("user_profile",user_profile);
-// formData.append("user_name",user_name ? user_name : name);
-// // console.log(formData,"requestOptionsrequestOptions")
-// var result = await fetch(`${BASE_URL}/update-profile`,{
-// method: 'PUT',
-// headers: {
-//   "Authorization": `Bearer ${token}`
-// },
-// body:formData
-// });
-// var results = await result.json();
-////////////////////////////////////
-
-
-    var newArray:any =[]
-    var finalArray:any=[]
-      var player_id:any = []
 
     function addFolder(event:any,i:any,e:any) {
-      newArray.push(event.id)
-      var cardID = (document.getElementById(i+'card')as any);
       var ID = event.id
-      if(e.checked == true){
-        var data = (document.getElementById(i+'card')as any);
-        data.classList.add("Active");
-        player_id.push(event.id)
+      var cardID = (document.getElementById(i+'card')as any);
+      if (!newArray.includes(ID)){
+        newArray.push(event.id);
+        foldersData.push(event);
+          cardID.classList.add("Active");
+          console.log('true')
       }else{
+        console.log('false')
+        newArray = newArray.filter((id:any) => id != ID);
+        foldersData = foldersData.filter((id:any) => id.id != ID);
         cardID.classList.remove("Active");
-        finalArray = player_id.filter((id:any) => id != ID);
-        setAddFolders(finalArray);
-
       }
+      console.log(newArray,"state",foldersData)
       }
 
     const handleClickOpen = () => {
@@ -200,6 +155,7 @@ function DocumentList() {
     };
     const handleCloseFolder = () => {
       setFolder(false);
+      setFile(null);
     };
   
 
@@ -211,23 +167,41 @@ function DocumentList() {
         setShowFolder(res.payload.folders);
       }); 
     }
+    var role_id = localStorage.getItem('user_id')
+function getRolehasPermissiondata(){
+  store.dispatch(getRolehasPermission(role_id)).then((res:any)=>{
+    console.log(res,"permission")
+  })
+}
 
       useEffect(() => {
-        console.log('555585858')
         getCpmpanyFolder();
+        getRolehasPermissiondata()
     }, []);
 
-    function sendFolder(){
-      const formData = {
-        company_id:params.companyId,
-        id:finalArray,
-      }
-      console.log(formData)
-      navigate("/companies/document/share")
+    function sendMessage(){
+      props.documents(foldersData)
+      // sendFolder.next('This message from Documents components')
+      navigate("/companies/document/share/"+params.companyId)
     }
     function viewDocument(id:any){
-      navigate(`/companies/document/view/${id}`)
+      subject.next(params.companyId)
+      navigate(`/companies/document/view/${id}/${params.companyId}`)
     }
+  
+    const noFolders = noData.map((card:any)=>{
+      return(
+        <div className="container">
+          <div className="alert alert-primary" role="alert">
+              No folders found please add folders!
+          </div>
+          {/* <div className="text-center">
+          <Link to="/companies/document/6">Click here to upload documents</Link>
+          </div> */}
+        </div>
+    
+      )
+    })
 
   return (
     <ThemeProvider theme={mdTheme}>
@@ -262,7 +236,7 @@ function DocumentList() {
                   <Container sx={{ py: 3  ,paddingTop:"18px"}}  >
                     {/* End hero unit */}
                     <Grid container spacing={2}  sx={{paddingTop:"0px" }} >
-                      {showFolder.map((card:any, i:any) => (
+                      {showFolder != null ? showFolder?.map((card:any, i:any) => (
                         <Grid item key={card.id}  xs={12} sm={6} md={4}  sx={{paddingTop:"0px" }} >
                           <Card  className='' sx={{ height: "100%" ,boxShadow:'none' ,border:"1px solid black"}}  id={i + 'card'}>
                             <CardContent sx={{paddingTop:"6px", pb:'6px !important' }} >
@@ -270,22 +244,22 @@ function DocumentList() {
                                 <Checkbox className='documentselect' onClick={(e)=>{addFolder(card,i,e.target);}} />
                                 <PermMediaIcon   sx={{ width: '20%' , height: '20%'}} />
                                 <Typography variant="h6" color="inherit"  sx={{pl:1 ,lineHeight:'19px'}} >
-                                <Typography  onClick={()=>{viewDocument(card.id)}}><a href="javascript:void(0)">{card.title}</a></Typography>
+                                <Typography  onClick={()=>{viewDocument(card.id)}} style={{cursor: 'pointer'}}>{card.title}</Typography>
                                   <Typography  sx={{color:"#808080d1", fontSize:'13px'}} >
-                                  Uploaded 2022-02-02
+                                  Uploaded {new Date(card.created_at).toLocaleDateString()}
                                 </Typography>
                                 </Typography>
-                                <ControlPointIcon sx={{ width: '15%' , height: '20%' ,color:'#000' ,ml:'20px'}} onClick={()=>{handleClickOpenFolder(card.id)}} />
+                                <ControlPointIcon sx={{ width: '15%' , height: '20%' ,color:'#000' ,ml:'20px'}} onClick={()=>{handleClickOpenFolder(card.id)}} style={{cursor: 'pointer'}}/>
                                 </Toolbar>
                             </CardContent>
                           </Card>
                         </Grid>
-                      ))}
+                      )):noFolders}
                   </Grid>
                   </Container>
                   <Divider />
                   <Toolbar  sx={{ ml: 0 ,pl:"0 !important"}}>
-                    <Button variant="contained"  onClick={()=>{sendFolder()}} disabled={!addFolders}  >Share </Button>
+                    <Button variant="contained"  onClick={()=>{sendMessage()}} >Share </Button>
                     <Button variant="contained" component={Link} to="/companies/document/share" sx={{ ml: 1 }} >Request </Button>
                     <Button variant="contained" component={Link} to="/companies" sx={{ ml: 1 }} >Cancel </Button>
                   </Toolbar>   
@@ -333,22 +307,13 @@ function DocumentList() {
         <CloseIcon />
         </IconButton>
         </DialogTitle>
-        {/* <form  onSubmit={UploadDocument} >
-        <DialogContent dividers>
-           <input type="file" ref={fileInput}/>
-        </DialogContent>
-        <DialogActions>
-          <Button  variant="contained"  type='submit' >
-            Upload
-          </Button> 
-        </DialogActions>
-        </form> */}
       <div className="card px-4">
-      <form onSubmit={UploadDocument} className="form-group mt-2">
+      <form onSubmit={UploadDocument} className="form-group mt-2" encType="multipart/form-data" >
       <label>
         Upload file:
-        </label>
-        <input type="file" ref={fileInput}  className="form-control" multiple/>
+        </label> 
+        <input type="file" ref={fileInput} onChange={(e)=>{getBase64(e.target.files)}} className="form-control" multiple/>
+        {documents && <img src={documents} alt="img"  style={{height: '150px', width: '100%'}} className="mt-2 mb-2"/>}
      
       <br />
       <div className="text-center">
@@ -358,10 +323,9 @@ function DocumentList() {
     </form>
       </div>
       </BootstrapDialog>
-      <ToastContainer/>
     </ThemeProvider>
   );
 }
-export default function Listing() {
-  return <DocumentList />;
-}
+// export default function Listing(props:data) {
+//   return <DocumentList />;
+// }

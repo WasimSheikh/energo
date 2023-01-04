@@ -16,16 +16,31 @@ import EditIcon from '@mui/icons-material/Edit';
 import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { deleteCompany,getCompanies } from '../../redux/store/reducers/slices/UserSlice';
+import { deleteCompany,getCompanies, statusCompany, } from '../../redux/store/reducers/slices/UserSlice';
 import React, { useEffect , useState } from 'react';
 import { store } from '../../redux/store';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import Swal from 'sweetalert2';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 
 
-var companies:any=[];
+
+function CompanyList() {
+  const [companiesss,setCompanies] = useState([]);
+  
+const getCompanyData =()=>{
+  store.dispatch(getCompanies()).then((res: any) => {
+    if (res && res.payload.companies) {
+      //console.log(companies);
+      setCompanies(res.payload.companies);
+    } 
+  }); 
+}
+
+
+  useEffect(() => {
+    getCompanyData();
+  },[]);
 
 const mdTheme = createTheme();
 
@@ -64,8 +79,8 @@ const columns: GridColDef[] = [
     renderCell: (params) => {
       return (
         <>
-       
-    <Button onClick={()=>{statusUpdate(params.row.id)}}  sx={{ minWidth: 40 }}   >{params.row.is_active == '1' ? 'active': 'In-active' } </Button>
+         {params.row.is_active == '1' && <a href='#' onClick={()=>{statusUpdateCompany(params.row.id)}} > <span className='badge badge-success'>active</span></a>}
+    {params.row.is_active == '0' &&  <a href='#' onClick={()=>{statusUpdateCompany(params.row.id)}} > <span className='badge badge-danger'>Inactive</span></a>}
         
         </>
       );
@@ -91,18 +106,20 @@ const columns: GridColDef[] = [
 ];
 
 
-const statusUpdate=(e:any)=>{
-  console.log(e);
-    // store.dispatch(statusUpdate(e)).then((res: any) => {
-    // if(res.payload.status==true){
-    //  toast.success(res.payload.message);
-    //   setTimeout(() => {
-    //     window.location.reload();
-    //   }, 3000);
-    // }else{
-    //      toast.error(res.payload.message);
-    // }
-  //}); 
+const statusUpdateCompany=(e:any)=>{
+  const formData= {
+    id : e
+  }
+  console.log(e,"formData",formData);
+    store.dispatch(statusCompany(formData)).then((res: any) => {
+    if(res.payload.status==true){
+     toast.success(res.payload.message);
+     setCompanies([]);
+     getCompanyData();
+    }else{
+         toast.error(res.payload.message);
+    }
+  }); 
 }
 
 const deleteId=(e:any)=>{
@@ -120,16 +137,8 @@ const deleteId=(e:any)=>{
       store.dispatch(deleteCompany(e)).then((res: any) => {
         if(res.payload.status==true){
          toast.success(res.payload.message);
-          //  store.dispatch(getCompanies()).then((res: any) => {
-          //   if (res && res.payload.companies) {
-          //     companies=res.payload.companies;
-          //     //setCompanies(res.payload.companies);
-          //   } 
-          // }); 
-          setTimeout(() => {
-            window.location.reload();
-          }, 3000);
-        
+              setCompanies([]);
+              getCompanyData();
         }else{
              toast.error(res.payload.message);
         }
@@ -138,23 +147,11 @@ const deleteId=(e:any)=>{
   })
 }
 
+  /////////////////////////////////////
 
-function CompanyList() {
-  const [companiesss,setCompanies] = useState([]);
-  
-  useEffect(() => {
-    if(companies.length == 0){
-      store.dispatch(getCompanies()).then((res: any) => {
-        if (res && res.payload.companies) {
-          companies=(res.payload.companies);
-          //console.log(companies);
-          setCompanies(res.payload.companies);
-          //console.log('sdfs',companiesss)
-        } 
-      }); 
-    }
-  });
-  
+
+
+
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>
@@ -187,7 +184,7 @@ function CompanyList() {
                 <Divider />
                 <Box sx={{ height: 400, width: '100%' }}>
                   <DataGrid
-                    rows={companies}
+                    rows={companiesss}
                     columns={columns}
                     pageSize={5}
                     rowsPerPageOptions={[5]}

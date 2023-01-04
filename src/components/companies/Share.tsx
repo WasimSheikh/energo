@@ -15,41 +15,88 @@ import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import PermMediaIcon from '@mui/icons-material/PermMedia';
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { store } from '../../redux/store';
 import { shareDocuments } from '../../redux/store/reducers/slices/UserSlice';
 import { useEffect, useState } from 'react';
+import { sendFolder } from '../../app/_services/message.service';
+import { toast } from 'react-toastify';
+import { resolve } from 'path';
 
 const mdTheme = createTheme();
-function ShareAdd(): JSX.Element {
+type shareData={
+  shareData:any;
+}
+
+export default function Share(props:shareData): JSX.Element {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [documents, setDocuments] = useState([16,19]);
+  const [documents, setDocuments] = useState(props.shareData);
+  const [folder, setfolders] = useState("");
 
   const [errorMessages, setErrorMessages] = useState('');
-
-  const cards = [1, 2];
-  const handleSubmit = () => {
-    alert('ggg')
-    // e.preventDefault();
+  const params = useParams();
+  const navigate = useNavigate();
+var foldersArray:any =[]
+  const handleSubmit = (e:any) => {
+    documents.forEach((element:any) => {
+      foldersArray.push(element.id)
+    });
+    var companyId = documents[0].company_id
+    console.log(companyId,"companyId")
+    e.preventDefault();
     const formData = {
       name: name,
       email: email,
       description: description,
-      documents: documents
+      folder_ids: foldersArray,
+      company_id:params.companyId
     }
     console.log(formData,"formData")
     store.dispatch(shareDocuments(formData)).then((res: any) => {
       console.log(res,"55555")
       if (res.payload.status == true) {
         setErrorMessages('');
-        //const that = this.context.router.history.push("/dashboard");  
+        toast.success(res.payload?.message)
+        
       } else {
+        toast.error(res.payload?.message)
         setErrorMessages(res.payload?.message);
       }
     });
   };
+useEffect(() => {
+  if(props.shareData.length == 0){
+    // toast.error('Please select folder first')
+    navigate("/companies/document/"+params.companyId)
+  }
+},[]);
+
+function cancel(){
+  navigate(`/companies/document/${documents[0].company_id}`)
+}
+
+const folderList = documents?.map((card:any)=>{
+  return(
+    <Grid item key={card.id} xs={12} sm={6} md={12} sx={{ paddingTop: "0px" }} >
+    <Card sx={{ height: "100%", boxShadow: 'none', border: "1px solid black" }} >
+      <CardContent sx={{ paddingTop: "6px", pb: '6px !important' }} >
+        <Toolbar>
+          <PermMediaIcon sx={{ width: '20%', height: '20%' }} />
+          <Typography variant="h6" color="inherit" sx={{ pl: 1, lineHeight: '19px' }} >
+            {card.title}
+            <Typography sx={{ color: "#808080d1", fontSize: '13px' }} >
+            Uploaded {new Date(card.created_at).toLocaleDateString()}
+            </Typography>
+          </Typography>
+        </Toolbar>
+      </CardContent>
+    </Card>
+  </Grid>
+  )
+})
+
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>
@@ -82,23 +129,7 @@ function ShareAdd(): JSX.Element {
                       <Grid item xs={5} >
                         <Container sx={{ py: 3, paddingTop: "18px" }}  >
                           <Grid container spacing={2} sx={{ paddingTop: "0px" }} >
-                            {cards.map((card) => (
-                              <Grid item key={card} xs={12} sm={6} md={12} sx={{ paddingTop: "0px" }} >
-                                <Card sx={{ height: "100%", boxShadow: 'none', border: "1px solid black" }} >
-                                  <CardContent sx={{ paddingTop: "6px", pb: '6px !important' }} >
-                                    <Toolbar>
-                                      <PermMediaIcon sx={{ width: '20%', height: '20%' }} />
-                                      <Typography variant="h6" color="inherit" sx={{ pl: 1, lineHeight: '19px' }} >
-                                        Folder
-                                        <Typography sx={{ color: "#808080d1", fontSize: '13px' }} >
-                                          Uploaded 2022-02-02
-                                        </Typography>
-                                      </Typography>
-                                    </Toolbar>
-                                  </CardContent>
-                                </Card>
-                              </Grid>
-                            ))}
+                          {folderList}
                           </Grid>
                         </Container>
                       </Grid>
@@ -154,7 +185,7 @@ function ShareAdd(): JSX.Element {
                     >
                       Submit
                     </Button>
-                    <Button variant="contained" component={Link} to="/companies/document/1" sx={{ ml: 1 }} >Cancel </Button>
+                    <Button variant="contained"  onClick={cancel} sx={{ ml: 1 }} >Cancel </Button>
                   </Toolbar>
 
 
@@ -168,6 +199,6 @@ function ShareAdd(): JSX.Element {
     </ThemeProvider>
   );
 }
-export default function Add() {
-  return <ShareAdd />;
-}
+// export default function Add() {
+//   return <ShareAdd />;
+// }

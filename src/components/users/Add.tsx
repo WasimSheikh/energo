@@ -114,6 +114,7 @@ function UserAdd() {
         zipcode:postalCode,
         profile_picture:file,   
       } 
+      console.log(formData,'formData',email);
       store.dispatch(createUser(formData)).then((res: any) => {
         if(res.payload.status == true){
           setErrorMessages('');
@@ -409,7 +410,7 @@ const getError = (msg: string): JSX.Element => {
                             label="Email"
                             name="email" 
                             onChange={(e) => {
-                              setCountry(e.target.value);
+                              setEmail(e.target.value);
                               setDirtyFields((dirty) => ({
                                 ...dirty,
                                 email: !ifEmpty(e.target.value),

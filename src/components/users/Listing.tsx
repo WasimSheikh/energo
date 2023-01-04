@@ -14,17 +14,40 @@ import Button from '@mui/material/Button';
 import { Link,useNavigate } from "react-router-dom";
 import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 import { store } from '../../redux/store';
-import { deleteUser,getUsers } from '../../redux/store/reducers/slices/UserSlice';
+import { deleteUser,getUsers, statusUpdate } from '../../redux/store/reducers/slices/UserSlice';
 import React, { useEffect , useState } from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Swal from 'sweetalert2';
 // import { Link , useParams ,useNavigate} from "react-router-dom";
+import { toast } from 'react-toastify';
 
 
 
 
+
+
+function UserList() {
+
+  const [users,setUsers] = useState([]);
+
+  const userList = ()=>{
+    store.dispatch(getUsers()).then((res: any) => {
+      if (res && res.payload.users) {
+        setUsers(res.payload.users);
+      } 
+    }); 
+  }
+
+  useEffect(() => {
+    if(users.length == 0){
+      userList();
+    }
+  },[]);
+
+  
+// aad delete function inside to main component function 
 
 const deleteId=(e:any)=>{
 
@@ -41,16 +64,15 @@ const deleteId=(e:any)=>{
   }).then((result) => {
     if (result.isConfirmed) {
       store.dispatch(deleteUser(e)).then((res: any) => {
-        const result = res.json();
-        console.log(result,"result");
-
+        console.log(res.payload.message,"result");
+        if(res.payload.status == true){
+          toast.success(res.payload.message)
+          setUsers([]);
+          userList();
+        }else{
+          toast.error(res.payload.message)
+        }
       }); 
-      // window.location.reload();
-      // Swal.fire(
-      //   'Deleted!',
-      //   'Your file has been deleted.',
-      //   'success'
-      // )
     }
   })
 }
@@ -90,9 +112,16 @@ const columns: GridColDef[] = [
     field: 'is_active',
     headerName: 'Status',
     width: 90,
-    valueGetter: (params: GridValueGetterParams) =>
-    `${params.row.is_active ? "Active":"Inactive"}`,
-  }, 
+    sortable: false,
+    renderCell: (params) => {
+      return (
+        <>
+            {params.row.is_active == '1' && <a href='#'  onClick={()=>{statusUpdateUser(params.row.id)}}  > <span className='badge badge-success'>active</span></a>}
+    {params.row.is_active == '0' &&  <a href='#'  onClick={()=>{statusUpdateUser(params.row.id)}}  > <span className='badge badge-danger'>Inactive</span></a>}
+    </>
+      );
+   }
+  },
   {
     field: 'action',
     headerName: 'Action',
@@ -105,29 +134,28 @@ const columns: GridColDef[] = [
           <Button  sx={{ minWidth: 40 }}   component={Link} to={'/users/view/'+params.row.id}  > <VisibilityIcon  /> </Button>
                 <Button onClick={()=>{deleteId(params.row.id)}}  sx={{ minWidth: 40 }}   > <DeleteIcon  /> </Button>
 
-
-         <Button onClick={()=>{deleteId(params.row.id)}}  sx={{ minWidth: 40 }}   > <DeleteIcon  /> </Button>
-
         </>
       );
    }
   },
 ];
 
-function UserList() {
-
-  const [users,setUsers] = useState([]);
-  useEffect(() => {
-    if(users.length == 0){
-      store.dispatch(getUsers()).then((res: any) => {
-        if (res && res.payload.users) {
-          setUsers(res.payload.users);
-        } 
-      }); 
+const statusUpdateUser=(e:any)=>{
+  const formData= {
+    id : e
+  }
+  console.log(e,"formData",formData);
+    store.dispatch(statusUpdate(formData)).then((res: any) => {
+    if(res.payload.status==true){
+     toast.success(res.payload.message);
+     setUsers([]);
+     userList();
+    }else{
+         toast.error(res.payload.message);
     }
-  });
-
-  
+  }); 
+}
+// aad delete function inside to main component function 
 
  
   return (
