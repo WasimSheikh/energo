@@ -127,6 +127,7 @@ const Header = (): JSX.Element => {
                   {/* <Link to={{ pathname: "/" }}>Logout</Link> */}
                   Logout
                   </MenuItem>
+
               </Menu>
 
             {/* <FormControl sx={{ m: 1, minWidth: 20 }} size="small">
