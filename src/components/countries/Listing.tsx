@@ -64,8 +64,8 @@ const columns: GridColDef[] = [
     renderCell: (params) => {
       return (
         <>
-         {params.row.is_active == '1' && <a href='#' onClick={()=>{statusUpdateCountrie(params.row.id)}} > <span className='badge badge-success'>active</span></a>}
-    {params.row.is_active == '0' &&  <a href='#' onClick={()=>{statusUpdateCountrie(params.row.id)}} > <span className='badge badge-danger'>Inactive</span></a>}
+         {params.row.is_active == '1' && <div onClick={()=>{statusUpdateCountrie(params.row.id)}} style={{cursor: 'pointer'}}> <span className='badge badge-success'>active</span></div>}
+    {params.row.is_active == '0' &&  <div onClick={()=>{statusUpdateCountrie(params.row.id)}} style={{cursor: 'pointer'}}> <span className='badge badge-danger'>Inactive</span></div>}
         
         </>
       );
@@ -165,6 +165,7 @@ const formData ={
                     columns={columns}
                     pageSize={10}
                     rowsPerPageOptions={[5]}
+                    className="text-capitalize"
                   />
                 </Box>
                 </Paper>

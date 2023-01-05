@@ -44,8 +44,9 @@ function CompanyList() {
 const columns: GridColDef[] = [
   {
     field: 'id',
-    headerName: 'Id',
-    width: 100
+    headerName: 'S.No.',
+    width: 100,
+    renderCell: (index:any) => index.api.getRowIndex(index.row.id) + 1,
   },
   {
     field: 'parent',

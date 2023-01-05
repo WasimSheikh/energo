@@ -63,7 +63,7 @@ export default function DocumentList(props:data) {
     const [ showFolder, setShowFolder]= useState([])
     const [ addFolders, setAddFolders]= useState([])
     const [ folderId, setFolderId]= useState('')
-    const [image,setImage]=useState()
+    const [ disabled, setDisabled]= useState(false)
 
     
     var noData:any=[1]
@@ -141,6 +141,11 @@ export default function DocumentList(props:data) {
         cardID.classList.remove("Active");
       }
       console.log(newArray,"state",foldersData)
+      if(newArray.length > '0'){
+        setDisabled(true)
+      }else{
+        setDisabled(false)
+      }
       }
 
     const handleClickOpen = () => {
@@ -255,8 +260,8 @@ function getRolehasPermissiondata(){
                   </Container>
                   <Divider />
                   <Toolbar  sx={{ ml: 0 ,pl:"0 !important"}}>
-                    <Button variant="contained"  onClick={()=>{sendMessage()}} >Share </Button>
-                    <Button variant="contained" component={Link} to="/companies/document/share" sx={{ ml: 1 }} >Request </Button>
+                    <Button variant="contained"  onClick={()=>{sendMessage()}} disabled={disabled == false}>Share </Button>
+                    <Button variant="contained" component={Link} to="/companies/document/share" sx={{ ml: 1 }} disabled={disabled == false}>Request </Button>
                     <Button variant="contained" component={Link} to="/companies" sx={{ ml: 1 }} >Cancel </Button>
                   </Toolbar>   
                 </Paper>

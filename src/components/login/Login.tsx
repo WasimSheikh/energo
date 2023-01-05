@@ -50,7 +50,6 @@ export default function Login() {
         }
 
         setErrorMessages('');
-        //const that = this.context.router.history.push("/dashboard");  
       } else {
         setErrorMessages(res.payload?.message);
         toast.error(res.payload.message);

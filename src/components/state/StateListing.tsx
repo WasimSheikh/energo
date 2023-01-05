@@ -15,7 +15,7 @@ import { Link } from "react-router-dom";
 import EditIcon from '@mui/icons-material/Edit';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { deleteCity, getStates,statusCity } from '../../redux/store/reducers/slices/UserSlice';
+import { deleteCity, deleteState, getStates,statusCity, statusState } from '../../redux/store/reducers/slices/UserSlice';
 import React, { useEffect , useState } from 'react';
 import { store } from '../../redux/store';
 import Swal from 'sweetalert2';
@@ -27,44 +27,43 @@ export default function StatesList() {
   const [cities,setCities] = useState([]);
 function getStateList(){
     store.dispatch(getStates()).then((res: any) => {
+      setCities(res.payload?.states);
         console.log(res,"res")
-        if (res && res.payload?.permissions) {
-          setCities(res.payload?.states);
-        } 
       }); 
 }
 
 
   useEffect(() => {
     getStateList();
-  });
+  },[]);
 
   const mdTheme = createTheme();
   const columns: GridColDef[] = [
     {
       field: 'id',
-      headerName: 'Id',
-      width: 100
+      headerName: 'S.No.',
+      width: 100,
+      renderCell: (index:any) => index.api.getRowIndex(index.row.id) + 1,
     },
     {
       field: 'country',
       headerName: 'Country',
-      width: 170,
+      width: 250,
+      renderCell:(params:any)=>{
+        return(
+          <div>{params.row.country.title}</div>
+        )
+      }
     },
     {
       field: 'name',
       headerName: 'State',
-      width: 200,
-    },
-    {
-      field: 'city',
-      headerName: 'City',
-      width: 200,
+      width: 250,
     },
     {
         field: 'is_active',
         headerName: 'Status',
-        width: 200,
+        width: 250,
         sortable: false,
         renderCell: (params) => {
           return (
@@ -85,16 +84,16 @@ function getStateList(){
         return (
           <>
           <Button  sx={{ minWidth: 40 }}  component={Link} to={'edit/'+params.row.id} > <EditIcon  /> </Button>
-          <Button  sx={{ minWidth: 40 }}   onClick={()=>{deleteCityById(params.row.id)}}> <DeleteIcon  /> </Button>
+          <Button  sx={{ minWidth: 40 }}   onClick={()=>{deleteStateById(params.row.id)}}> <DeleteIcon  /> </Button>
           </>
         );
      }
     },
   ];
   
-  const deleteCityById=(e:any)=>{
+  const deleteStateById=(e:any)=>{
       const formData ={
-        city_id :e
+        state_id :e
       }
         Swal.fire({
           title: 'Are you sure want to delete?',
@@ -106,11 +105,11 @@ function getStateList(){
           confirmButtonText: 'Yes , confirm !'
         }).then((result:any) => {
           if (result.isConfirmed) {
-            store.dispatch(deleteCity(formData)).then((res: any) => {
+            store.dispatch(deleteState(formData)).then((res: any) => {
               if(res.payload.status==true){
                toast.success(res.payload.message);
-              //  setCountries([]);
-              //  getCountrieData();
+               setCities([]);
+               getStateList();
               }else{
                    toast.error(res.payload.message);
               }
@@ -121,13 +120,13 @@ function getStateList(){
 
       const statusUpdateCity=(e:any)=>{
         const formData= {
-          city_id : e
+          state_id : e
         }
-          store.dispatch(statusCity(formData)).then((res: any) => {
+          store.dispatch(statusState(formData)).then((res: any) => {
           if(res.payload.status==true){
            toast.success(res.payload.message);
-        //    setCountries([]);
-        //    getCountrieData();
+           setCities([]);
+           getStateList();
           }else{
                toast.error(res.payload.message);
           }
@@ -159,7 +158,7 @@ function getStateList(){
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
                 <Box className="headingbutton" sx={{ mb: 1 }}>
                   <Typography component="h2" variant="h6" color="primary" gutterBottom>
-                    Cities 
+                    States 
                   </Typography>
                   <Button variant="contained" component={Link} to="/states/add">Add</Button>
                 </Box>
@@ -170,6 +169,7 @@ function getStateList(){
                     columns={columns}
                     pageSize={10}
                     rowsPerPageOptions={[5]}
+                    className="text-capitalize"
                   />
                 </Box>
                 </Paper>

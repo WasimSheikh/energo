@@ -20,12 +20,13 @@ import React, { useEffect , useState } from 'react';
 import { store } from '../../redux/store';
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
+import { Diversity2 } from '@mui/icons-material';
 
 
 
 export default function CityList() {
   const [cities,setCities] = useState([]);
-function getcitiesList(){
+function getCitiesList(){
     store.dispatch(getCities()).then((res: any) => {
         console.log(res,"res")
         // if (res && res.payload?.permissions) {
@@ -36,28 +37,39 @@ function getcitiesList(){
 
 
   useEffect(() => {
-    getcitiesList();
+    getCitiesList();
   },[]);
 
   const mdTheme = createTheme();
   const columns: GridColDef[] = [
     {
       field: 'id',
-      headerName: 'Id',
-      width: 100
+      headerName: 'S.No.',
+      width: 100,
+      renderCell: (index:any) => index.api.getRowIndex(index.row.id) + 1,
     },
     {
       field: 'title',
       headerName: 'Country',
       width: 170,
+      renderCell:(params:any)=>{
+        return(
+          <div>{params.row.country.title}</div>
+        )
+      }
     },
     {
       field: 'state',
       headerName: 'State',
       width: 200,
+      renderCell:(params:any)=>{
+        return(
+          <div>{params.row.state.name}</div>
+        )
+      }
     },
     {
-      field: 'city',
+      field: 'name',
       headerName: 'City',
       width: 200,
     },
@@ -69,8 +81,8 @@ function getcitiesList(){
         renderCell: (params) => {
           return (
             <>
-             {params.row.is_active == '1' && <a href='#' onClick={()=>{statusUpdateCity(params.row.id)}} > <span className='badge badge-success'>active</span></a>}
-        {params.row.is_active == '0' &&  <a href='#' onClick={()=>{statusUpdateCity(params.row.id)}} > <span className='badge badge-danger'>Inactive</span></a>}
+             {params.row.is_active == '1' && <div onClick={()=>{statusUpdateCity(params.row.id)}} style={{cursor: 'pointer'}}> <span className='badge badge-success'>active</span></div>}
+        {params.row.is_active == '0' &&  <div onClick={()=>{statusUpdateCity(params.row.id)}} style={{cursor: 'pointer'}}> <span className='badge badge-danger'>Inactive</span></div>}
             
             </>
           );
@@ -109,8 +121,8 @@ function getcitiesList(){
             store.dispatch(deleteCity(formData)).then((res: any) => {
               if(res.payload.status==true){
                toast.success(res.payload.message);
-              //  setCountries([]);
-              //  getCountrieData();
+               setCities([]);
+               getCitiesList();
               }else{
                    toast.error(res.payload.message);
               }
@@ -126,8 +138,8 @@ function getcitiesList(){
           store.dispatch(statusCity(formData)).then((res: any) => {
           if(res.payload.status==true){
            toast.success(res.payload.message);
-        //    setCountries([]);
-        //    getCountrieData();
+           setCities([]);
+           getCitiesList();
           }else{
                toast.error(res.payload.message);
           }
@@ -170,6 +182,7 @@ function getcitiesList(){
                     columns={columns}
                     pageSize={10}
                     rowsPerPageOptions={[5]}
+                    className="text-capitalize"
                   />
                 </Box>
                 </Paper>

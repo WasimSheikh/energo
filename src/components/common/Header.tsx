@@ -14,7 +14,7 @@ import { Avatar, Button, Menu, MenuItem } from "@mui/material";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import '../common/common.css'
-
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 
 function capitalizeFirstLetter(string:string) {
@@ -105,14 +105,30 @@ const Header = (): JSX.Element => {
                 <NotificationsIcon />
               </Badge>
             </IconButton>
-            <Button className="btn btn-dark"
+            {/* <IconButton color="inherit">
+              <Badge badgeContent={4} color="secondary">
+                <AccountCircleIcon />
+              </Badge>
+            </IconButton> */}
+            <div
                 id="basic-button"
                 aria-controls={open1 ? 'basic-menu' : undefined}
                 aria-haspopup="true"
                 aria-expanded={open1 ? 'true' : undefined}
                 onClick={profileClick}>
-                <Avatar src="/broken-image.jpg" />
-              </Button>
+              <IconButton color="inherit">
+              {/* <Badge badgeContent={4} color="secondary"> */}
+                <AccountCircleIcon />
+              {/* </Badge> */}
+            </IconButton>
+                {/* <Avatar src="/broken-image.jpg" /> */}
+              </div>
+              <div>
+              {/* <Avatar src="/broken-image.jpg" /> */}
+              {/* <Avatar>
+              <AccountCircleIcon />
+                     </Avatar> */}
+              </div>
             <Menu
                 id="basic-menu"
                 anchorEl={anchorEl}
@@ -124,7 +140,6 @@ const Header = (): JSX.Element => {
                style={{top:"40px",left: '90%'}}>
                 <MenuItem  component={Link} to="/profile">Profile</MenuItem>
                 <MenuItem onClick={Logout}>
-                  {/* <Link to={{ pathname: "/" }}>Logout</Link> */}
                   Logout
                   </MenuItem>
 

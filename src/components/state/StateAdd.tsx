@@ -102,7 +102,7 @@ function getCountryStatesByCountry(e:any){
     store.dispatch(createState(formData)).then((res: any) => {
       if (res.payload.status == true) {
         toast.success(res.payload.message)
-        navigate("/cities");
+        navigate("/states");
       } else {
         toast.error(res.payload?.message);
       }

@@ -46,8 +46,9 @@ const mdTheme = createTheme();
 
 const columns: GridColDef[] = [
   { field: 'id',
-   headerName: 'Id',
-    width: 60
+   headerName: 'S.No.',
+    width: 60,
+    renderCell: (index:any) => index.api.getRowIndex(index.row.id) + 1,
   },
   {
     field: 'title',

@@ -18,6 +18,7 @@ import ContentPasteSearchIcon from '@mui/icons-material/ContentPasteSearch';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import { Link } from "react-router-dom";
 import PublicIcon from '@mui/icons-material/Public';
+import logo from '../common/images/Energo-logo.jpg'
 
 
 const Navigation = (): JSX.Element => {
@@ -63,7 +64,9 @@ const Navigation = (): JSX.Element => {
               px: [1],
             }}
           >
-          Energo
+         <div style={{height: '50px' ,textAlign:'center'}}>
+          <img src={logo} alt="img" style={{maxHeight:'100%', marginRight: '30px'}} />
+         </div>
           <IconButton onClick={toggleDrawer}>
               <ChevronLeftIcon />
             </IconButton>

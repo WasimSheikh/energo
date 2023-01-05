@@ -90,7 +90,6 @@ function getCountryStatesByCountry(e:any){
         country_id:e
     }
       store.dispatch(getCountryStates(formDate)).then((res: any) => {
-        console.log(res,"getCountrieData()")
         setStateId(res.payload.states);
       });
   }
@@ -147,7 +146,7 @@ function getCountryStatesByCountry(e:any){
                 </Typography>
                 <Divider />
                 <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
-                  <Grid container spacing={2} rowSpacing={1} >
+                  {/* <Grid container spacing={2} rowSpacing={1} > */}
                       <Grid item xs={6} sm={6} mt={2}>
                           <FormControl fullWidth >
                           <InputLabel id="Country">Country</InputLabel>
@@ -208,7 +207,7 @@ function getCountryStatesByCountry(e:any){
                             {dirtyFields["title"] && getError("Title is requried")}
                       
                       </Grid>
-                      </Grid>
+                      {/* </Grid> */}
                       <Divider />
                       <Toolbar  sx={{ ml: 0 ,pl:"0 !important"}}>
                         <Button  disabled={!isValidData()} type="submit" variant="contained">

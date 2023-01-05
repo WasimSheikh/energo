@@ -90,7 +90,7 @@ function getCountryStatesByCountry(e:any){
         country_id:e
     }
       store.dispatch(getCountryStates(formDate)).then((res: any) => {
-        console.log(res,"getCountrieData()")
+        console.log(res,"res state")
         setStateId(res.payload.states);
       });
   }
@@ -103,6 +103,7 @@ function getCountryStatesByCountry(e:any){
       country_id:country_id,
       name:title,
       state_id:setSate,
+      city_id:params.cityId
     }
     console.log(formData,'formData')
     store.dispatch(updateCity(formData)).then((res: any) => {
@@ -120,10 +121,11 @@ const formDate={
     city_id:params.cityId
 }
     store.dispatch(getCity(formDate)).then((res: any) => {
-        console.log(res,"getData")
-        // setCountry()
-        // setState()
-        // setTitle()
+        console.log(res.payload.city,"getData")
+        setCountry(res.payload.city.country.id)
+        setTitle(res.payload.city.name)
+        getCountryStatesByCountry(res.payload.city.country.id)
+        setState(res.payload.city.state_id)
     });
 }
 
@@ -160,7 +162,7 @@ const formDate={
                 </Typography>
                 <Divider />
                 <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
-                  <Grid container spacing={2} rowSpacing={1} >
+                  {/* <Grid container spacing={2} rowSpacing={1} > */}
                       <Grid item xs={6} sm={6} mt={2}>
                           <FormControl fullWidth >
                           <InputLabel id="Country">Country</InputLabel>
@@ -221,7 +223,7 @@ const formDate={
                             {dirtyFields["title"] && getError("Title is requried")}
                       
                       </Grid>
-                      </Grid>
+                      {/* </Grid> */}
                       <Divider />
                       <Toolbar  sx={{ ml: 0 ,pl:"0 !important"}}>
                         <Button  disabled={!isValidData()} type="submit" variant="contained">
