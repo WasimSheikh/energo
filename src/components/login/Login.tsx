@@ -9,34 +9,58 @@ import Link from '@mui/material/Link';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-//import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-
-function Copyright(props: any) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
-
+import { store } from '../../redux/store';
+import { login } from '../../redux/store/reducers/slices/UserSlice';
+import { useEffect, useState } from 'react';
+import { useNavigate } from "react-router-dom";
+import Footer from '../common/Footer';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+ 
 const theme = createTheme();
 
 export default function Login() {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+  const navigate = useNavigate();
+  const [email,setEmail] = useState('');
+  const [password,setPassword] = useState('');
+  const [errorMessages, setErrorMessages] = useState('');
+
+  function IsLoggedIn(){
+    console.log(localStorage.getItem("access_token")); 
+    let access_token = localStorage.getItem("access_token");
+    return (access_token != '' && access_token != null ) ? true : false;
+  }
+  
+  const handleSubmit = (e:any) => {
+    e.preventDefault();
+    const formData = {
+      email:email,
+      password:password
+    }  
+    store.dispatch(login(formData)).then((res: any) => {
+      if (res.payload.status == true) {
+        let access_token = res.payload.access_token;
+        if(access_token !="" && access_token !=""){
+         localStorage.setItem("access_token", access_token); 
+         localStorage.setItem("user_id", res.payload.user.id); 
+         navigate("/dashboard");
+         toast.success(res.payload.message);
+        }
+
+        setErrorMessages('');
+      } else {
+        setErrorMessages(res.payload?.message);
+        toast.error(res.payload.message);
+      }
+    });    
   };
+
+  const renderErrorMessage = () =>
+  errorMessages && (
+    <div className="error">{errorMessages}</div>
+  );
 
   return (
     <ThemeProvider theme={theme}>
@@ -57,22 +81,21 @@ export default function Login() {
           }}
         />
         <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
-          <Box
-            sx={{
-              my: 8,
-              mx: 4,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-            }}
-          >
-            <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-
-            </Avatar>
+            <Box
+              sx={{
+                my: 8,
+                mx: 4,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+              }}
+            >
+            <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}></Avatar>
             <Typography component="h1" variant="h5">
               Sign in
             </Typography>
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
+            {renderErrorMessage()}
               <TextField
                 margin="normal"
                 required
@@ -82,6 +105,9 @@ export default function Login() {
                 name="email"
                 autoComplete="email"
                 autoFocus
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                }}
               />
               <TextField
                 margin="normal"
@@ -91,6 +117,9 @@ export default function Login() {
                 label="Password"
                 type="password"
                 id="password"
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                }}
                 autoComplete="current-password"
               />
               <FormControlLabel
@@ -103,7 +132,7 @@ export default function Login() {
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
               >
-                Sign In
+              Sign In
               </Button>
               <Grid container>
                 <Grid item xs>
@@ -117,11 +146,12 @@ export default function Login() {
                   </Link>
                 </Grid>
               </Grid>
-              <Copyright sx={{ mt: 5 }} />
+              <Footer />
             </Box>
           </Box>
         </Grid>
       </Grid>
+      <ToastContainer/>
     </ThemeProvider>
   );
 }
