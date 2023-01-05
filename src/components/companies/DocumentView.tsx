@@ -90,13 +90,10 @@ export default function ShareAdd() {
 
 const imagesData = cards.map((card)=>{
   return(
-    <div className="container">
+    <div className="container mt-4">
       <div className="alert alert-primary" role="alert">
           No documents found please upload documents!
       </div>
-      {/* <div className="text-center">
-      <Link to="/companies/document/6">Click here to upload documents</Link>
-      </div> */}
     </div>
 
   )
@@ -151,7 +148,7 @@ const imagesData = cards.map((card)=>{
                               <img
                               className="card-img-top mh-100 mw-100"
                               src={res.original_url} 
-                              alt="Card image cap" style={{height: '150px'}} key={res.id}/>
+                              alt="Card image cap" style={{height: '150px'}} />
                               {/* </a> */}
                           
                              <div className="card-body text-center">

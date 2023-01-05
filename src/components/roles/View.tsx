@@ -52,13 +52,15 @@ function CompanyView() {
   var permissionRole:any =[];
   const givePermissionToRole = (value:any) => { 
    if (!permissionRole.includes(value)){
-     if((document.getElementById(value+'child')as any).checked == true){
+    //  if((document.getElementById(value+'child')as any).checked == true){
         permissionRole.push(value);
-     }
+        console.log(permissionRole,"permissionRole")
+    //  }
   }else{
      permissionRole = permissionRole.filter((res:any)=>{
        return res != value
      })
+     console.log(permissionRole,"permissionRole else")
    }
  }; 
 
@@ -115,18 +117,16 @@ function CompanyView() {
                           <Typography component="h2" variant="h6" sx={{ mt: 1}} gutterBottom>
                             Permission
                           </Typography>
-                          {permissions.map((permission:any) => (  
+                          {permissions.map((permission:any, i:any) => (  
                             <>
-                            <Grid>
+                            <Grid key ={i}>
                               
                             <Grid item xs={6} sm={6}> 
                               <Box className='font-weight-bold' >{permission.name}</Box>
                           </Grid>
-
-                              
                             </Grid>
                             {permission.chlid.map((value:any,i:any) => (
-                              <Grid  sx={{ ml: 5 }}>
+                              <Grid  sx={{ ml: 5 }} key ={value.id}>
                               <FormControlLabel
                                   control={
                                     // <input type="checkbox"  id={i + 'child'}/>

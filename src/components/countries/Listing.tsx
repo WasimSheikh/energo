@@ -15,27 +15,62 @@ import { Link } from "react-router-dom";
 import EditIcon from '@mui/icons-material/Edit';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { getPermissions } from '../../redux/store/reducers/slices/UserSlice';
+import { deleteCountry, getCountries, getPermissions, StatusCountry } from '../../redux/store/reducers/slices/UserSlice';
 import React, { useEffect , useState } from 'react';
 import { store } from '../../redux/store';
+import { toast } from 'react-toastify';
+import Swal from 'sweetalert2';
 
-const mdTheme = createTheme();
+
+
+export default function ContriesList() {
+  const [countries,setCountries] = useState([]);
+
+function getCountrieData(){
+  if(countries.length == 0){
+    store.dispatch(getCountries()).then((res: any) => {
+      console.log(res)
+      if (res.payload.status == true) {
+        setCountries(res.payload.countries);
+      }else{
+        toast.error(res.payload.message)
+      }
+    });
+  }
+}
+
+  useEffect(() => {
+    getCountrieData();
+  });
+
+  const mdTheme = createTheme();
 const columns: GridColDef[] = [
   {
     field: 'id',
-    headerName: 'Id',
+    headerName: 'S.NO.',
     width: 100
   },
   {
-    field: 'parent',
+    field: 'title',
     headerName: 'Countries',
-    width: 270,
-  },
-  {
-    field: 'name',
-    headerName: 'City',
     width: 500,
   },
+  {
+    field: 'is_active',
+    headerName: 'Status',
+    width: 200,
+    sortable: false,
+    renderCell: (params) => {
+      return (
+        <>
+         {params.row.is_active == '1' && <a href='#' onClick={()=>{statusUpdateCountrie(params.row.id)}} > <span className='badge badge-success'>active</span></a>}
+    {params.row.is_active == '0' &&  <a href='#' onClick={()=>{statusUpdateCountrie(params.row.id)}} > <span className='badge badge-danger'>Inactive</span></a>}
+        
+        </>
+      );
+   }
+  },
+
   {
     field: 'action',
     headerName: 'Action',
@@ -45,29 +80,53 @@ const columns: GridColDef[] = [
       return (
         <>
         <Button  sx={{ minWidth: 40 }}  component={Link} to={'/countries/edit/'+params.row.id} > <EditIcon  /> </Button>
-        <Button  sx={{ minWidth: 40 }}   component={Link} to={'/countries'} > <DeleteIcon  /> </Button>
+        <Button  sx={{ minWidth: 40 }}   onClick={()=>{deleteCountryById(params.row.id)}}> <DeleteIcon  /> </Button>
         </>
       );
    }
   },
 ];
+const statusUpdateCountrie=(e:any)=>{
+  const formData= {
+    country_id : e
+  }
+    store.dispatch(StatusCountry(formData)).then((res: any) => {
+    if(res.payload.status==true){
+     toast.success(res.payload.message);
+     setCountries([]);
+     getCountrieData();
+    }else{
+         toast.error(res.payload.message);
+    }
+  }); 
+}
 
-export default function ContriesList() {
-  const [countries,setCountries] = useState([
-    {id: 1,
-    name: "Bangladesh",
-    parent: "Bangladesh",
-    url: "users"}
-  ]);
-  useEffect(() => {
-    // if(countries.length == 0){
-    //   store.dispatch(getPermissions()).then((res: any) => {
-    //     if (res && res.payload?.permissions) {
-    //         setCountries(res.payload?.permissions);
-    //     } 
-    //   }); 
-    // }
-  });
+const deleteCountryById=(e:any)=>{
+const formData ={
+  country_id :e
+}
+  Swal.fire({
+    title: 'Are you sure want to delete?',
+    text: "You won't be able to revert this!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes , confirm !'
+  }).then((result:any) => {
+    if (result.isConfirmed) {
+      store.dispatch(deleteCountry(formData)).then((res: any) => {
+        if(res.payload.status==true){
+         toast.success(res.payload.message);
+         setCountries([]);
+         getCountrieData();
+        }else{
+             toast.error(res.payload.message);
+        }
+      }); 
+    }
+  })
+}
   
   return (
     <ThemeProvider theme={mdTheme}>

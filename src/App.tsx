@@ -35,6 +35,9 @@ import CountiesAdd from './components/countries/Add';
 import CountiesEdit from './components/countries/Edit';
 import CountriesView from './components/countries/View';
 import DocumentList from './components/companies/Documents';
+import CityList from './components/cities/Listing';
+import CityAdd from './components/cities/Add';
+import EditAdd from './components/cities/Edit';
 
 function App() {
   const navigate = useNavigate();
@@ -97,7 +100,9 @@ function App() {
           {/* <Route path="documents/share" element={<Share />} /> */}
           <Route path="notifications" element={<Notifications />} /> 
           <Route path="Profile" element={<ProfileEdit />} /> 
-          {/* <Route path="dashboard" element={</Navgiate>} />  */}
+          <Route path="cities" element={<CityList />} /> 
+          <Route path="cities/add" element={<CityAdd/>} />
+          <Route path="cities/edit/:cityId" element={<EditAdd />} />
           </>
         }
         
