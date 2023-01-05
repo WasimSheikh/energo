@@ -25,7 +25,7 @@ import { toast } from 'react-toastify';
 
 const mdTheme = createTheme();
 
-export default function  EditCity() {
+export default function  StateEdit() {
     const params = useParams();
   const navigate = useNavigate();
   const [country_id,setCountry] = useState('');

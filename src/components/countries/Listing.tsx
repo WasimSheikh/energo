@@ -48,7 +48,8 @@ const columns: GridColDef[] = [
   {
     field: 'id',
     headerName: 'S.NO.',
-    width: 100
+    width: 100,
+    renderCell: (index:any) => index.api.getRowIndex(index.row.id) + 1,
   },
   {
     field: 'title',

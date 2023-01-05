@@ -15,7 +15,7 @@ import { Link } from "react-router-dom";
 import EditIcon from '@mui/icons-material/Edit';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { deleteCity, getCities,statusCity } from '../../redux/store/reducers/slices/UserSlice';
+import { deleteCity, getStates,statusCity } from '../../redux/store/reducers/slices/UserSlice';
 import React, { useEffect , useState } from 'react';
 import { store } from '../../redux/store';
 import Swal from 'sweetalert2';
@@ -23,21 +23,21 @@ import { toast } from 'react-toastify';
 
 
 
-export default function CityList() {
+export default function StatesList() {
   const [cities,setCities] = useState([]);
-function getcitiesList(){
-    store.dispatch(getCities()).then((res: any) => {
+function getStateList(){
+    store.dispatch(getStates()).then((res: any) => {
         console.log(res,"res")
-        // if (res && res.payload?.permissions) {
-          setCities(res.payload?.cities);
-        // } 
+        if (res && res.payload?.permissions) {
+          setCities(res.payload?.states);
+        } 
       }); 
 }
 
 
   useEffect(() => {
-    getcitiesList();
-  },[]);
+    getStateList();
+  });
 
   const mdTheme = createTheme();
   const columns: GridColDef[] = [
@@ -47,12 +47,12 @@ function getcitiesList(){
       width: 100
     },
     {
-      field: 'title',
+      field: 'country',
       headerName: 'Country',
       width: 170,
     },
     {
-      field: 'state',
+      field: 'name',
       headerName: 'State',
       width: 200,
     },
@@ -161,7 +161,7 @@ function getcitiesList(){
                   <Typography component="h2" variant="h6" color="primary" gutterBottom>
                     Cities 
                   </Typography>
-                  <Button variant="contained" component={Link} to="/cities/add">Add</Button>
+                  <Button variant="contained" component={Link} to="/states/add">Add</Button>
                 </Box>
                 <Divider />
                 <Box sx={{ height: 400, width: '100%' }}>

@@ -12,8 +12,8 @@ import Footer from '../common/Footer';
 import Header from '../common/Header';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { getCountries, getCountryStates, updateCity, getCity } from '../../redux/store/reducers/slices/UserSlice';
+import { Link, useNavigate } from "react-router-dom";
+import { getCountries, createState } from '../../redux/store/reducers/slices/UserSlice';
 import { store } from '../../redux/store';
 import React, { useState ,useEffect } from 'react';
 import InputLabel from '@mui/material/InputLabel';
@@ -25,8 +25,8 @@ import { toast } from 'react-toastify';
 
 const mdTheme = createTheme();
 
-export default function  EditCity() {
-    const params = useParams();
+export default function  StateAdd() {
+
   const navigate = useNavigate();
   const [country_id,setCountry] = useState('');
   const [setSate,setState] = useState('');
@@ -37,7 +37,6 @@ export default function  EditCity() {
   const [stateId,setStateId] = useState([]);
   const [dirtyFields, setDirtyFields] = useState({
     country_id: false,
-    stateId:false,
     title:false,
   });
 
@@ -89,10 +88,6 @@ function getCountryStatesByCountry(e:any){
     const formDate={
         country_id:e
     }
-      store.dispatch(getCountryStates(formDate)).then((res: any) => {
-        console.log(res,"getCountrieData()")
-        setStateId(res.payload.states);
-      });
   }
 
 
@@ -102,10 +97,9 @@ function getCountryStatesByCountry(e:any){
     const formData = {
       country_id:country_id,
       name:title,
-      state_id:setSate,
     }
     console.log(formData,'formData')
-    store.dispatch(updateCity(formData)).then((res: any) => {
+    store.dispatch(createState(formData)).then((res: any) => {
       if (res.payload.status == true) {
         toast.success(res.payload.message)
         navigate("/cities");
@@ -115,22 +109,9 @@ function getCountryStatesByCountry(e:any){
     });           
   };
   }
-function getCityById(){
-const formDate={
-    city_id:params.cityId
-}
-    store.dispatch(getCity(formDate)).then((res: any) => {
-        console.log(res,"getData")
-        // setCountry()
-        // setState()
-        // setTitle()
-    });
-}
-
   useEffect(() => {
     getCountrieData();
-    getCityById();
-  },[]);
+  });
 
   return (
     <ThemeProvider theme={mdTheme}>
@@ -156,7 +137,7 @@ const formDate={
               <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
                 <Typography component="h2" variant="h6" color="primary" gutterBottom>
-                Edit City
+                Add State
                 </Typography>
                 <Divider />
                 <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
@@ -180,28 +161,8 @@ const formDate={
                             ))} 
                           </Select>
                         </FormControl>
-                        </Grid>
-                        <Grid item xs={6} sm={6} mt={2}>
-                        <FormControl fullWidth >
-                          <InputLabel id="State">State</InputLabel>
-                          <Select
-                            labelId="State"
-                            required
-                            id="State"
-                            value={setSate}
-                            label="State"
-                            onChange={selectState}
-                          >
-                          <MenuItem value="">-Select-</MenuItem>
-                            {stateId?.map((item:any) => (  
-                              <MenuItem key={item.id} value={item.id}>
-                              {item.name}
-                              </MenuItem>
-                            ))} 
-                          </Select>
-                        </FormControl>
-                        </Grid>
-                        <Grid item xs={6} sm={6} mt={2}>
+                      
+                        <Grid item xs={12} sm={12}>
                           <TextField
                             margin="normal"
                             id="title"
@@ -222,12 +183,13 @@ const formDate={
                       
                       </Grid>
                       </Grid>
+                      </Grid>
                       <Divider />
                       <Toolbar  sx={{ ml: 0 ,pl:"0 !important"}}>
                         <Button  disabled={!isValidData()} type="submit" variant="contained">
-                        Update
+                        Submit
                         </Button>
-                        <Button variant="contained" component={Link} to="/cities" sx={{ ml: 1 }} >Cancel </Button>
+                        <Button variant="contained" component={Link} to="/states" sx={{ ml: 1 }} >Cancel </Button>
                       </Toolbar> 
                   </Box>
                 </Paper>

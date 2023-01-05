@@ -134,6 +134,12 @@ const Navigation = (): JSX.Element => {
               </ListItemIcon>
               <ListItemText primary="Countries" />
             </ListItemButton>
+            <ListItemButton component={Link} to="/states">
+              <ListItemIcon>
+                <PublicIcon />
+              </ListItemIcon>
+              <ListItemText primary="States" />
+            </ListItemButton>
             <ListItemButton component={Link} to="/cities">
               <ListItemIcon>
                 <PublicIcon />
