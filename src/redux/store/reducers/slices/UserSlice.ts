@@ -675,6 +675,71 @@ export const statusCity = createAsyncThunk('statusCity', async (data:any) => {
         return res.json()
     });
 })
+export const createState = createAsyncThunk('createState', async (data:any) => {
+    return await fetch(apiEndPoint+'/createState', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+              'Authorization': `${token}`,
+        },
+        body: JSON.stringify(data)
+    }).then(res => {
+        return res.json()
+    });
+})
+export const getStates = createAsyncThunk('getStates', async () => {
+    return await fetch(apiEndPoint+'/getStates', {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+              'Authorization': `${token}`,
+        },
+    }).then(res => {
+        return res.json()
+    });
+})
+export const getState = createAsyncThunk('getState', async (data:any) => {
+    return await fetch(apiEndPoint+'/getState', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+              'Authorization': `${token}`,
+        },
+        body: JSON.stringify(data)
+    }).then(res => {
+        return res.json()
+    });
+})
+
+export const deleteState = createAsyncThunk('deleteState', async (data:any) => {
+    return await fetch(apiEndPoint+'/deleteState', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+              'Authorization': `${token}`,
+        },
+        body: JSON.stringify(data)
+    }).then(res => {
+        return res.json()
+    });
+})
+export const statusState = createAsyncThunk('statusState', async (data:any) => {
+    return await fetch(apiEndPoint+'/statusState', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+              'Authorization': `${token}`,
+        },
+        body: JSON.stringify(data)
+    }).then(res => {
+        return res.json()
+    });
+})
 // add some city api code here
 
 const INIT_STATE: AppUser = {

@@ -131,7 +131,7 @@ export default function CountiesEdit() {
                               }));
                             }}
                           />
-                            {dirtyFields["name"] && getError("Country is requried")}
+                            {dirtyFields["name"] && getError("Country is required")}
                       </Grid>
                     </Grid>
                     </Grid>

@@ -37,7 +37,10 @@ import CountriesView from './components/countries/View';
 import DocumentList from './components/companies/Documents';
 import CityList from './components/cities/Listing';
 import CityAdd from './components/cities/Add';
-import EditAdd from './components/cities/Edit';
+import EditCity from './components/cities/Edit';
+import StateAdd from './components/state/StateAdd';
+import StateEdit from './components/state/StateEdit';
+import StatesList from './components/state/StateListing';
 
 function App() {
   const navigate = useNavigate();
@@ -102,7 +105,10 @@ function App() {
           <Route path="Profile" element={<ProfileEdit />} /> 
           <Route path="cities" element={<CityList />} /> 
           <Route path="cities/add" element={<CityAdd/>} />
-          <Route path="cities/edit/:cityId" element={<EditAdd />} />
+          <Route path="cities/edit/:cityId" element={<EditCity />} />
+          <Route path="states" element={<StatesList />} /> 
+          <Route path="states/add" element={<StateAdd/>} />
+          <Route path="states/edit/:cityId" element={<StateEdit />} />
           </>
         }
         

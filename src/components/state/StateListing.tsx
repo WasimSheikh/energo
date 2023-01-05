@@ -15,29 +15,26 @@ import { Link } from "react-router-dom";
 import EditIcon from '@mui/icons-material/Edit';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { deleteCity, getCities,statusCity } from '../../redux/store/reducers/slices/UserSlice';
+import { deleteCity, deleteState, getStates,statusCity, statusState } from '../../redux/store/reducers/slices/UserSlice';
 import React, { useEffect , useState } from 'react';
 import { store } from '../../redux/store';
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
-import { Diversity2 } from '@mui/icons-material';
 
 
 
-export default function CityList() {
+export default function StatesList() {
   const [cities,setCities] = useState([]);
-function getCitiesList(){
-    store.dispatch(getCities()).then((res: any) => {
+function getStateList(){
+    store.dispatch(getStates()).then((res: any) => {
+      setCities(res.payload?.states);
         console.log(res,"res")
-        // if (res && res.payload?.permissions) {
-          setCities(res.payload?.cities);
-        // } 
       }); 
 }
 
 
   useEffect(() => {
-    getCitiesList();
+    getStateList();
   },[]);
 
   const mdTheme = createTheme();
@@ -49,9 +46,9 @@ function getCitiesList(){
       renderCell: (index:any) => index.api.getRowIndex(index.row.id) + 1,
     },
     {
-      field: 'title',
+      field: 'country',
       headerName: 'Country',
-      width: 170,
+      width: 250,
       renderCell:(params:any)=>{
         return(
           <div>{params.row.country.title}</div>
@@ -59,30 +56,20 @@ function getCitiesList(){
       }
     },
     {
-      field: 'state',
-      headerName: 'State',
-      width: 200,
-      renderCell:(params:any)=>{
-        return(
-          <div>{params.row.state.name}</div>
-        )
-      }
-    },
-    {
       field: 'name',
-      headerName: 'City',
-      width: 200,
+      headerName: 'State',
+      width: 250,
     },
     {
         field: 'is_active',
         headerName: 'Status',
-        width: 200,
+        width: 250,
         sortable: false,
         renderCell: (params) => {
           return (
             <>
-             {params.row.is_active == '1' && <div onClick={()=>{statusUpdateCity(params.row.id)}} style={{cursor: 'pointer'}}> <span className='badge badge-success'>active</span></div>}
-        {params.row.is_active == '0' &&  <div onClick={()=>{statusUpdateCity(params.row.id)}} style={{cursor: 'pointer'}}> <span className='badge badge-danger'>Inactive</span></div>}
+             {params.row.is_active == '1' && <a href='#' onClick={()=>{statusUpdateCity(params.row.id)}} > <span className='badge badge-success'>active</span></a>}
+        {params.row.is_active == '0' &&  <a href='#' onClick={()=>{statusUpdateCity(params.row.id)}} > <span className='badge badge-danger'>Inactive</span></a>}
             
             </>
           );
@@ -97,16 +84,16 @@ function getCitiesList(){
         return (
           <>
           <Button  sx={{ minWidth: 40 }}  component={Link} to={'edit/'+params.row.id} > <EditIcon  /> </Button>
-          <Button  sx={{ minWidth: 40 }}   onClick={()=>{deleteCityById(params.row.id)}}> <DeleteIcon  /> </Button>
+          <Button  sx={{ minWidth: 40 }}   onClick={()=>{deleteStateById(params.row.id)}}> <DeleteIcon  /> </Button>
           </>
         );
      }
     },
   ];
   
-  const deleteCityById=(e:any)=>{
+  const deleteStateById=(e:any)=>{
       const formData ={
-        city_id :e
+        state_id :e
       }
         Swal.fire({
           title: 'Are you sure want to delete?',
@@ -118,11 +105,11 @@ function getCitiesList(){
           confirmButtonText: 'Yes , confirm !'
         }).then((result:any) => {
           if (result.isConfirmed) {
-            store.dispatch(deleteCity(formData)).then((res: any) => {
+            store.dispatch(deleteState(formData)).then((res: any) => {
               if(res.payload.status==true){
                toast.success(res.payload.message);
                setCities([]);
-               getCitiesList();
+               getStateList();
               }else{
                    toast.error(res.payload.message);
               }
@@ -133,13 +120,13 @@ function getCitiesList(){
 
       const statusUpdateCity=(e:any)=>{
         const formData= {
-          city_id : e
+          state_id : e
         }
-          store.dispatch(statusCity(formData)).then((res: any) => {
+          store.dispatch(statusState(formData)).then((res: any) => {
           if(res.payload.status==true){
            toast.success(res.payload.message);
            setCities([]);
-           getCitiesList();
+           getStateList();
           }else{
                toast.error(res.payload.message);
           }
@@ -171,9 +158,9 @@ function getCitiesList(){
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
                 <Box className="headingbutton" sx={{ mb: 1 }}>
                   <Typography component="h2" variant="h6" color="primary" gutterBottom>
-                    Cities 
+                    States 
                   </Typography>
-                  <Button variant="contained" component={Link} to="/cities/add">Add</Button>
+                  <Button variant="contained" component={Link} to="/states/add">Add</Button>
                 </Box>
                 <Divider />
                 <Box sx={{ height: 400, width: '100%' }}>

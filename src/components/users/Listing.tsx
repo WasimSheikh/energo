@@ -80,8 +80,9 @@ const deleteId=(e:any)=>{
 const mdTheme = createTheme();
 const columns: GridColDef[] = [
   { field: 'id',
-   headerName: 'Id',
-    width: 70
+   headerName: 'S.No.',
+    width: 70,
+    renderCell: (index:any) => index.api.getRowIndex(index.row.id) + 1,
   },
   {
     field: 'company_name',
