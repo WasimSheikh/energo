@@ -193,7 +193,7 @@ function getCountryStatesByCountry(e:any){
                             id="title"
                             required
                             name="title"
-                            label="Title"
+                            label="City"
                             fullWidth
                             value={title}
                             onChange={(e) => {
@@ -204,7 +204,7 @@ function getCountryStatesByCountry(e:any){
                               }));
                             }}
                           />
-                            {dirtyFields["title"] && getError("Title is requried")}
+                            {dirtyFields["title"] && getError("City is required")}
                       
                       </Grid>
                       {/* </Grid> */}

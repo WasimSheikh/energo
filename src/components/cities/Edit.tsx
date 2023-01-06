@@ -209,7 +209,7 @@ const formDate={
                             id="title"
                             required
                             name="title"
-                            label="Title"
+                            label="City"
                             fullWidth
                             value={title}
                             onChange={(e) => {
@@ -220,7 +220,7 @@ const formDate={
                               }));
                             }}
                           />
-                            {dirtyFields["title"] && getError("Title is requried")}
+                            {dirtyFields["title"] && getError("City is required")}
                       
                       </Grid>
                       {/* </Grid> */}
