@@ -31,6 +31,7 @@ export default function  EditCity() {
   const [country_id,setCountry] = useState('');
   const [setSate,setState] = useState('');
   const [title,setTitle] = useState('');
+  const [cityID,setCityID] = useState('');
   const [errorMessages, setErrorMessages] = useState('');
   const [onload,setOnload] = useState(false);
   const [countries,setCountries] = useState([]);
@@ -103,7 +104,7 @@ function getCountryStatesByCountry(e:any){
       country_id:country_id,
       name:title,
       state_id:setSate,
-      city_id:params.cityId
+      city_id:cityID
     }
     console.log(formData,'formData')
     store.dispatch(updateCity(formData)).then((res: any) => {
@@ -121,11 +122,12 @@ const formDate={
     city_id:params.cityId
 }
     store.dispatch(getCity(formDate)).then((res: any) => {
-        console.log(res.payload.city,"getData")
+        console.log(res.payload,"getData")
         setCountry(res.payload.city.country.id)
         setTitle(res.payload.city.name)
         getCountryStatesByCountry(res.payload.city.country.id)
         setState(res.payload.city.state_id)
+        setCityID(res.payload.city.id)
     });
 }
 

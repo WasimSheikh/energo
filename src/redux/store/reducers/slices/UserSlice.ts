@@ -740,6 +740,19 @@ export const statusState = createAsyncThunk('statusState', async (data:any) => {
         return res.json()
     });
 })
+export const updateState = createAsyncThunk('updateState', async (data:any) => {
+    return await fetch(apiEndPoint+'/updateState', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+              'Authorization': `${token}`,
+        },
+        body: JSON.stringify(data)
+    }).then(res => {
+        return res.json()
+    });
+})
 // add some city api code here
 
 const INIT_STATE: AppUser = {

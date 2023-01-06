@@ -40,7 +40,7 @@ function getStateList(){
   const mdTheme = createTheme();
   const columns: GridColDef[] = [
     {
-      field: 'id',
+      field: 'S.No',
       headerName: 'S.No.',
       width: 100,
       renderCell: (index:any) => index.api.getRowIndex(index.row.id) + 1,

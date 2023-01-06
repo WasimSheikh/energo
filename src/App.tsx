@@ -108,7 +108,7 @@ function App() {
           <Route path="cities/edit/:cityId" element={<EditCity />} />
           <Route path="states" element={<StatesList />} /> 
           <Route path="states/add" element={<StateAdd/>} />
-          <Route path="states/edit/:cityId" element={<StateEdit />} />
+          <Route path="states/edit/:stateId" element={<StateEdit />} />
           </>
         }
         
