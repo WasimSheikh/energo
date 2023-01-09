@@ -14,7 +14,7 @@ import { Avatar, Button, Menu, MenuItem } from "@mui/material";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import '../common/common.css'
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import PersonIcon from '@mui/icons-material/Person';
 
 
 function capitalizeFirstLetter(string:string) {
@@ -110,25 +110,14 @@ const Header = (): JSX.Element => {
                 <AccountCircleIcon />
               </Badge>
             </IconButton> */}
-            <div
+              <Button className="btn"
                 id="basic-button"
                 aria-controls={open1 ? 'basic-menu' : undefined}
                 aria-haspopup="true"
                 aria-expanded={open1 ? 'true' : undefined}
                 onClick={profileClick}>
-              <IconButton color="inherit">
-              {/* <Badge badgeContent={4} color="secondary"> */}
-                <AccountCircleIcon />
-              {/* </Badge> */}
-            </IconButton>
-                {/* <Avatar src="/broken-image.jpg" /> */}
-              </div>
-              <div>
-              {/* <Avatar src="/broken-image.jpg" /> */}
-              {/* <Avatar>
-              <AccountCircleIcon />
-                     </Avatar> */}
-              </div>
+                <Avatar sx={{ bgcolor: "#bdbdbd" }} ><PersonIcon/></Avatar>
+              </Button>
             <Menu
                 id="basic-menu"
                 anchorEl={anchorEl}
