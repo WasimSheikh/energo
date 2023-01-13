@@ -13,10 +13,11 @@ import Divider from '@mui/material/Divider';
 import Button from '@mui/material/Button';
 import { Link ,useParams } from "react-router-dom";
 import React, { useEffect, useState } from 'react';
-import { createRole, getPermissionParentChlid, getRole, createRolehasPermission } from '../../redux/store/reducers/slices/UserSlice';
+import { createRole, getPermissionParentChlid, getRole, createRolehasPermission, getRolehasPermissions } from '../../redux/store/reducers/slices/UserSlice';
 import { store } from '../../redux/store';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
+import { toast } from 'react-toastify';
 
 function CompanyView() {
   const mdTheme = createTheme();
@@ -28,6 +29,25 @@ function CompanyView() {
   const [permissions,setPermissions] = useState([]);
   const [onload,setOnload] = useState(false);
   const [errorMessages, setErrorMessages] = useState('');
+
+
+  function addPermission(){
+    setTimeout(() => {
+      const roleId = window.location.href.split('/')[5]
+      const formData={
+        role_id:roleId
+      }
+      store.dispatch(getRolehasPermissions(formData)).then((res: any) => {
+          var allPermission = res.payload.data
+          allPermission.forEach((e:any) => {
+            if(e){
+              var data = (document.getElementById(e.id+'child')as any).checked = true;
+            }
+          });
+      
+      }); 
+    }, 2000);
+  }
 
   useEffect(() => {
     if(onload==false){
@@ -46,12 +66,15 @@ function CompanyView() {
           } 
         }); 
       }
-  });
+        addPermission();
+  },[]);
 
 
   var permissionRole:any =[];
-  const givePermissionToRole = (value:any) => { 
+  const givePermissionToRole = (value:any,i:any) => { 
+    console.log(value,"value",i)
    if (!permissionRole.includes(value)){
+    console.log((document.getElementById(value+'child')as any),"7777")
     //  if((document.getElementById(value+'child')as any).checked == true){
         permissionRole.push(value);
         console.log(permissionRole,"permissionRole")
@@ -63,18 +86,20 @@ function CompanyView() {
      console.log(permissionRole,"permissionRole else")
    }
  }; 
-
+console.log(permissions,"permissions");
   const handleSubmit = (e:any) => {
     e.preventDefault();
     const formData:any = {
       role_id:id,
-      permissions_ids:permissionRole,
+      permissions:permissionRole,
     }
     store.dispatch(createRolehasPermission(formData)).then((res: any) => {
       if (res.payload.status == true) {
-        setErrorMessages('');
+        // setErrorMessages('');
+        toast.success(res.payload.message)
       } else {
         setErrorMessages(res.payload?.message);
+        toast.error(res.payload.message)
       }
     });           
   };
@@ -129,15 +154,16 @@ function CompanyView() {
                               <Grid  sx={{ ml: 5 }} key ={value.id}>
                               <FormControlLabel
                                   control={
-                                    // <input type="checkbox"  id={i + 'child'}/>
-                                  <Checkbox name={value.name} value={value.id} id={i + 'child'} />
+                                    <input type="checkbox"  id={value.id + 'child'} />
+                                  // <Checkbox name={value.name}  value={value.id} id={value.id + 'child'} />
                                 }
 
                                   label={value.name}
                                   onChange={(e) => {
-                                    givePermissionToRole(value.id);
+                                    givePermissionToRole(value.id,i);
                                   }} 
                                   sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
+                                  style={{margin:'7px'}}
                               />
                               </Grid>
                             ))} 
