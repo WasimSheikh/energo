@@ -15,7 +15,7 @@ import { Link } from "react-router-dom";
 import EditIcon from '@mui/icons-material/Edit';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { deleteCountry, getCountries, getPermissions, StatusCountry } from '../../redux/store/reducers/slices/UserSlice';
+import { deleteCountry, getCountries, getPermissions, getRolehasPermissions, StatusCountry } from '../../redux/store/reducers/slices/UserSlice';
 import React, { useEffect , useState } from 'react';
 import { store } from '../../redux/store';
 import { toast } from 'react-toastify';
@@ -25,6 +25,10 @@ import Swal from 'sweetalert2';
 
 export default function ContriesList() {
   const [countries,setCountries] = useState([]);
+  const [countriesAdd,setCountriesAdd] = useState(false);
+  const [countriesEdit,setCountriesEdit] = useState(false);
+  const [countriesDelete,setCountriesDelete] = useState(false);
+  const [countriesView,setCountriesView] = useState(false);
 
 function getCountrieData(){
   if(countries.length == 0){
@@ -39,9 +43,36 @@ function getCountrieData(){
   }
 }
 
+function addPermission(){
+  var role_id:any = localStorage.getItem('user_id')
+  const formData={
+    role_id:role_id == '1'? '1':'2'
+  }
+  store.dispatch(getRolehasPermissions(formData)).then((res: any) => {
+      console.log(res.payload.data,"permission",res.payload.data.flag,"role",res.payload.data.name,"type");
+      var allPermission:any = res.payload.data
+      allPermission.forEach((per:any) => {
+        console.log(per,"gggggg",per.flag,"role",per.name,"type")
+        if(per.flag == "Countries"){
+          if(per.name == "Add"){
+            setCountriesAdd(true)
+          }else if(per.name == "Edit"){
+            setCountriesEdit(true)
+          }else if(per.name == "Delete"){
+            setCountriesDelete(true)
+          }
+        }
+      });
+      setTimeout(() => {
+        console.log(countriesAdd,"companyAdd",countriesEdit,"countriesEdit", countriesDelete,"countriesDelete",);
+      }, 2000);
+  }); 
+}
+
   useEffect(() => {
     getCountrieData();
-  });
+    addPermission();
+  },[]);
 
   const mdTheme = createTheme();
 const columns: GridColDef[] = [
@@ -80,8 +111,8 @@ const columns: GridColDef[] = [
     renderCell: (params) => {
       return (
         <>
-        <Button  sx={{ minWidth: 40 }}  component={Link} to={'/countries/edit/'+params.row.id} > <EditIcon  /> </Button>
-        <Button  sx={{ minWidth: 40 }}   onClick={()=>{deleteCountryById(params.row.id)}}> <DeleteIcon  /> </Button>
+        {countriesEdit == true && <Button  sx={{ minWidth: 40 }}  component={Link} to={'/countries/edit/'+params.row.id} > <EditIcon  /> </Button>}
+        {countriesDelete == true && <Button  sx={{ minWidth: 40 }}   onClick={()=>{deleteCountryById(params.row.id)}}> <DeleteIcon  /> </Button>}
         </>
       );
    }
@@ -156,7 +187,7 @@ const formData ={
                   <Typography component="h2" variant="h6" color="primary" gutterBottom>
                   Countries 
                   </Typography>
-                  <Button variant="contained" component={Link} to="/countries/add">Add</Button>
+                  {countriesAdd == true && <Button variant="contained" component={Link} to="/countries/add">Add</Button>}
                 </Box>
                 <Divider />
                 <Box sx={{ height: 400, width: '100%' }}>

@@ -16,7 +16,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { deleteCompany,getCompanies, statusCompany, } from '../../redux/store/reducers/slices/UserSlice';
+import { deleteCompany,getCompanies, getRolehasPermissions, statusCompany, } from '../../redux/store/reducers/slices/UserSlice';
 import React, { useEffect , useState } from 'react';
 import { store } from '../../redux/store';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
@@ -27,6 +27,10 @@ import { toast } from 'react-toastify';
 
 function CompanyList() {
   const [companiesss,setCompanies] = useState([]);
+  const [companyAdd,setCompanyAdd] = useState(false);
+  const [companyEdit,setCompanyEdit] = useState(false);
+  const [companyDelete,setCompanyDelete] = useState(false);
+  const [companyView,setCompanyView] = useState(false);
   
 const getCompanyData =()=>{
   store.dispatch(getCompanies()).then((res: any) => {
@@ -37,9 +41,32 @@ const getCompanyData =()=>{
   }); 
 }
 
+function addPermission(){
+  var role_id:any = localStorage.getItem('user_id')
+  const formData={
+    role_id:role_id == '1'? '1':'2'
+  }
+  store.dispatch(getRolehasPermissions(formData)).then((res: any) => {
+      var allPermission:any = res.payload.data
+      allPermission.forEach((per:any) => {
+        if(per.flag == "companies"){
+          if(per.name == "Add"){
+            setCompanyAdd(true)
+          }else if(per.name == "Edit"){
+            setCompanyEdit(true)
+          }else if(per.name == "Delete"){
+            setCompanyDelete(true)
+          }else if(per.name == "View"){
+            setCompanyView(true)
+          }
+        }
+      });
+  }); 
+}
 
   useEffect(() => {
     getCompanyData();
+    addPermission();
   },[]);
 
 const mdTheme = createTheme();
@@ -47,23 +74,23 @@ const mdTheme = createTheme();
 const columns: GridColDef[] = [
   { field: 'id',
    headerName: 'S.No.',
-    width: 60,
+    width: 40,
     renderCell: (index:any) => index.api.getRowIndex(index.row.id) + 1,
   },
   {
     field: 'title',
     headerName: 'Company Name',
-    width: 170,
+    width: 140,
   },
   {
     field: 'email',
     headerName: 'Email',
-    width: 230,
+    width: 220,
   },
   {
     field: 'phone',
     headerName: 'Phone',
-    width: 120,
+    width: 110,
   },
   {
     field: 'website',
@@ -75,7 +102,7 @@ const columns: GridColDef[] = [
    {
     field: 'is_active',
     headerName: 'Status',
-    width: 180,
+    width: 100,
     sortable: false,
     renderCell: (params) => {
       return (
@@ -95,9 +122,9 @@ const columns: GridColDef[] = [
     renderCell: (params) => {
       return (
         <>
-        <Button  sx={{ minWithd: 40 }}   component={Link} to={'/companies/edit/'+params.row.id} > <EditIcon  /> </Button>
-        <Button  sx={{ minWidth: 40 }}  component={Link} to={'/companies/view/'+params.row.id} > <VisibilityIcon  /> </Button>
-        <Button onClick={()=>{deleteId(params.row.id)}}  sx={{ minWidth: 40 }}   > <DeleteIcon  /> </Button>
+       {companyEdit == true && <Button  sx={{ minWithd: 40 }}   component={Link} to={'/companies/edit/'+params.row.id} > <EditIcon  /> </Button>}
+        {companyView ==true && <Button  sx={{ minWidth: 40 }}  component={Link} to={'/companies/view/'+params.row.id} > <VisibilityIcon  /> </Button>}
+        {companyDelete ==true && <Button onClick={()=>{deleteId(params.row.id)}}  sx={{ minWidth: 40 }}   > <DeleteIcon  /> </Button>}
         <Button  sx={{ minWidth: 40 }}  component={Link} to={'/companies/document/'+params.row.id} > <FileCopyIcon  /> </Button>
         
         </>
@@ -180,7 +207,7 @@ const deleteId=(e:any)=>{
                   <Typography component="h2" variant="h6" color="primary" gutterBottom>
                     Companies 
                     </Typography>
-                    <Button variant="contained" component={Link} to="/companies/add">Add</Button>
+                    {companyAdd == true && <Button variant="contained" component={Link} to="/companies/add">Add</Button>}
                 </Box>
                 <Divider />
                 <Box sx={{ height: 400, width: '100%' }}>

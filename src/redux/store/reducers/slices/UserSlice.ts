@@ -753,7 +753,21 @@ export const updateState = createAsyncThunk('updateState', async (data:any) => {
         return res.json()
     });
 })
-// add some city api code here
+// add some city api code here++
+// role permission getRolehasPermissions
+export const getRolehasPermissions = createAsyncThunk('getRolehasPermissions', async (data:any) => {
+    return await fetch(apiEndPoint+'/getRolehasPermissions', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+              'Authorization': `${token}`,
+        },
+        body: JSON.stringify(data)
+    }).then(res => {
+        return res.json()
+    });
+})
 
 const INIT_STATE: AppUser = {
     currUser: {

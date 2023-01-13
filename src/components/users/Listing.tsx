@@ -14,7 +14,7 @@ import Button from '@mui/material/Button';
 import { Link,useNavigate } from "react-router-dom";
 import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 import { store } from '../../redux/store';
-import { deleteUser,getUsers, statusUpdate } from '../../redux/store/reducers/slices/UserSlice';
+import { deleteUser,getRolehasPermissions,getUsers, statusUpdate } from '../../redux/store/reducers/slices/UserSlice';
 import React, { useEffect , useState } from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -31,6 +31,10 @@ import { toast } from 'react-toastify';
 function UserList() {
 
   const [users,setUsers] = useState([]);
+  const [usersAdd,setUsersAdd] = useState(false);
+  const [usersEdit,setUsersEdit] = useState(false);
+  const [usersDelete,setUsersDelete] = useState(false);
+  const [usersView,setUsersView] = useState(false);
 
   const userList = ()=>{
     store.dispatch(getUsers()).then((res: any) => {
@@ -40,11 +44,54 @@ function UserList() {
     }); 
   }
 
+  function addPermission(){
+    var role_id:any = localStorage.getItem('user_id')
+    const formData={
+      role_id:role_id == '1'? '1':'2'
+    }
+    store.dispatch(getRolehasPermissions(formData)).then((res: any) => {
+        console.log(res.payload.data,"permission",res.payload.data.flag,"role",res.payload.data.name,"type");
+        var allPermission:any = res.payload.data
+        allPermission.forEach((per:any) => {
+          if(per.flag == "Users"){
+            if(per.name == "Add"){
+              setUsersAdd(true)
+            }else if(per.name == "Edit"){
+              setUsersEdit(true)
+            }else if(per.name == "Delete"){
+              setUsersDelete(true)
+            }else if(per.name == "View"){
+              setUsersView(true)
+            }
+          }
+          // if(per.flag == "Users" && per.name == "Add"){
+          //   setUsersAdd(true)
+          // }else{setUsersAdd(false)}
+          // if(per.flag == "Users" && per.name == "Edit"){
+          //   setUsersEdit(true)
+          // }else{setUsersEdit(false)}
+          // if(per.flag == "Users" && per.name == "View"){
+          //   setUsersView(true)
+          // }else{setUsersView(false)}
+          // if(per.flag == "Users" && per.name == "Delete"){
+          //   setUsersDelete(true)
+          // }else{setUsersDelete(false)}
+        });
+        setTimeout(() => {
+          console.log(usersAdd,"companyAdd");
+        }, 2000);
+    }); 
+  }
+
   useEffect(() => {
     if(users.length == 0){
       userList();
     }
   },[]);
+
+  useEffect(() => {
+    addPermission();
+  });
 
   
 // aad delete function inside to main component function 
@@ -131,9 +178,9 @@ const columns: GridColDef[] = [
     renderCell: (params) => {
     return (
         <>
-          <Button  sx={{ minWidth: 40 }}  component={Link}  to={'/users/edit/'+params.row.id}  > <EditIcon  /> </Button>
-          <Button  sx={{ minWidth: 40 }}   component={Link} to={'/users/view/'+params.row.id}  > <VisibilityIcon  /> </Button>
-                <Button onClick={()=>{deleteId(params.row.id)}}  sx={{ minWidth: 40 }}   > <DeleteIcon  /> </Button>
+          { usersEdit == true && <Button  sx={{ minWidth: 40 }}  component={Link}  to={'/users/edit/'+params.row.id}  > <EditIcon  /> </Button>}
+          { usersDelete == true && <Button  sx={{ minWidth: 40 }}   component={Link} to={'/users/view/'+params.row.id}  > <VisibilityIcon  /> </Button>}
+          { usersView == true && <Button onClick={()=>{deleteId(params.row.id)}}  sx={{ minWidth: 40 }}   > <DeleteIcon  /> </Button>}
 
         </>
       );
@@ -186,7 +233,7 @@ const statusUpdateUser=(e:any)=>{
                   <Typography component="h2" variant="h6" color="primary" gutterBottom>
                     Users 
                     </Typography>
-                    <Button variant="contained" component={Link} to="/users/add">Add</Button>
+                    { usersAdd == true && <Button variant="contained" component={Link} to="/users/add">Add</Button>}
                 </Box>
                 <Divider />
                 <Box sx={{ height: 400, width: '100%' }}>

@@ -133,20 +133,6 @@ const Header = (): JSX.Element => {
                   </MenuItem>
 
               </Menu>
-
-            {/* <FormControl sx={{ m: 1, minWidth: 20 }} size="small">
-      <Select
-        labelId="demo-select-small"
-        id="demo-select-small"
-        value={age}
-        label="Age"
-        onChange={handleChange}
-      >
-
-        <MenuItem component={Link} to="/ProfileEdit">Profile</MenuItem>
-        <MenuItem component={Link} to="/">Logout</MenuItem>
-      </Select>
-    </FormControl> */}
           </Toolbar>
           <ToastContainer/>
         </AppBar>

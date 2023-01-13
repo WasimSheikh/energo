@@ -15,7 +15,7 @@ import { Link } from "react-router-dom";
 import EditIcon from '@mui/icons-material/Edit';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { deleteCity, getCities,statusCity } from '../../redux/store/reducers/slices/UserSlice';
+import { deleteCity, getCities,getRolehasPermissions,statusCity } from '../../redux/store/reducers/slices/UserSlice';
 import React, { useEffect , useState } from 'react';
 import { store } from '../../redux/store';
 import Swal from 'sweetalert2';
@@ -26,6 +26,9 @@ import { Diversity2 } from '@mui/icons-material';
 
 export default function CityList() {
   const [cities,setCities] = useState([]);
+  const [citiesAdd,setCitiesAdd] = useState(false);
+  const [citiesEdit,setCitiesEdit] = useState(false);
+  const [citiesDelete,setCitiesDelete] = useState(false);
 function getCitiesList(){
     store.dispatch(getCities()).then((res: any) => {
         console.log(res,"res")
@@ -35,9 +38,35 @@ function getCitiesList(){
       }); 
 }
 
+function addPermission(){
+  var role_id:any = localStorage.getItem('user_id')
+  const formData={
+    role_id:role_id == '1'? '1':'2'
+  }
+  store.dispatch(getRolehasPermissions(formData)).then((res: any) => {
+      console.log(res.payload.data,"permission",res.payload.data.flag,"role",res.payload.data.name,"type");
+      var allPermission:any = res.payload.data
+      allPermission.forEach((per:any) => {
+        if(per.flag == "Cities"){
+          if(per.name == "Add"){
+            setCitiesAdd(true)
+          }else if(per.name == "Edit"){
+            setCitiesEdit(true)
+          }else if(per.name == "Delete"){
+            setCitiesDelete(true)
+          }
+        }
+      });
+      setTimeout(() => {
+        console.log(citiesAdd,"citiesAdd",citiesEdit,"CitiesEdit", citiesDelete,"CitiesDelete",);
+      }, 2000);
+  }); 
+}
+
 
   useEffect(() => {
     getCitiesList();
+    addPermission();
   },[]);
 
   const mdTheme = createTheme();
@@ -96,8 +125,8 @@ function getCitiesList(){
       renderCell: (params) => {
         return (
           <>
-          <Button  sx={{ minWidth: 40 }}  component={Link} to={'edit/'+params.row.id} > <EditIcon  /> </Button>
-          <Button  sx={{ minWidth: 40 }}   onClick={()=>{deleteCityById(params.row.id)}}> <DeleteIcon  /> </Button>
+          {citiesEdit == true && <Button  sx={{ minWidth: 40 }}  component={Link} to={'edit/'+params.row.id} > <EditIcon  /> </Button>}
+          {citiesDelete == true && <Button  sx={{ minWidth: 40 }}   onClick={()=>{deleteCityById(params.row.id)}}> <DeleteIcon  /> </Button>}
           </>
         );
      }
@@ -173,7 +202,7 @@ function getCitiesList(){
                   <Typography component="h2" variant="h6" color="primary" gutterBottom>
                     Cities 
                   </Typography>
-                  <Button variant="contained" component={Link} to="/cities/add">Add</Button>
+                 {citiesAdd == true && <Button variant="contained" component={Link} to="/cities/add">Add</Button>}
                 </Box>
                 <Divider />
                 <Box sx={{ height: 400, width: '100%' }}>

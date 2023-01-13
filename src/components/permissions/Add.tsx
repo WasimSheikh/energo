@@ -29,6 +29,7 @@ function PermissionAdd() {
   const navigate = useNavigate();
   const [name,setName] = useState('');
   const [parent,setParent] = useState('');
+  const [flag,setFlag] = useState('');
   const [url,setUrl] = useState('');
   const [errorMessages, setErrorMessages] = useState('');
   const [permissions, setPermissions] = useState([]);
@@ -40,7 +41,15 @@ function PermissionAdd() {
   });
   const selectChange = (event: SelectChangeEvent) => {
     setParent(event.target.value);
+    permissions.forEach((res:any)=>{
+      console.log(res,"dsfsfsdfdsf")
+      if(res.id == event.target.value){
+        setFlag(res.name)
+        console.log(res.name,"res.title",flag)
+      }
+    })
   };
+
 
   const renderErrorMessage = () =>
   errorMessages && (
@@ -60,7 +69,6 @@ const getError = (msg: string): JSX.Element => {
   );
 };
 const isValidData = ():boolean => {
-  console.log(name,url,parent,"kkkkkkkkk");
   const validateFields = ifEmpty( name && url);
   
   return validateFields;
@@ -73,6 +81,7 @@ const isValidData = ():boolean => {
       url:url,
       parent:parent,
       guard_name:'web',
+      flag : flag
     }
     store.dispatch(createPermission(formData)).then((res: any) => {
       if (res.payload.status == true) {

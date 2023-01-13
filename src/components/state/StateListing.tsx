@@ -15,7 +15,7 @@ import { Link } from "react-router-dom";
 import EditIcon from '@mui/icons-material/Edit';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { deleteCity, deleteState, getStates,statusCity, statusState } from '../../redux/store/reducers/slices/UserSlice';
+import { deleteCity, deleteState, getRolehasPermissions, getStates,statusCity, statusState } from '../../redux/store/reducers/slices/UserSlice';
 import React, { useEffect , useState } from 'react';
 import { store } from '../../redux/store';
 import Swal from 'sweetalert2';
@@ -25,16 +25,45 @@ import { toast } from 'react-toastify';
 
 export default function StatesList() {
   const [cities,setCities] = useState([]);
+  const [statesAdd,setStatesAdd] = useState(false);
+  const [statesEdit,setStatesEdit] = useState(false);
+  const [statesDelete,setStatesDelete] = useState(false);
 function getStateList(){
     store.dispatch(getStates()).then((res: any) => {
       setCities(res.payload?.states);
-        console.log(res,"res")
       }); 
 }
 
+function addPermission(){
+  var role_id:any = localStorage.getItem('user_id')
+  const formData={
+    role_id:role_id == '1'? '1':'2'
+  }
+  store.dispatch(getRolehasPermissions(formData)).then((res: any) => {
+      var allPermission:any = res.payload.data
+      allPermission.forEach((per:any) => {
+        if(per.flag == "States"){
+          console.log(per,"777777");
+          if(per.name == "Add"){
+            console.log(per.name ,"addd")
+            setStatesAdd(true)
+          }else if(per.name == "Edit"){
+            setStatesEdit(true)
+          }else if(per.name == "Delete"){
+            setStatesDelete(true)
+          }
+        }
+      });
+   
+  }); 
+  setTimeout(() => {
+    console.log(statesAdd,statesEdit,statesDelete);
+  }, 3000);
+}
 
   useEffect(() => {
     getStateList();
+    addPermission();
   },[]);
 
   const mdTheme = createTheme();
@@ -83,8 +112,8 @@ function getStateList(){
       renderCell: (params) => {
         return (
           <>
-          <Button  sx={{ minWidth: 40 }}  component={Link} to={'edit/'+params.row.id} > <EditIcon  /> </Button>
-          <Button  sx={{ minWidth: 40 }}   onClick={()=>{deleteStateById(params.row.id)}}> <DeleteIcon  /> </Button>
+          {statesEdit == true && <Button  sx={{ minWidth: 40 }}  component={Link} to={'edit/'+params.row.id} > <EditIcon  /> </Button>}
+          {statesDelete == true && <Button  sx={{ minWidth: 40 }}   onClick={()=>{deleteStateById(params.row.id)}}> <DeleteIcon  /> </Button>}
           </>
         );
      }
@@ -160,7 +189,7 @@ function getStateList(){
                   <Typography component="h2" variant="h6" color="primary" gutterBottom>
                     States 
                   </Typography>
-                  <Button variant="contained" component={Link} to="/states/add">Add</Button>
+                  {statesAdd == true && <Button variant="contained" component={Link} to="/states/add">Add</Button>}
                 </Box>
                 <Divider />
                 <Box sx={{ height: 400, width: '100%' }}>

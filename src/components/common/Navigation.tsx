@@ -50,6 +50,7 @@ const Navigation = (): JSX.Element => {
   ); 
 
   const [open, setOpen] = React.useState(true);
+  const user_id = localStorage.getItem('user_id')
   const toggleDrawer = () => {
     setOpen(!open);
   };
@@ -125,12 +126,12 @@ const Navigation = (): JSX.Element => {
               <ListItemText primary="Roles" />
             </ListItemButton>
 
-            <ListItemButton component={Link} to="/permissions">
+         {user_id == '1' && <ListItemButton component={Link} to="/permissions">
               <ListItemIcon>
                 <SettingsIcon />
               </ListItemIcon>
               <ListItemText primary="Permissions" />
-            </ListItemButton>
+            </ListItemButton>}
             <ListItemButton component={Link} to="/countries">
               <ListItemIcon>
                 <PublicIcon />

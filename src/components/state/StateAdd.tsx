@@ -56,14 +56,12 @@ export default function StateAdd() {
     );
   };
   const isValidData = (): boolean => {
-    console.log(country_id, title, "kkkkkkkkk");
     const validateFields = ifEmpty(title);
 
     return validateFields;
   };
   const selectCuntry = (event: SelectChangeEvent) => {
     setCountry(event.target.value);
-    console.log(event.target.value, "oooooooo");
     getCountryStatesByCountry(event.target.value);
   };
   const selectState = (event: SelectChangeEvent) => {

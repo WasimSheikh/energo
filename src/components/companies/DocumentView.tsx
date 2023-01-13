@@ -89,8 +89,9 @@ export default function ShareAdd() {
   }
 
 const imagesData = cards.map((card)=>{
+  console.log(card,"oooooooooooooooo")
   return(
-    <div className="container mt-4">
+    <div className="container mt-4" key={card}>
       <div className="alert alert-primary" role="alert">
           No documents found please upload documents!
       </div>
@@ -142,7 +143,7 @@ const imagesData = cards.map((card)=>{
                         <div className="row">
                         {documents.length > 0 ? documents?.map((res:any)=>{
                           return(
-                            <div className="col-md-3 mb-2" key={res.id}>
+                            <div className="col-md-3 mb-2" key={res?.id}>
                             <div className="card" >
                               {/* <a href={res.original_url} download> */}
                               <img
