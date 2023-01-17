@@ -31,6 +31,24 @@ function CompanyView() {
   const [errorMessages, setErrorMessages] = useState('');
 
 
+  function getRolesOnFunction(){
+    const roleId = window.location.href.split('/')[5]
+        const formData = {id:roleId};  
+        store.dispatch(getRole(formData)).then((res: any) => {
+          setOnload(true);
+            if (res && res.payload) {
+                setId(res.payload.role?.id);
+                setTitle(res.payload.role?.name);
+            } 
+        }); 
+        store.dispatch(getPermissionParentChlid()).then((res: any) => {
+          if (res && res.payload?.permissionparent) {
+             setPermissions(res.payload?.permissionparent);
+          } 
+        }); 
+  }
+
+
   function addPermission(){
     setTimeout(() => {
       const roleId = window.location.href.split('/')[5]
@@ -50,22 +68,7 @@ function CompanyView() {
   }
 
   useEffect(() => {
-    if(onload==false){
-      const roleId = window.location.href.split('/')[5]
-        const formData = {id:roleId};  
-        store.dispatch(getRole(formData)).then((res: any) => {
-          setOnload(true);
-            if (res && res.payload) {
-                setId(res.payload.role?.id);
-                setTitle(res.payload.role?.name);
-            } 
-        }); 
-        store.dispatch(getPermissionParentChlid()).then((res: any) => {
-          if (res && res.payload?.permissionparent) {
-             setPermissions(res.payload?.permissionparent);
-          } 
-        }); 
-      }
+    getRolesOnFunction();
         addPermission();
   },[]);
 
@@ -75,10 +78,10 @@ function CompanyView() {
     console.log(value,"value",i)
    if (!permissionRole.includes(value)){
     console.log((document.getElementById(value+'child')as any),"7777")
-    //  if((document.getElementById(value+'child')as any).checked == true){
+     if((document.getElementById(value+'child')as any).checked == true){
         permissionRole.push(value);
         console.log(permissionRole,"permissionRole")
-    //  }
+     }
   }else{
      permissionRole = permissionRole.filter((res:any)=>{
        return res != value
@@ -97,6 +100,8 @@ console.log(permissions,"permissions");
       if (res.payload.status == true) {
         // setErrorMessages('');
         toast.success(res.payload.message)
+        setPermissions([]);
+        getRolesOnFunction();
       } else {
         setErrorMessages(res.payload?.message);
         toast.error(res.payload.message)
@@ -154,7 +159,7 @@ console.log(permissions,"permissions");
                               <Grid  sx={{ ml: 5 }} key ={value.id}>
                               <FormControlLabel
                                   control={
-                                    <input type="checkbox"  id={value.id + 'child'} />
+                                    <input type="checkbox"  id={value.id + 'child'} style={{margin:'7px'}} />
                                   // <Checkbox name={value.name}  value={value.id} id={value.id + 'child'} />
                                 }
 
@@ -163,7 +168,7 @@ console.log(permissions,"permissions");
                                     givePermissionToRole(value.id,i);
                                   }} 
                                   sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
-                                  style={{margin:'7px'}}
+                                  style={{margin:'7px !important'}}
                               />
                               </Grid>
                             ))} 

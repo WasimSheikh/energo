@@ -119,12 +119,12 @@ const Navigation = (): JSX.Element => {
               <ListItemText primary="Activity Logs" />
             </ListItemButton>
 
-            <ListItemButton component={Link} to="/roles">
+            {user_id == '1' && <ListItemButton component={Link} to="/roles">
               <ListItemIcon>
                 <SettingsIcon />
               </ListItemIcon>
               <ListItemText primary="Roles" />
-            </ListItemButton>
+            </ListItemButton>}
 
          {user_id == '1' && <ListItemButton component={Link} to="/permissions">
               <ListItemIcon>

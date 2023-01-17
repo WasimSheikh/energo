@@ -19,7 +19,6 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { store } from '../../redux/store';
 import { shareDocuments } from '../../redux/store/reducers/slices/UserSlice';
 import { useEffect, useState } from 'react';
-import { sendFolder } from '../../app/_services/message.service';
 import { toast } from 'react-toastify';
 import { resolve } from 'path';
 

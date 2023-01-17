@@ -24,7 +24,6 @@ import {
 // import DocumentCompany from './components/companies/Documents';
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { subject } from "../../app/_services/message.service";
 import { toast } from "react-toastify";
 import DownloadForOfflineIcon from '@mui/icons-material/DownloadForOffline';
 import VisibilityIcon from '@mui/icons-material/Visibility';

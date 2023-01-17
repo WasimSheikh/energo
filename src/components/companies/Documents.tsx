@@ -33,7 +33,6 @@ import {useNavigate} from "react-router-dom"
 import { json } from 'stream/consumers';
 import '../common/common.css'
 import DocumentView from './DocumentView'
-import { sendFolder, subject } from '../../app/_services/message.service';
 
 
 const mdTheme = createTheme();
@@ -189,7 +188,6 @@ function getRolehasPermissiondata(){
       navigate("/companies/document/share/"+params.companyId)
     }
     function viewDocument(id:any){
-      subject.next(params.companyId)
       navigate(`/companies/document/view/${id}/${params.companyId}`)
     }
   

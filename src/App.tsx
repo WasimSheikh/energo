@@ -41,12 +41,17 @@ import EditCity from './components/cities/Edit';
 import StateAdd from './components/state/StateAdd';
 import StateEdit from './components/state/StateEdit';
 import StatesList from './components/state/StateListing';
+import {useIdleTimer} from 'react-idle-timer';
 
 function App() {
   const navigate = useNavigate();
   const [login, setIsLogin] = React.useState(false);
   const [onload,setOnload] = React.useState(false);
   const [documenets,setDocuments] = React.useState([]);
+
+  const onIdle = ()=>{
+console.log("object");
+  }
 
   function IsLoggedIn(){
     let access_token = localStorage.getItem("access_token");
@@ -68,7 +73,7 @@ function App() {
         }
      } 
   }); 
-
+  const idleTimer = useIdleTimer({ onIdle,    timeout: 5 * 1000, })
   return (
      <>
       <Routes>
