@@ -9,6 +9,7 @@
     "@mui/material": "^5.10.5",
     "@mui/styled-engine-sc": "^5.10.3",
     "@mui/x-data-grid": "^5.17.2",
+    "@mui/x-data-grid-generator": "^5.17.19",
     "@reduxjs/toolkit": "^1.8.5",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.3.0",

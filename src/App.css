@@ -57,3 +57,6 @@
   color: #fff;
 }
 
+.MuiDataGrid-cell.MuiDataGrid-cell--textLeft {
+  outline: none !important;
+}

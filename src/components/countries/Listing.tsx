@@ -20,7 +20,7 @@ import React, { useEffect , useState } from 'react';
 import { store } from '../../redux/store';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
-
+import { randomInt, randomUserName } from '@mui/x-data-grid-generator';
 
 
 export default function ContriesList() {
@@ -149,9 +149,16 @@ const formData ={
     if (result.isConfirmed) {
       store.dispatch(deleteCountry(formData)).then((res: any) => {
         if(res.payload.status==true){
+          setCountries((prevRows : any) => {
+            const rowToDeleteIndex = randomInt(0, prevRows.length - 1);
+            return [
+              ...countries.slice(0, rowToDeleteIndex),
+              ...countries.slice(rowToDeleteIndex + 1),
+            ];
+          });
          toast.success(res.payload.message);
-         setCountries([]);
-         getCountrieData();
+        //  setCountries([]);
+        //  getCountrieData();
         }else{
              toast.error(res.payload.message);
         }

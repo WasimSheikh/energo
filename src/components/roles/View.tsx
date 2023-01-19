@@ -29,7 +29,7 @@ function CompanyView() {
   const [permissions,setPermissions] = useState([]);
   const [onload,setOnload] = useState(false);
   const [errorMessages, setErrorMessages] = useState('');
-
+  var permissionRole:any =[];
 
   function getRolesOnFunction(){
     const roleId = window.location.href.split('/')[5]
@@ -43,7 +43,9 @@ function CompanyView() {
         }); 
         store.dispatch(getPermissionParentChlid()).then((res: any) => {
           if (res && res.payload?.permissionparent) {
+            console.log(res,"permission")
              setPermissions(res.payload?.permissionparent);
+             
           } 
         }); 
   }
@@ -58,38 +60,37 @@ function CompanyView() {
       store.dispatch(getRolehasPermissions(formData)).then((res: any) => {
           var allPermission = res.payload.data
           allPermission.forEach((e:any) => {
+            console.log()
             if(e){
               var data = (document.getElementById(e.id+'child')as any).checked = true;
+               givePermissionToRole(e.id);
             }
           });
       
       }); 
     }, 2000);
   }
+  addPermission();
 
   useEffect(() => {
     getRolesOnFunction();
-        addPermission();
   },[]);
 
 
-  var permissionRole:any =[];
-  const givePermissionToRole = (value:any,i:any) => { 
-    console.log(value,"value",i)
+
+  function givePermissionToRole(value:any){ 
    if (!permissionRole.includes(value)){
-    console.log((document.getElementById(value+'child')as any),"7777")
      if((document.getElementById(value+'child')as any).checked == true){
         permissionRole.push(value);
-        console.log(permissionRole,"permissionRole")
      }
   }else{
      permissionRole = permissionRole.filter((res:any)=>{
        return res != value
      })
-     console.log(permissionRole,"permissionRole else")
    }
+  //  console.log(permissionRole,"permissionRole final")
  }; 
-console.log(permissions,"permissions");
+
   const handleSubmit = (e:any) => {
     e.preventDefault();
     const formData:any = {
@@ -98,10 +99,10 @@ console.log(permissions,"permissions");
     }
     store.dispatch(createRolehasPermission(formData)).then((res: any) => {
       if (res.payload.status == true) {
-        // setErrorMessages('');
         toast.success(res.payload.message)
         setPermissions([]);
         getRolesOnFunction();
+        addPermission()
       } else {
         setErrorMessages(res.payload?.message);
         toast.error(res.payload.message)
@@ -156,7 +157,7 @@ console.log(permissions,"permissions");
                           </Grid>
                             </Grid>
                             {permission.chlid.map((value:any,i:any) => (
-                              <Grid  sx={{ ml: 5 }} key ={value.id}>
+                              <Grid  sx={{ ml: 5 }} key ={i}>
                               <FormControlLabel
                                   control={
                                     <input type="checkbox"  id={value.id + 'child'} style={{margin:'7px'}} />
@@ -165,7 +166,7 @@ console.log(permissions,"permissions");
 
                                   label={value.name}
                                   onChange={(e) => {
-                                    givePermissionToRole(value.id,i);
+                                    givePermissionToRole(value.id);
                                   }} 
                                   sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
                                   style={{margin:'7px !important'}}

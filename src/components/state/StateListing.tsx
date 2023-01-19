@@ -20,6 +20,7 @@ import React, { useEffect , useState } from 'react';
 import { store } from '../../redux/store';
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
+import { randomInt, randomUserName } from '@mui/x-data-grid-generator';
 
 
 
@@ -136,9 +137,14 @@ function addPermission(){
           if (result.isConfirmed) {
             store.dispatch(deleteState(formData)).then((res: any) => {
               if(res.payload.status==true){
+                setCities((prevRows : any) => {
+                  const rowToDeleteIndex = randomInt(0, prevRows.length - 1);
+                  return [
+                    ...cities.slice(0, rowToDeleteIndex),
+                    ...cities.slice(rowToDeleteIndex + 1),
+                  ];
+                });
                toast.success(res.payload.message);
-               setCities([]);
-               getStateList();
               }else{
                    toast.error(res.payload.message);
               }

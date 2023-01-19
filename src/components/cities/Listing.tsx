@@ -21,6 +21,7 @@ import { store } from '../../redux/store';
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
 import { Diversity2 } from '@mui/icons-material';
+import { randomInt, randomUserName } from '@mui/x-data-grid-generator';
 
 
 
@@ -150,8 +151,15 @@ function addPermission(){
             store.dispatch(deleteCity(formData)).then((res: any) => {
               if(res.payload.status==true){
                toast.success(res.payload.message);
-               setCities([]);
-               getCitiesList();
+              //  setCities([]);
+              //  getCitiesList();
+              setCities((prevRows : any) => {
+                const rowToDeleteIndex = randomInt(0, prevRows.length - 1);
+                return [
+                  ...cities.slice(0, rowToDeleteIndex),
+                  ...cities.slice(rowToDeleteIndex + 1),
+                ];
+              });
               }else{
                    toast.error(res.payload.message);
               }
@@ -212,6 +220,7 @@ function addPermission(){
                     pageSize={10}
                     rowsPerPageOptions={[5]}
                     className="text-capitalize"
+                 
                   />
                 </Box>
                 </Paper>

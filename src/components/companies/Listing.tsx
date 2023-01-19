@@ -22,6 +22,8 @@ import { store } from '../../redux/store';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
+import { randomInt, randomUserName } from '@mui/x-data-grid-generator';
+import capitalizeFirstLetter from '../common/helper';
 
 
 
@@ -41,15 +43,17 @@ const getCompanyData =()=>{
   }); 
 }
 
+
 function addPermission(){
   var role_id:any = localStorage.getItem('user_id')
   const formData={
     role_id:role_id == '1'? '1':'2'
   }
   store.dispatch(getRolehasPermissions(formData)).then((res: any) => {
+    console.log(res.payload.data,"rolePermission")
       var allPermission:any = res.payload.data
       allPermission.forEach((per:any) => {
-        if(per.flag == "companies"){
+        if(capitalizeFirstLetter(per.flag) == "Companies"){
           if(per.name == "Add"){
             setCompanyAdd(true)
           }else if(per.name == "Edit"){
@@ -164,9 +168,14 @@ const deleteId=(e:any)=>{
     if (result.isConfirmed) {
       store.dispatch(deleteCompany(e)).then((res: any) => {
         if(res.payload.status==true){
-         toast.success(res.payload.message);
-              setCompanies([]);
-              getCompanyData();
+              setCompanies((prevRows : any) => {
+                const rowToDeleteIndex = randomInt(0, prevRows.length - 1);
+                return [
+                  ...companiesss.slice(0, rowToDeleteIndex),
+                  ...companiesss.slice(rowToDeleteIndex + 1),
+                ];
+              });
+              toast.success(res.payload.message);
         }else{
              toast.error(res.payload.message);
         }

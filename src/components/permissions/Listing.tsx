@@ -20,6 +20,7 @@ import React, { useEffect , useState } from 'react';
 import { store } from '../../redux/store';
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
+import { randomInt, randomUserName } from '@mui/x-data-grid-generator';
 
 
 
@@ -95,9 +96,16 @@ const deletePermissionById=(e:any)=>{
       if (result.isConfirmed) {
         store.dispatch(deletePermission(formData)).then((res: any) => {
           if(res.payload.status==true){
+            setPermissions((prevRows : any) => {
+              const rowToDeleteIndex = randomInt(0, prevRows.length - 1);
+              return [
+                ...permissions.slice(0, rowToDeleteIndex),
+                ...permissions.slice(rowToDeleteIndex + 1),
+              ];
+            });
            toast.success(res.payload.message);
-           setPermissions([]);
-           getPermissionList();
+          //  setPermissions([]);
+          //  getPermissionList();
           }else{
                toast.error(res.payload.message);
           }

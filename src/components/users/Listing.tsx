@@ -22,6 +22,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import Swal from 'sweetalert2';
 // import { Link , useParams ,useNavigate} from "react-router-dom";
 import { toast } from 'react-toastify';
+import { randomInt, randomUserName } from '@mui/x-data-grid-generator';
+import capitalizeFirstLetter from '../common/helper';
 
 
 
@@ -53,7 +55,7 @@ function UserList() {
         console.log(res.payload.data,"permission",res.payload.data.flag,"role",res.payload.data.name,"type");
         var allPermission:any = res.payload.data
         allPermission.forEach((per:any) => {
-          if(per.flag == "Users"){
+          if(capitalizeFirstLetter(per.flag) == "Users"){
             if(per.name == "Add"){
               setUsersAdd(true)
             }else if(per.name == "Edit"){
@@ -113,9 +115,16 @@ const deleteId=(e:any)=>{
       store.dispatch(deleteUser(e)).then((res: any) => {
         console.log(res.payload.message,"result");
         if(res.payload.status == true){
+          setUsers((prevRows : any) => {
+            const rowToDeleteIndex = randomInt(0, prevRows.length - 1);
+            return [
+              ...users.slice(0, rowToDeleteIndex),
+              ...users.slice(rowToDeleteIndex + 1),
+            ];
+          });
           toast.success(res.payload.message)
-          setUsers([]);
-          userList();
+          // setUsers([]);
+          // userList();
         }else{
           toast.error(res.payload.message)
         }
