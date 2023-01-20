@@ -1,6 +1,6 @@
 
 import './App.css';
-import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useNavigate, HashRouter } from "react-router-dom";
 import Dashboard from "./components/dashboard/Dashboard";
 import Login from "./components/login/Login";
 import Compaines from './components/companies/Listing';
@@ -43,14 +43,17 @@ import StateEdit from './components/state/StateEdit';
 import StatesList from './components/state/StateListing';
 import {useIdleTimer} from 'react-idle-timer';
 
+
 function App() {
   const navigate = useNavigate();
   const [login, setIsLogin] = React.useState(false);
   const [onload,setOnload] = React.useState(false);
   const [documenets,setDocuments] = React.useState([]);
+  const [modelopen,setModel] = React.useState(false);
 
   const onIdle = ()=>{
 console.log("object");
+// setModel(true)
   }
 
   function IsLoggedIn(){
@@ -74,9 +77,38 @@ console.log("object");
      } 
   }); 
   const idleTimer = useIdleTimer({ onIdle,    timeout: 5 * 1000, })
+  function onStay(){
+    setModel(false)
+  }
+function Logout(){
+localStorage.removeItem('access_token')
+localStorage.removeItem('user_id')
+window.location.reload();
+setModel(false)
+}
   return (
      <>
+      {
+        modelopen && 
+        <div style={{textAlign:"center", zIndex  : 99999, width:"300px" , margin:'auto',position:'absolute',left: '40%', top: '30%'}}
+        >
+          {/* <Idlecontainer />
+           */}
+             <div className="border border-primary p-3 bg-secondary" >
+        <div> 
+          <p>You want to sign out ? </p>
+          <div>
+            <button className="btn btn-success m-3" onClick={onStay}> Stay</button>
+            <button className="btn btn-danger m-3 "  onClick={Logout} >Sign out</button>
+          </div>
+        </div>
+      </div>
+          
+          </div>
+      }
+
       <Routes>
+   
           <Route index element={ <Login />} />
           {login== true &&
           <>
@@ -116,8 +148,9 @@ console.log("object");
           <Route path="states/edit/:stateId" element={<StateEdit />} />
           </>
         }
-        
+     
       </Routes>
+
       <ToastContainer/>
       </>
   );
