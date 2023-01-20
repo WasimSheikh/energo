@@ -29,10 +29,17 @@ export default function StatesList() {
   const [statesAdd,setStatesAdd] = useState(false);
   const [statesEdit,setStatesEdit] = useState(false);
   const [statesDelete,setStatesDelete] = useState(false);
+
+
 function getStateList(){
     store.dispatch(getStates()).then((res: any) => {
-      setCities(res.payload?.states);
-      }); 
+      if (res.payload.status == true) {
+        setCities(res.payload?.states);
+      }else{
+        toast.error(res.payload.message)
+      }
+     
+    }); 
 }
 
 function addPermission(){
@@ -146,7 +153,7 @@ function addPermission(){
                 });
                toast.success(res.payload.message);
               }else{
-                   toast.error(res.payload.message);
+                  toast.error(res.payload.message);
               }
             }); 
           }
@@ -159,9 +166,8 @@ function addPermission(){
         }
           store.dispatch(statusState(formData)).then((res: any) => {
           if(res.payload.status==true){
-           toast.success(res.payload.message);
-           setCities([]);
-           getStateList();
+           toast.success(res.payload.message);  
+            getStateList();
           }else{
                toast.error(res.payload.message);
           }

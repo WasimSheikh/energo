@@ -154,7 +154,6 @@ function CompanyView() {
           </Container>
         </Box>
       </Box>
-      <ToastContainer/>
     </ThemeProvider>
   );
 }

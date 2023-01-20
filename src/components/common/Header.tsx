@@ -134,7 +134,6 @@ const Header = (): JSX.Element => {
 
               </Menu>
           </Toolbar>
-          <ToastContainer/>
         </AppBar>
     </>;
   };

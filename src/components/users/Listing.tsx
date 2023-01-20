@@ -23,12 +23,7 @@ import Swal from 'sweetalert2';
 // import { Link , useParams ,useNavigate} from "react-router-dom";
 import { toast } from 'react-toastify';
 import { randomInt, randomUserName } from '@mui/x-data-grid-generator';
-import capitalizeFirstLetter from '../common/helper';
-
-
-
-
-
+import capitalizeFirstLetter from '../utils/FormUtils';
 
 function UserList() {
 
@@ -42,6 +37,8 @@ function UserList() {
     store.dispatch(getUsers()).then((res: any) => {
       if (res && res.payload.users) {
         setUsers(res.payload.users);
+      }else{
+        toast.error(res.payload.message);
       } 
     }); 
   }
@@ -66,22 +63,7 @@ function UserList() {
               setUsersView(true)
             }
           }
-          // if(per.flag == "Users" && per.name == "Add"){
-          //   setUsersAdd(true)
-          // }else{setUsersAdd(false)}
-          // if(per.flag == "Users" && per.name == "Edit"){
-          //   setUsersEdit(true)
-          // }else{setUsersEdit(false)}
-          // if(per.flag == "Users" && per.name == "View"){
-          //   setUsersView(true)
-          // }else{setUsersView(false)}
-          // if(per.flag == "Users" && per.name == "Delete"){
-          //   setUsersDelete(true)
-          // }else{setUsersDelete(false)}
         });
-        setTimeout(() => {
-          console.log(usersAdd,"companyAdd");
-        }, 2000);
     }); 
   }
 
@@ -173,7 +155,7 @@ const columns: GridColDef[] = [
     renderCell: (params) => {
       return (
         <>
-            {params.row.is_active == '1' && <a href='#'  onClick={()=>{statusUpdateUser(params.row.id)}}  > <span className='badge badge-success'>active</span></a>}
+            {params.row.is_active == '1' && <a href='#'  onClick={()=>{statusUpdateUser(params.row.id)}}  > <span className='badge badge-success'>Active</span></a>}
     {params.row.is_active == '0' &&  <a href='#'  onClick={()=>{statusUpdateUser(params.row.id)}}  > <span className='badge badge-danger'>Inactive</span></a>}
     </>
       );
@@ -205,7 +187,6 @@ const statusUpdateUser=(e:any)=>{
     store.dispatch(statusUpdate(formData)).then((res: any) => {
     if(res.payload.status==true){
      toast.success(res.payload.message);
-     setUsers([]);
      userList();
     }else{
          toast.error(res.payload.message);

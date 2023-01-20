@@ -151,7 +151,6 @@ export default function Login() {
           </Box>
         </Grid>
       </Grid>
-      <ToastContainer/>
     </ThemeProvider>
   );
 }

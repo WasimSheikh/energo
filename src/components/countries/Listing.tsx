@@ -30,17 +30,17 @@ export default function ContriesList() {
   const [countriesDelete,setCountriesDelete] = useState(false);
   const [countriesView,setCountriesView] = useState(false);
 
+  
+
 function getCountrieData(){
-  if(countries.length == 0){
     store.dispatch(getCountries()).then((res: any) => {
-      console.log(res)
       if (res.payload.status == true) {
         setCountries(res.payload.countries);
       }else{
         toast.error(res.payload.message)
       }
     });
-  }
+  
 }
 
 function addPermission(){
@@ -52,7 +52,6 @@ function addPermission(){
       console.log(res.payload.data,"permission",res.payload.data.flag,"role",res.payload.data.name,"type");
       var allPermission:any = res.payload.data
       allPermission.forEach((per:any) => {
-        console.log(per,"gggggg",per.flag,"role",per.name,"type")
         if(per.flag == "Countries"){
           if(per.name == "Add"){
             setCountriesAdd(true)
@@ -63,9 +62,6 @@ function addPermission(){
           }
         }
       });
-      setTimeout(() => {
-        console.log(countriesAdd,"companyAdd",countriesEdit,"countriesEdit", countriesDelete,"countriesDelete",);
-      }, 2000);
   }); 
 }
 
@@ -96,7 +92,7 @@ const columns: GridColDef[] = [
       return (
         <>
          {params.row.is_active == '1' && <div onClick={()=>{statusUpdateCountrie(params.row.id)}} style={{cursor: 'pointer'}}> <span className='badge badge-success'>active</span></div>}
-    {params.row.is_active == '0' &&  <div onClick={()=>{statusUpdateCountrie(params.row.id)}} style={{cursor: 'pointer'}}> <span className='badge badge-danger'>Inactive</span></div>}
+        {params.row.is_active == '0' &&  <div onClick={()=>{statusUpdateCountrie(params.row.id)}} style={{cursor: 'pointer'}}> <span className='badge badge-danger'>Inactive</span></div>}
         
         </>
       );
@@ -124,9 +120,8 @@ const statusUpdateCountrie=(e:any)=>{
   }
     store.dispatch(StatusCountry(formData)).then((res: any) => {
     if(res.payload.status==true){
-     toast.success(res.payload.message);
-     setCountries([]);
-     getCountrieData();
+      toast.success(res.payload.message);
+      getCountrieData();
     }else{
          toast.error(res.payload.message);
     }

@@ -38,9 +38,9 @@ import DocumentList from './components/companies/Documents';
 import CityList from './components/cities/Listing';
 import CityAdd from './components/cities/Add';
 import EditCity from './components/cities/Edit';
-import StateAdd from './components/state/StateAdd';
-import StateEdit from './components/state/StateEdit';
-import StatesList from './components/state/StateListing';
+import StateAdd from './components/states/StateAdd';
+import StateEdit from './components/states/StateEdit';
+import StatesList from './components/states/StateListing';
 import {useIdleTimer} from 'react-idle-timer';
 
 

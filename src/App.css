@@ -60,3 +60,8 @@
 .MuiDataGrid-cell.MuiDataGrid-cell--textLeft {
   outline: none !important;
 }
+
+input#checkBox {
+  width: 36px;
+  height: 19px;
+}

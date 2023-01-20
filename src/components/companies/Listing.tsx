@@ -23,7 +23,7 @@ import FileCopyIcon from '@mui/icons-material/FileCopy';
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
 import { randomInt, randomUserName } from '@mui/x-data-grid-generator';
-import capitalizeFirstLetter from '../common/helper';
+import capitalizeFirstLetter from '../utils/FormUtils';
 
 
 
@@ -36,13 +36,13 @@ function CompanyList() {
   
 const getCompanyData =()=>{
   store.dispatch(getCompanies()).then((res: any) => {
-    if (res && res.payload.companies) {
-      //console.log(companies);
+    if (res.payload.status == true) {
       setCompanies(res.payload.companies);
-    } 
+    }else{
+      toast.error(res.payload.message)
+    }
   }); 
 }
-
 
 function addPermission(){
   var role_id:any = localStorage.getItem('user_id')
@@ -111,8 +111,8 @@ const columns: GridColDef[] = [
     renderCell: (params) => {
       return (
         <>
-         {params.row.is_active == '1' && <a href='#' onClick={()=>{statusUpdateCompany(params.row.id)}} > <span className='badge badge-success'>active</span></a>}
-    {params.row.is_active == '0' &&  <a href='#' onClick={()=>{statusUpdateCompany(params.row.id)}} > <span className='badge badge-danger'>Inactive</span></a>}
+         {params.row.is_active == '1' && <a href='#' onClick={()=>{statusUpdateCompany(params.row.id)}} > <span className='badge badge-success'>Active</span></a>}
+          {params.row.is_active == '0' &&  <a href='#' onClick={()=>{statusUpdateCompany(params.row.id)}} > <span className='badge badge-danger'>Inactive</span></a>}
         
         </>
       );
@@ -121,7 +121,7 @@ const columns: GridColDef[] = [
   {
     field: 'action',
     headerName: 'Action',
-    width: 180,
+    width: 220,
     sortable: false,
     renderCell: (params) => {
       return (
@@ -146,8 +146,7 @@ const statusUpdateCompany=(e:any)=>{
     store.dispatch(statusCompany(formData)).then((res: any) => {
     if(res.payload.status==true){
      toast.success(res.payload.message);
-     setCompanies([]);
-     getCompanyData();
+      getCompanyData();
     }else{
          toast.error(res.payload.message);
     }
@@ -183,10 +182,6 @@ const deleteId=(e:any)=>{
     }
   })
 }
-
-  /////////////////////////////////////
-
-
 
 
   return (
