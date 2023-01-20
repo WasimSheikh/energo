@@ -111,8 +111,8 @@ const columns: GridColDef[] = [
     renderCell: (params) => {
       return (
         <>
-         {params.row.is_active == '1' && <a href='#' onClick={()=>{statusUpdateCompany(params.row.id)}} > <span className='badge badge-success'>Active</span></a>}
-          {params.row.is_active == '0' &&  <a href='#' onClick={()=>{statusUpdateCompany(params.row.id)}} > <span className='badge badge-danger'>Inactive</span></a>}
+         {params.row.is_active == '1' && <button type="button" className="btn btn-link"  onClick={()=>{statusUpdateCompany(params.row.id)}} ><span className='badge badge-success'>Active</span></button>}
+          {params.row.is_active == '0' &&  <button type="button" className="btn btn-link"  onClick={()=>{statusUpdateCompany(params.row.id)}} ><span className='badge badge-danger'>Inactive</span></button>}
         
         </>
       );

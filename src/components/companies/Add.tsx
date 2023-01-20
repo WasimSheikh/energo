@@ -18,6 +18,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { createCompany } from '../../redux/store/reducers/slices/UserSlice';
 import { store } from '../../redux/store';
 import React, { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
 
 const mdTheme = createTheme();
@@ -72,12 +73,11 @@ function CompanyAdd() {
     }
   
     store.dispatch(createCompany(formData)).then((res: any) => {
-      console.log("my all data responce ", res);  
       if (res.payload.status == true) {
-        setErrorMessages('');
+        toast.success(res.payload?.message)
         navigate("/companies");
       } else {
-        setErrorMessages(res.payload?.message);
+        toast.error(res.payload?.message)
       }
     });
   };

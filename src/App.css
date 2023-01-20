@@ -63,5 +63,9 @@
 
 input#checkBox {
   width: 36px;
-  height: 19px;
+  height: 17px;
+}
+.rolecheckbox{
+  width: 36px;
+  height: 16px;
 }

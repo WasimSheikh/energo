@@ -24,6 +24,7 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import { store } from '../../redux/store';
 import { createUser,getCompanies } from '../../redux/store/reducers/slices/UserSlice';
+import { toast } from 'react-toastify';
 
 const mdTheme = createTheme();
 
@@ -116,13 +117,14 @@ function UserAdd() {
       } 
       console.log(formData,'formData',email);
       store.dispatch(createUser(formData)).then((res: any) => {
-        if(res.payload.status == true){
-          setErrorMessages('');
-          console.log(res,4544554)
+        if (res.payload.status == true) {
+          toast.success(res.payload?.message)
           navigate("/users");
-        }else {
-          setErrorMessages(res.payload?.message);
+        } else {
+          toast.error(res.payload?.message)
         }
+
+
       });                               
     }else{
       console.log('sdfssff');

@@ -46,9 +46,9 @@ export default function Login() {
          localStorage.setItem("access_token", access_token); 
          localStorage.setItem("user_id", res.payload.user.id); 
          navigate("/dashboard");
+         window.location.reload();
          toast.success(res.payload.message);
         }
-
         setErrorMessages('');
       } else {
         setErrorMessages(res.payload?.message);
@@ -64,6 +64,7 @@ export default function Login() {
 
   return (
     <ThemeProvider theme={theme}>
+
       <Grid container component="main" sx={{ height: '100vh' }}>
         <CssBaseline />
         <Grid
@@ -95,7 +96,7 @@ export default function Login() {
               Sign in
             </Typography>
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
-            {renderErrorMessage()}
+           
               <TextField
                 margin="normal"
                 required

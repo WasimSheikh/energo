@@ -111,9 +111,8 @@ function addPermission(){
         renderCell: (params) => {
           return (
             <>
-             {params.row.is_active == '1' && <div onClick={()=>{statusUpdateCity(params.row.id)}} style={{cursor: 'pointer'}}> <span className='badge badge-success'>active</span></div>}
-        {params.row.is_active == '0' &&  <div onClick={()=>{statusUpdateCity(params.row.id)}} style={{cursor: 'pointer'}}> <span className='badge badge-danger'>Inactive</span></div>}
-            
+        {params.row.is_active == '1' && <button type="button" className="btn btn-link"  onClick={()=>{statusUpdateCity(params.row.id)}} ><span className='badge badge-success'>Active</span></button>}
+          {params.row.is_active == '0' &&  <button type="button" className="btn btn-link"  onClick={()=>{statusUpdateCity(params.row.id)}} ><span className='badge badge-danger'>Inactive</span></button>}
             </>
           );
        }
@@ -151,8 +150,6 @@ function addPermission(){
             store.dispatch(deleteCity(formData)).then((res: any) => {
               if(res.payload.status==true){
                toast.success(res.payload.message);
-              //  setCities([]);
-              //  getCitiesList();
               setCities((prevRows : any) => {
                 const rowToDeleteIndex = randomInt(0, prevRows.length - 1);
                 return [
@@ -175,7 +172,6 @@ function addPermission(){
           store.dispatch(statusCity(formData)).then((res: any) => {
           if(res.payload.status==true){
            toast.success(res.payload.message);
-           setCities([]);
            getCitiesList();
           }else{
                toast.error(res.payload.message);

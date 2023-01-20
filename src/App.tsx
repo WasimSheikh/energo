@@ -1,6 +1,6 @@
 
 import './App.css';
-import { BrowserRouter, Routes, Route, useNavigate, HashRouter } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useNavigate, HashRouter, Navigate } from "react-router-dom";
 import Dashboard from "./components/dashboard/Dashboard";
 import Login from "./components/login/Login";
 import Compaines from './components/companies/Listing';
@@ -50,10 +50,17 @@ function App() {
   const [onload,setOnload] = React.useState(false);
   const [documenets,setDocuments] = React.useState([]);
   const [modelopen,setModel] = React.useState(false);
+  // const [seconds, setSeconds] = React.useState(0);
 
   const onIdle = ()=>{
-console.log("object");
-// setModel(true)
+    if(localStorage.getItem("access_token")){
+      // setModel(true)
+      // const interval = setInterval(() => {
+      //   setSeconds(seconds => seconds + 1);
+      // }, 1000);
+      // return () => clearInterval(interval);
+
+    }
   }
 
   function IsLoggedIn(){
@@ -108,7 +115,6 @@ setModel(false)
       }
 
       <Routes>
-   
           <Route index element={ <Login />} />
           {login== true &&
           <>
@@ -136,8 +142,6 @@ setModel(false)
           <Route path="countries/add" element={<CountiesAdd/>} />
           <Route path="countries/edit/:countriesId" element={<CountiesEdit />} />
           <Route path="countries/view/:countriesId" element={<CountriesView/>} />
-          {/* <Route path="documents" element={<Documents />} /> */}
-          {/* <Route path="documents/share" element={<Share />} /> */}
           <Route path="notifications" element={<Notifications />} /> 
           <Route path="Profile" element={<ProfileEdit />} /> 
           <Route path="cities" element={<CityList />} /> 

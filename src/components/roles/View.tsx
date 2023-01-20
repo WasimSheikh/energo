@@ -160,7 +160,7 @@ function CompanyView() {
                               <Grid  sx={{ ml: 5 }} key ={i}>
                               <FormControlLabel
                                   control={
-                                    <input type="checkbox"  id={value.id + 'child'} style={{margin:'7px'}} />
+                                    <input type="checkbox"  id={value.id + 'child'} style={{margin:'7px'}} className="rolecheckbox" />
                                   // <Checkbox name={value.name}  value={value.id} id={value.id + 'child'} />
                                 }
 
