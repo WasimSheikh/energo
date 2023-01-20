@@ -54,7 +54,8 @@ function CompanyView() {
                 setCountry(res.payload.company?.address?.country);
                 setPostalCode(res.payload.company?.address?.zipcode);
                 setLogo(res.payload.company?.logo);
-                setIsHeadauator(res.payload.company?.isHeadauator);
+                setIsHeadauator(res.payload.company?.is_headquater);
+                console.log(res.payload.company,"es.payload.company",isHeadauator)
             } 
         }); 
   
@@ -133,7 +134,7 @@ function CompanyView() {
                             <Box> Country : <Box component="span">{country}</Box></Box>
                        </Grid>
                        <Grid item xs={6} sm={6}>
-                            <Box> Company Headquater Office : <Box component="span">{isHeadauator}</Box></Box>
+                            <Box> Company Headquater Office : <Box component="span">{isHeadauator == '1' ? "Yes":"No"}</Box></Box>
                        </Grid>
                        <Grid item xs={6} sm={6}>
                             <Box> Company Logo : <Box component="span">{logo}</Box></Box>
