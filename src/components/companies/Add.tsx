@@ -150,7 +150,7 @@ return (
                           }}
                         />
 
-                          {dirtyFields["companyName"] && getError("CompanyName is requried")}
+                          {dirtyFields["companyName"] && getError("Company Name is requried")}
 
                       </Grid>
                       <Grid item xs={6} sm={6}>

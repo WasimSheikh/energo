@@ -15,6 +15,7 @@ import { Link ,useParams } from "react-router-dom";
 import React, { useEffect, useState } from 'react';
 import { getUser } from '../../redux/store/reducers/slices/UserSlice';
 import { store } from '../../redux/store';
+import capitalizeFirstLetter from '../utils/FormUtils';
 
 
 function UserView() {
@@ -137,7 +138,7 @@ function UserView() {
                           <Typography component="h6" color="primary" variant="h6" sx={{ mt: 2 }}  gutterBottom>
                             Roles/Permission
                             </Typography>
-                            {permission}
+                            {capitalizeFirstLetter(permission)}
                       </Grid>
                     </Grid>
                     <Divider />

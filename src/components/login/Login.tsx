@@ -46,7 +46,7 @@ export default function Login() {
          localStorage.setItem("access_token", access_token); 
          localStorage.setItem("user_id", res.payload.user.id); 
          navigate("/dashboard");
-         window.location.reload();
+         //window.location.reload();
          toast.success(res.payload.message);
         }
         setErrorMessages('');
