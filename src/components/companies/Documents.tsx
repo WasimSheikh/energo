@@ -269,7 +269,7 @@ function getRolehasPermissiondata(){
           </Container>
         </Box>
       </Box>
-      <BootstrapDialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={open} >
+      <BootstrapDialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={open}  id="addFolder">
         <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
           Documents
         <IconButton aria-label="close" onClick={handleClose} sx={{position: 'absolute',right: 8,top: 8,color: (theme) => theme.palette.grey[500],

@@ -68,6 +68,7 @@ const Header = (): JSX.Element => {
   const Logout = () => {
     localStorage.removeItem("access_token")
     localStorage.removeItem("user_id")
+    localStorage.removeItem("role_id")
     toast.success("Logout successfully")
     navigate('/')
   }

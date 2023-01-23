@@ -45,6 +45,7 @@ export default function Login() {
         if(access_token !="" && access_token !=""){
          localStorage.setItem("access_token", access_token); 
          localStorage.setItem("user_id", res.payload.user.id); 
+         localStorage.setItem("role_id", res.payload.user.role_id); 
          navigate("/dashboard");
          //window.location.reload();
          toast.success(res.payload.message);

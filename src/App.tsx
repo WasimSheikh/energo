@@ -90,6 +90,7 @@ function App() {
 function Logout(){
 localStorage.removeItem('access_token')
 localStorage.removeItem('user_id')
+localStorage.removeItem('role_id')
 window.location.reload();
 setModel(false)
 }

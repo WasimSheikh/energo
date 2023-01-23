@@ -76,9 +76,9 @@ const Navigation = (): JSX.Element => {
 
 
   function addPermission(){
-    var role_id:any = localStorage.getItem('user_id')
+    var role_id:any = localStorage.getItem('role_id')
     const formData={
-      role_id:role_id == '1'? '1':'2'
+      role_id:role_id
     }
     store.dispatch(getRolehasPermissions(formData)).then((res: any) => {
       console.log(res.payload.data,"rolePermission API")
