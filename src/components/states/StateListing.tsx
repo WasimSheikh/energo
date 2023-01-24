@@ -51,9 +51,9 @@ function addPermission(){
       var allPermission:any = res.payload.data
       allPermission.forEach((per:any) => {
         if(per.flag == "States"){
-          console.log(per,"777777");
+          
           if(per.name == "Add"){
-            console.log(per.name ,"addd")
+            
             setStatesAdd(true)
           }else if(per.name == "Edit"){
             setStatesEdit(true)
@@ -64,9 +64,7 @@ function addPermission(){
       });
    
   }); 
-  setTimeout(() => {
-    console.log(statesAdd,statesEdit,statesDelete);
-  }, 3000);
+ 
 }
 
   useEffect(() => {
