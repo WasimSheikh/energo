@@ -50,7 +50,7 @@ function addPermission(){
     role_id:role_id
   }
   store.dispatch(getRolehasPermissions(formData)).then((res: any) => {
-    console.log(res.payload.data,"rolePermission")
+   
       var allPermission:any = res.payload.data
       allPermission.forEach((per:any) => {
         if(capitalizeFirstLetter(per.flag) == "Companies"){
@@ -142,7 +142,6 @@ const statusUpdateCompany=(e:any)=>{
   const formData= {
     id : e
   }
-  console.log(e,"formData",formData);
     store.dispatch(statusCompany(formData)).then((res: any) => {
     if(res.payload.status==true){
      toast.success(res.payload.message);

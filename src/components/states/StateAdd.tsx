@@ -71,13 +71,12 @@ export default function StateAdd() {
   function getCountrieData() {
     if (countries.length == 0) {
       store.dispatch(getCountries()).then((res: any) => {
-        console.log(res, "getCountrieData()");
+       
         setCountries(res.payload.countries);
       });
     }
   }
   function getCountryStatesByCountry(e: any) {
-    console.log(e, "event.target.value");
     const formDate = {
       country_id: e,
     };
@@ -90,7 +89,6 @@ export default function StateAdd() {
         country_id: country_id,
         name: title,
       };
-      console.log(formData, "formData");
       store.dispatch(createState(formData)).then((res: any) => {
         if (res.payload.status == true) {
           toast.success(res.payload.message);

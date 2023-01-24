@@ -42,10 +42,9 @@ function PermissionAdd() {
   const selectChange = (event: SelectChangeEvent) => {
     setParent(event.target.value);
     permissions.forEach((res:any)=>{
-      console.log(res,"dsfsfsdfdsf")
+   
       if(res.id == event.target.value){
         setFlag(res.name)
-        console.log(res.name,"res.title",flag)
       }
     })
   };

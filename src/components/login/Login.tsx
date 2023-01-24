@@ -28,7 +28,6 @@ export default function Login() {
   const [errorMessages, setErrorMessages] = useState('');
 
   function IsLoggedIn(){
-    console.log(localStorage.getItem("access_token")); 
     let access_token = localStorage.getItem("access_token");
     return (access_token != '' && access_token != null ) ? true : false;
   }

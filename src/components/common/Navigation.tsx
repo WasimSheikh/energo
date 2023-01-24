@@ -81,9 +81,9 @@ const Navigation = (): JSX.Element => {
       role_id:role_id
     }
     store.dispatch(getRolehasPermissions(formData)).then((res: any) => {
-      console.log(res.payload.data,"rolePermission API")
+     
         var allPermission:any = res.payload.data
-        console.log(allPermission,"allPermission");
+        
         allPermission.forEach((per:any) => {
           if(capitalizeFirstLetter(per.flag) == "Companies"){
             if(per.name == "Index"){
@@ -135,7 +135,6 @@ const Navigation = (): JSX.Element => {
   }
 React.useEffect(()=>{
   addPermission();
-  console.log("navigation")
 },[])
 
     return <>

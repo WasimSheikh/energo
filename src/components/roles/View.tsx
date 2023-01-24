@@ -43,7 +43,6 @@ function CompanyView() {
         }); 
         store.dispatch(getPermissionParentChlid()).then((res: any) => {
           if (res && res.payload?.permissionparent) {
-            console.log(res,"permission")
              setPermissions(res.payload?.permissionparent);
              
           } 
@@ -60,7 +59,7 @@ function CompanyView() {
       store.dispatch(getRolehasPermissions(formData)).then((res: any) => {
           var allPermission = res.payload.data
           allPermission.forEach((e:any) => {
-            console.log()
+            
             if(e){
               var data = (document.getElementById(e.id+'child')as any).checked = true;
                givePermissionToRole(e.id);
@@ -88,7 +87,6 @@ function CompanyView() {
        return res != value
      })
    }
-  //  console.log(permissionRole,"permissionRole final")
  }; 
 
   const handleSubmit = (e:any) => {

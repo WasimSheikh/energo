@@ -49,7 +49,6 @@ function addPermission(){
     role_id:role_id
   }
   store.dispatch(getRolehasPermissions(formData)).then((res: any) => {
-      console.log(res.payload.data,"permission",res.payload.data.flag,"role",res.payload.data.name,"type");
       var allPermission:any = res.payload.data
       allPermission.forEach((per:any) => {
         if(per.flag == "Countries"){

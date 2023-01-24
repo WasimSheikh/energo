@@ -114,7 +114,7 @@ function UserAdd() {
         zipcode:postalCode,
         profile_picture:file,   
       } 
-      console.log(formData,'formData',email);
+      
       store.dispatch(createUser(formData)).then((res: any) => {
         if (res.payload.status == true) {
           toast.success(res.payload?.message)
@@ -125,9 +125,7 @@ function UserAdd() {
 
 
       });                               
-    }else{
-      console.log('sdfssff');
-    }      
+    }     
 
   };
   const renderErrorMessage = () =>

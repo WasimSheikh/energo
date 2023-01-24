@@ -32,7 +32,7 @@ export default function CityList() {
   const [citiesDelete,setCitiesDelete] = useState(false);
 function getCitiesList(){
     store.dispatch(getCities()).then((res: any) => {
-        console.log(res,"res")
+     
         // if (res && res.payload?.permissions) {
           setCities(res.payload?.cities);
         // } 
@@ -45,7 +45,7 @@ function addPermission(){
     role_id:role_id
   }
   store.dispatch(getRolehasPermissions(formData)).then((res: any) => {
-      console.log(res.payload.data,"permission",res.payload.data.flag,"role",res.payload.data.name,"type");
+     
       var allPermission:any = res.payload.data
       allPermission.forEach((per:any) => {
         if(per.flag == "Cities"){
@@ -58,9 +58,7 @@ function addPermission(){
           }
         }
       });
-      setTimeout(() => {
-        console.log(citiesAdd,"citiesAdd",citiesEdit,"CitiesEdit", citiesDelete,"CitiesDelete",);
-      }, 2000);
+    
   }); 
 }
 

@@ -49,7 +49,7 @@ function UserList() {
       role_id:role_id
     }
     store.dispatch(getRolehasPermissions(formData)).then((res: any) => {
-        console.log(res.payload.data,"permission",res.payload.data.flag,"role",res.payload.data.name,"type");
+        
         var allPermission:any = res.payload.data
         allPermission.forEach((per:any) => {
           if(capitalizeFirstLetter(per.flag) == "Users"){
@@ -95,7 +95,7 @@ const deleteId=(e:any)=>{
   }).then((result) => {
     if (result.isConfirmed) {
       store.dispatch(deleteUser(e)).then((res: any) => {
-        console.log(res.payload.message,"result");
+        
         if(res.payload.status == true){
           setUsers((prevRows : any) => {
             const rowToDeleteIndex = randomInt(0, prevRows.length - 1);
@@ -183,7 +183,7 @@ const statusUpdateUser=(e:any)=>{
   const formData= {
     id : e
   }
-  console.log(e,"formData",formData);
+  
     store.dispatch(statusUpdate(formData)).then((res: any) => {
     if(res.payload.status==true){
      toast.success(res.payload.message);

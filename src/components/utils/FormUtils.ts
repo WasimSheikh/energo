@@ -40,7 +40,7 @@ export const detectEnvURL=():string=>{
 
 export const detectLiveEnv=():boolean=>{ 
     if (window.location.host.toLowerCase().includes("signup.bankwithfair.com")==true) {
-        console.log('Detected live environment',window.location.host.toLowerCase().includes("signup.bankwithfair.com"));
+        
         return true;
     } else {
         return false
@@ -62,14 +62,14 @@ export const isAllowedFormat=(val:string,type?:string):boolean=>{
     
     if (type==='optional') {
         if (val==="" || val===undefined){
-            console.log("Undefined or blank "+ val)
+            
             return true;
         }else{
-            console.log("Special Optional = "+ regNotSepcialChar.test(val))
+            
             return val!=="" && val.length>=2 && val.length<=25 && !regNotSepcialChar.test(val); 
         }
     } else {
-        console.log("Special = "+val + ' = ' + regNotSepcialChar.test(val))
+        
         let isSpecialFound:boolean = regNotSepcialChar.test(val)
         let notEmpty:boolean=(val!=="" && val.length>=2 && val.length<=25);
         let cond:boolean= notEmpty && (!(isSpecialFound));

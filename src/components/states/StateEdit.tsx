@@ -67,7 +67,7 @@ const isValidData = ():boolean => {
 };
 const selectCuntry = (event: SelectChangeEvent) => {
     setCountry(event.target.value);
-    console.log(event.target.value,"oooooooo")
+    
     getCountryStatesByCountry(event.target.value);
   };
 const selectState = (event:SelectChangeEvent) => {
@@ -77,14 +77,14 @@ const selectState = (event:SelectChangeEvent) => {
 function getCountrieData(){
     if(countries.length == 0){
       store.dispatch(getCountries()).then((res: any) => {
-        console.log(res,"getCountrieData()")
+       
           setCountries(res.payload.countries);
           
       });
     }
   }
 function getCountryStatesByCountry(e:any){
-    console.log(e,"event.target.value")
+   
     const formDate={
         country_id:e
     }
@@ -97,7 +97,7 @@ function getCountryStatesByCountry(e:any){
       country_id:country_id,
       name:title,
     }
-    console.log(formData,'formData')
+    
     store.dispatch(updateState(formData)).then((res: any) => {
       if (res.payload.status == true) {
         toast.success(res.payload.message)
@@ -117,7 +117,7 @@ function getCountryStatesByCountry(e:any){
       setCountry(res.payload.state.country_id)
       setTitle(res.payload.state.name)
       setStateID(res.payload.state.id)
-      console.log(res,'response')
+      
     });  
   }
 

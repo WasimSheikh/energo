@@ -70,7 +70,6 @@ function App() {
 
   function shareDataF(data:any){
     setDocuments(data)
-    console.log("app.tsx",documenets)
   }
 
   useEffect(() => {

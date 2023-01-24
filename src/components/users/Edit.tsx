@@ -165,7 +165,7 @@ const getError = (msg: string): JSX.Element => {
               setPermission(res.payload.user?.permission);
              // setPassword(res.payload.user?.password);
               setGlobalUser(res.payload.user?.globalUser);
-              console.log(res.payload.user,44444,res.payload.user.is_global)
+              
               if(res.payload.user.is_global == '1'){
                 (document.getElementById('checkBox')as any).checked = true;
                }else{

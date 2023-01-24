@@ -66,7 +66,6 @@ export default function ShareAdd() {
       company_id: params.companyId,
       folder_id: params.documentId,
     };
-    console.log(data,"data-------------")
     store.dispatch(getDocuments(data)).then((res: any) => {
       if(res.payload.status == true){
         setDocuments(res.payload.folders.media)
@@ -75,7 +74,6 @@ export default function ShareAdd() {
       }else{
         toast.error(res.payload.message)
       }
-      console.log(res.payload, "jjjjjjjjjjmedia");
 
     });
 }
@@ -88,7 +86,6 @@ export default function ShareAdd() {
   }
 
 const imagesData = cards.map((card)=>{
-  console.log(card,"oooooooooooooooo")
   return(
     <div className="container mt-4" key={card}>
       <div className="alert alert-primary" role="alert">

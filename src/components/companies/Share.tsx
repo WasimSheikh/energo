@@ -43,7 +43,7 @@ var foldersArray:any =[]
       foldersArray.push(element.id)
     });
     var companyId = documents[0].company_id
-    console.log(companyId,"companyId")
+   
     e.preventDefault();
     const formData = {
       name: name,
@@ -52,9 +52,8 @@ var foldersArray:any =[]
       folder_ids: foldersArray,
       company_id:params.companyId
     }
-    console.log(formData,"formData")
     store.dispatch(shareDocuments(formData)).then((res: any) => {
-      console.log(res,"55555")
+     
       if (res.payload.status == true) {
         setErrorMessages('');
         toast.success(res.payload?.message)
