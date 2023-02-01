@@ -744,7 +744,13 @@ const INIT_STATE: AppUser = {
         password:'',
         phone: '',
         isGlobal:false,
-        permission:''
+        permission:'',
+        address:'',
+        street: '',
+        country:'',
+        city:'',
+        zip: '',
+        profile_picture:'',
     }
 }
 
@@ -753,8 +759,7 @@ export const UserMgmtSlice = createSlice({
     initialState: INIT_STATE,
     reducers: {
         setAppUser(state, action: PayloadAction<User>) {
-           
-            return {
+           return {
                 ...state,
                 currUser: Object.assign(action.payload)
             }
@@ -775,22 +780,21 @@ export const UserMgmtSlice = createSlice({
             }
         },
 
-        setUserTC(state, action: PayloadAction<any>) {
-            const tmpUser = state.currUser;
+        // setUserTC(state, action: PayloadAction<any>) {
+        //     const tmpUser = state.currUser;
             
-            return {
-                ...state,
-                currUser: Object.assign({
-                    ...tmpUser,
-                    [action.payload.text]: {
-                        "version": action.payload.value.version,
-                        "text": action.payload.value.text_content
-                    }
-                })
-            }
-        },
-        setUserAddress(state, action: PayloadAction<any>) {
-            
+        //     return {
+        //         ...state,
+        //         currUser: Object.assign({
+        //             ...tmpUser,
+        //             [action.payload.text]: {
+        //                 "version": action.payload.value.version,
+        //                 "text": action.payload.value.text_content
+        //             }
+        //         })
+        //     }
+        // },
+        setUserAddress(state, action: PayloadAction<any>) {    
             const tmpUser = state.currUser;
             return {
                 ...state,
@@ -817,9 +821,6 @@ export const UserMgmtSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder.addCase(createUser.fulfilled, (state, response) => {
-            // if(response.payload.status !== "FAILED" && response.payload.msg && state.currUser){
-            //     //state.currUser.customerId=response.payload.msg;
-            // }
             console.log('createUser success' + response.payload)
         })
         builder.addCase(createUser.rejected, (state, response) => {

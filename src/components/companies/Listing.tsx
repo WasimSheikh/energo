@@ -24,10 +24,12 @@ import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
 import { randomInt, randomUserName } from '@mui/x-data-grid-generator';
 import capitalizeFirstLetter from '../utils/FormUtils';
+import { useSelector } from 'react-redux';
 
 
 
 function CompanyList() {
+  const currentUser: any = useSelector((state: any) => state.user.currUser);
   const [companiesss,setCompanies] = useState([]);
   const [companyAdd,setCompanyAdd] = useState(false);
   const [companyEdit,setCompanyEdit] = useState(false);
@@ -45,13 +47,13 @@ const getCompanyData =()=>{
 }
 
 function addPermission(){
-  var role_id:any = localStorage.getItem('role_id')
-  const formData={
-    role_id:role_id
-  }
-  store.dispatch(getRolehasPermissions(formData)).then((res: any) => {
-   
-      var allPermission:any = res.payload.data
+  // var role_id:any = localStorage.getItem('role_id')
+  // const formData={
+  //   role_id:role_id
+  // }
+  //store.dispatch(getRolehasPermissions(formData)).then((res: any) => {
+    var allPermission:any = currentUser.permission;
+    if(allPermission.length != 0){
       allPermission.forEach((per:any) => {
         if(capitalizeFirstLetter(per.flag) == "Companies"){
           if(per.name == "Add"){
@@ -65,7 +67,8 @@ function addPermission(){
           }
         }
       });
-  }); 
+    }
+  //}); 
 }
 
   useEffect(() => {

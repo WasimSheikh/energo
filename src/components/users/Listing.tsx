@@ -24,9 +24,10 @@ import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
 import { randomInt, randomUserName } from '@mui/x-data-grid-generator';
 import capitalizeFirstLetter from '../utils/FormUtils';
+import { useSelector } from 'react-redux';
 
 function UserList() {
-
+  const currentUser: any = useSelector((state: any) => state.user.currUser);
   const [users,setUsers] = useState([]);
   const [usersAdd,setUsersAdd] = useState(false);
   const [usersEdit,setUsersEdit] = useState(false);
@@ -44,13 +45,13 @@ function UserList() {
   }
 
   function addPermission(){
-    var role_id:any = localStorage.getItem('role_id')
-    const formData={
-      role_id:role_id
-    }
-    store.dispatch(getRolehasPermissions(formData)).then((res: any) => {
-        
-        var allPermission:any = res.payload.data
+    // var role_id:any = localStorage.getItem('role_id')
+    // const formData={
+    //   role_id:role_id
+    // }
+    // store.dispatch(getRolehasPermissions(formData)).then((res: any) => {
+      var allPermission:any = currentUser.permission;
+      if(allPermission.length != 0){
         allPermission.forEach((per:any) => {
           if(capitalizeFirstLetter(per.flag) == "Users"){
             if(per.name == "Add"){
@@ -64,7 +65,8 @@ function UserList() {
             }
           }
         });
-    }); 
+      }
+    // }); 
   }
 
   useEffect(() => {

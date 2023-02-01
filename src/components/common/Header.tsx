@@ -27,11 +27,8 @@ const Header = (): JSX.Element => {
   interface AppBarProps extends MuiAppBarProps {
     open?: boolean;
   }
-  const [age, setAge] = React.useState('');
+  
   const navigate = useNavigate();
-  const handleChange = (event: SelectChangeEvent) => {
-    setAge(event.target.value);
-  };
   const [open, setOpen] = React.useState(true);
   const toggleDrawer = () => {
     setOpen(!open);

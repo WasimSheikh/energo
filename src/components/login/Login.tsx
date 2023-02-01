@@ -12,12 +12,13 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { store } from '../../redux/store';
-import { login } from '../../redux/store/reducers/slices/UserSlice';
+import { getRolehasPermissions, login, UserMgmtSlice } from '../../redux/store/reducers/slices/UserSlice';
 import { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import Footer from '../common/Footer';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useSelector } from 'react-redux';
  
 const theme = createTheme();
 
@@ -26,11 +27,13 @@ export default function Login() {
   const [email,setEmail] = useState('');
   const [password,setPassword] = useState('');
   const [errorMessages, setErrorMessages] = useState('');
+  const currentUser: any = useSelector((state: any) => state.user.currUser);
 
   function IsLoggedIn(){
     let access_token = localStorage.getItem("access_token");
     return (access_token != '' && access_token != null ) ? true : false;
   }
+
   
   const handleSubmit = (e:any) => {
     e.preventDefault();
@@ -42,17 +45,15 @@ export default function Login() {
       if (res.payload.status == true) {
         let access_token = res.payload.access_token;
         if(access_token !="" && access_token !=""){
-         localStorage.setItem("access_token", access_token); 
-         localStorage.setItem("user_id", res.payload.user.id); 
-         localStorage.setItem("role_id", res.payload.user.role_id); 
-         navigate("/dashboard");
-         //window.location.reload();
-         toast.success(res.payload.message);
+          localStorage.setItem("access_token", access_token); 
+          localStorage.setItem("role_id", res.payload.user.role_id);
+          localStorage.setItem("user_id", res.payload.user.id); 
+          toast.success(res.payload.message);
+          navigate("dashboard");
+          window.location.reload();
         }
-        setErrorMessages('');
-      } else {
-        setErrorMessages(res.payload?.message);
-        toast.error(res.payload.message);
+      }else {
+       toast.error(res.payload.message);
       }
     });    
   };
@@ -64,7 +65,6 @@ export default function Login() {
 
   return (
     <ThemeProvider theme={theme}>
-
       <Grid container component="main" sx={{ height: '100vh' }}>
         <CssBaseline />
         <Grid

@@ -21,15 +21,16 @@ import { store } from '../../redux/store';
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
 import { randomInt, randomUserName } from '@mui/x-data-grid-generator';
+import { useSelector } from 'react-redux';
 
 
 
 export default function StatesList() {
+  const currentUser: any = useSelector((state: any) => state.user.currUser);
   const [cities,setCities] = useState([]);
   const [statesAdd,setStatesAdd] = useState(false);
   const [statesEdit,setStatesEdit] = useState(false);
   const [statesDelete,setStatesDelete] = useState(false);
-
 
 function getStateList(){
     store.dispatch(getStates()).then((res: any) => {
@@ -37,23 +38,21 @@ function getStateList(){
         setCities(res.payload?.states);
       }else{
         toast.error(res.payload.message)
-      }
-     
+      } 
     }); 
 }
 
 function addPermission(){
-  var role_id:any = localStorage.getItem('role_id')
-  const formData={
-    role_id:role_id
-  }
-  store.dispatch(getRolehasPermissions(formData)).then((res: any) => {
-      var allPermission:any = res.payload.data
+  // var role_id:any = localStorage.getItem('role_id')
+  // const formData={
+  //   role_id:role_id
+  // }
+  // store.dispatch(getRolehasPermissions(formData)).then((res: any) => {
+    var allPermission:any = currentUser.permission;
+      if(allPermission.length != 0){
       allPermission.forEach((per:any) => {
         if(per.flag == "States"){
-          
           if(per.name == "Add"){
-            
             setStatesAdd(true)
           }else if(per.name == "Edit"){
             setStatesEdit(true)
@@ -62,8 +61,8 @@ function addPermission(){
           }
         }
       });
-   
-  }); 
+    }
+ // }); 
  
 }
 

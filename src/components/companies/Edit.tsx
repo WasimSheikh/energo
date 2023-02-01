@@ -108,38 +108,32 @@ function CompanyEdit() {
       </span>
     );
   };
-    
- 
 
   useEffect(() => {
     if(onload==false){
       setOnload(true);
       const companyId = window.location.href.split('/')[5]
       const formData = {id:companyId};  
-       store.dispatch(getCompany(formData)).then((res: any) => { 
-           if (res && res.payload) {
-               setId(res.payload.company?.id);
-               setCompanyName(res.payload.company?.title);
-               setEmail(res.payload.company?.email);
-               setPhone(res.payload.company?.phone);
-               setWebsite(res.payload.company?.website);
-               setAddress1(res.payload.company?.address?.address);
-               setAddress2(res.payload.company?.address?.street);
-               setCity(res.payload.company.address?.city);
-               setCountry(res.payload.company?.address?.country);
-               setPostalCode(res.payload.company?.address?.zipcode);
-               setLogo(res.payload.company?.logo);
-
-               setchecked(res.payload.company?.is_headquater)
-            
-
-               setIsHeadauator(res.payload.company?.is_headquater)
-
-               if(res.payload.company.is_headquater == '1'){
+      store.dispatch(getCompany(formData)).then((res: any) => { 
+           if(res && res.payload) {
+              setId(res.payload.company?.id);
+              setCompanyName(res.payload.company?.title);
+              setEmail(res.payload.company?.email);
+              setPhone(res.payload.company?.phone);
+              setWebsite(res.payload.company?.website);
+              setAddress1(res.payload.company?.address?.address);
+              setAddress2(res.payload.company?.address?.street);
+              setCity(res.payload.company.address?.city);
+              setCountry(res.payload.company?.address?.country);
+              setPostalCode(res.payload.company?.address?.zipcode);
+              setLogo(res.payload.company?.logo);
+              setchecked(res.payload.company?.is_headquater)
+              setIsHeadauator(res.payload.company?.is_headquater)
+              if(res.payload.company.is_headquater == '1'){
                 (document.getElementById('checkBox')as any).checked = true;
-               }else{
+              }else{
                 (document.getElementById('checkBox')as any).checked = false;
-               }
+              }
             } 
        }); 
       }
@@ -191,7 +185,7 @@ function CompanyEdit() {
                               }));
                             }}
                           />
-                            {dirtyFields["companyName"] && getError("Company Name is requried")}
+                          {dirtyFields["companyName"] && getError("Company Name is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                           <TextField
@@ -210,7 +204,7 @@ function CompanyEdit() {
                               }));
                             }}
                           />
-                            {dirtyFields["website"] && getError("Website is requried")}
+                          {dirtyFields["website"] && getError("Website is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                         <TextField
@@ -229,9 +223,8 @@ function CompanyEdit() {
                               }));
                             }}
                           />
-                            {dirtyFields["email"] && getError("Email is requried")}
+                          {dirtyFields["email"] && getError("Email is requried")}
                       </Grid>
-                      
                       <Grid item xs={6} sm={6}>
                         <TextField
                             margin="normal"
@@ -249,7 +242,7 @@ function CompanyEdit() {
                               }));
                             }}
                           />
-                            {dirtyFields["phone"] && getError("Phone is requried")}
+                          {dirtyFields["phone"] && getError("Phone is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                         <TextField
@@ -268,7 +261,7 @@ function CompanyEdit() {
                                 }));
                               }}
                             />
-                              {dirtyFields["address"] && getError("Address is requried")}
+                            {dirtyFields["address"] && getError("Address is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                         <TextField
@@ -287,7 +280,7 @@ function CompanyEdit() {
                                 }));
                               }}
                             />
-                              {dirtyFields["street"] && getError("Street is requried")}
+                            {dirtyFields["street"] && getError("Street is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                         <TextField
@@ -306,7 +299,7 @@ function CompanyEdit() {
                                 }));
                               }}
                             />
-                              {dirtyFields["city"] && getError("City is requried")}
+                            {dirtyFields["city"] && getError("City is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                       <TextField
@@ -325,7 +318,7 @@ function CompanyEdit() {
                               }));
                             }}
                           />
-                            {dirtyFields["zipcode"] && getError("Zipcode is requried")}
+                          {dirtyFields["zipcode"] && getError("Zipcode is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                       <TextField
@@ -344,23 +337,19 @@ function CompanyEdit() {
                               }));
                             }}
                           />
-                            {dirtyFields["country"] && getError("Country is requried")}
+                          {dirtyFields["country"] && getError("Country is requried")}
                         </Grid>
-                       
                         <Grid item xs={2} sm={6} mt={2}>
                         <FormControlLabel
                             control={
-
                             <input type= 'checkbox' name="headquater" id = 'checkBox' 
-
                             onChange={(e) => {
                               checkBoxValue(e);
                             }}  />
                           }
                             label="Company Headquater Office"
                             sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }} style={{fontSize : '50px'}}
-                        />
-                           
+                        />  
                         </Grid>
                         <Grid item xs={6} sm={6}>
                         <Button variant="contained" component="label"  sx={{ mb: 3 }}>
@@ -371,9 +360,7 @@ function CompanyEdit() {
                         <Grid item xs={6} sm={6}>
                        </Grid>
                     </Grid>
-                    
-                  
-                  <Divider />
+                    <Divider />
                       <Toolbar  sx={{ ml: 0 ,pl:"0 !important"}}>
                       <Button 
                        disabled={!isValidData()}
@@ -381,8 +368,8 @@ function CompanyEdit() {
                           variant="contained"
                         >
                         Update
-                        </Button>
-                        <Button variant="contained" component={Link} to="/companies" sx={{ ml: 1 }} >Cancel </Button>
+                      </Button>
+                      <Button variant="contained" component={Link} to="/companies" sx={{ ml: 1 }} >Cancel </Button>
                       </Toolbar> 
                       </Box>
                 </Paper>

@@ -22,32 +22,32 @@ import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
 import { Diversity2 } from '@mui/icons-material';
 import { randomInt, randomUserName } from '@mui/x-data-grid-generator';
+import { useSelector } from 'react-redux';
 
 
 
 export default function CityList() {
+  const currentUser: any = useSelector((state: any) => state.user.currUser);
   const [cities,setCities] = useState([]);
   const [citiesAdd,setCitiesAdd] = useState(false);
   const [citiesEdit,setCitiesEdit] = useState(false);
   const [citiesDelete,setCitiesDelete] = useState(false);
-function getCitiesList(){
+  function getCitiesList(){
     store.dispatch(getCities()).then((res: any) => {
-     
-        // if (res && res.payload?.permissions) {
+        //if (res && res.payload?.permissions) {
           setCities(res.payload?.cities);
-        // } 
+        //} 
       }); 
 }
-
 function addPermission(){
-  var role_id:any = localStorage.getItem('role_id')
-  const formData={
-    role_id:role_id
-  }
-  store.dispatch(getRolehasPermissions(formData)).then((res: any) => {
-     
-      var allPermission:any = res.payload.data
-      allPermission.forEach((per:any) => {
+  // var role_id:any = localStorage.getItem('role_id')
+  // const formData={
+  //   role_id:role_id
+  // }
+  // store.dispatch(getRolehasPermissions(formData)).then((res: any) => { 
+  var allPermission:any = currentUser.permission;
+  if(allPermission.length != 0){
+    allPermission.forEach((per:any) => {
         if(per.flag == "Cities"){
           if(per.name == "Add"){
             setCitiesAdd(true)
@@ -57,12 +57,10 @@ function addPermission(){
             setCitiesDelete(true)
           }
         }
-      });
-    
+     // });
   }); 
+  }
 }
-
-
   useEffect(() => {
     getCitiesList();
     addPermission();

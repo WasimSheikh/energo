@@ -42,7 +42,6 @@ function PermissionAdd() {
   const selectChange = (event: SelectChangeEvent) => {
     setParent(event.target.value);
     permissions.forEach((res:any)=>{
-   
       if(res.id == event.target.value){
         setFlag(res.name)
       }
@@ -75,12 +74,13 @@ const isValidData = ():boolean => {
   const handleSubmit = (e:any) => {
     e.preventDefault();
     if(isValidData()){
+      console.log(flag);
     const formData = {
       name:name,
       url:url,
       parent:parent,
       guard_name:'web',
-      flag : flag
+      flag : flag==''?name:flag
     }
     store.dispatch(createPermission(formData)).then((res: any) => {
       if (res.payload.status == true) {

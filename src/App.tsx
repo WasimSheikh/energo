@@ -42,6 +42,8 @@ import StateAdd from './components/states/StateAdd';
 import StateEdit from './components/states/StateEdit';
 import StatesList from './components/states/StateListing';
 import {useIdleTimer} from 'react-idle-timer';
+import { Provider } from 'react-redux';
+import { store } from './redux/store';
 
 
 function App() {
@@ -49,19 +51,7 @@ function App() {
   const [login, setIsLogin] = React.useState(false);
   const [onload,setOnload] = React.useState(false);
   const [documenets,setDocuments] = React.useState([]);
-  const [modelopen,setModel] = React.useState(false);
-  // const [seconds, setSeconds] = React.useState(0);
-
-  const onIdle = ()=>{
-    if(localStorage.getItem("access_token")){
-      // setModel(true)
-      // const interval = setInterval(() => {
-      //   setSeconds(seconds => seconds + 1);
-      // }, 1000);
-      // return () => clearInterval(interval);
-
-    }
-  }
+  
 
   function IsLoggedIn(){
     let access_token = localStorage.getItem("access_token");
@@ -72,9 +62,9 @@ function App() {
     setDocuments(data)
   }
 
-  useEffect(() => {
+  useEffect(() => { 
     var token =  localStorage.getItem('access_token')
-     if(onload==false){
+     if(onload==false && login== false){
         setIsLogin(IsLoggedIn());
         setOnload(true);
         if(token ==null){
@@ -82,37 +72,10 @@ function App() {
         }
      } 
   }); 
-  const idleTimer = useIdleTimer({ onIdle,    timeout: 5 * 1000, })
-  function onStay(){
-    setModel(false)
-  }
-function Logout(){
-localStorage.removeItem('access_token')
-localStorage.removeItem('user_id')
-localStorage.removeItem('role_id')
-window.location.reload();
-setModel(false)
-}
+
   return (
+    <Provider store={store}>
      <>
-      {
-        modelopen && 
-        <div style={{textAlign:"center", zIndex  : 99999, width:"300px" , margin:'auto',position:'absolute',left: '40%', top: '30%'}}
-        >
-          {/* <Idlecontainer />
-           */}
-             <div className="border border-primary p-3 bg-secondary" >
-        <div> 
-          <p>You want to sign out ? </p>
-          <div>
-            <button className="btn btn-success m-3" onClick={onStay}> Stay</button>
-            <button className="btn btn-danger m-3 "  onClick={Logout} >Sign out</button>
-          </div>
-        </div>
-      </div>
-          
-          </div>
-      }
 
       <Routes>
           <Route index element={ <Login />} />
@@ -157,6 +120,7 @@ setModel(false)
 
       <ToastContainer/>
       </>
+      </Provider>
   );
 }
 export default App;

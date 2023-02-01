@@ -19,9 +19,11 @@ import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import { Link } from "react-router-dom";
 import PublicIcon from '@mui/icons-material/Public';
 import logo from '../common/images/Energo-logo.jpg'
-import { getRolehasPermissions } from '../../redux/store/reducers/slices/UserSlice';
 import capitalizeFirstLetter from '../utils/FormUtils';
 import { store } from '../../redux/store';
+import { useSelector } from 'react-redux';
+import { useEffect,useState } from 'react';
+import { getRolehasPermissions, UserMgmtSlice } from '../../redux/store/reducers/slices/UserSlice';
 
 const Navigation = (): JSX.Element => {
   const drawerWidth: number = 240;
@@ -51,39 +53,28 @@ const Navigation = (): JSX.Element => {
     }),
   ); 
 
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = useState(true);
+  const currentUser: any = useSelector((state: any) => state.user.currUser);
   const user_id = localStorage.getItem('user_id')
-  const [companyIndex, setCompanyIndex] = React.useState(false);
-  const [indexUsers, setIndexUsers] = React.useState(false);
-  const [indexNotifications, setindexNotifications] = React.useState(false);
-  const [indexSecurityManagment, setIndexSecurityManagment] = React.useState(true);
-  const [indexSctivityLogs, setIndexSctivityLogs] = React.useState(true);
-  const [indexRoles, setIndexRoles] = React.useState(false);
-  const [indexPermissions, setIndexPermissions] = React.useState(false);
-  const [indexCountries, setIndexCountries] = React.useState(false);
-  const [indexStates, setIndexStates] = React.useState(false);
-  const [indexCities, setIndexCities] = React.useState(false);
-  const [indexDashboard, setIndexDashboard] = React.useState(false);
-  
-
-
-
-
-  
+  const [companyIndex, setCompanyIndex] = useState(false);
+  const [indexUsers, setIndexUsers] = useState(false);
+  const [indexNotifications, setindexNotifications] = useState(false);
+  const [indexSecurityManagment, setIndexSecurityManagment] = useState(false);
+  const [indexSctivityLogs, setIndexSctivityLogs] = useState(false);
+  const [indexRoles, setIndexRoles] = useState(false);
+  const [indexPermissions, setIndexPermissions] = useState(false);
+  const [indexCountries, setIndexCountries] = useState(false);
+  const [indexStates, setIndexStates] = useState(false);
+  const [indexCities, setIndexCities] = useState(false);
+  const [indexDashboard, setIndexDashboard] = useState(false);
   const toggleDrawer = () => {
     setOpen(!open);
   };
 
-
   function addPermission(){
-    var role_id:any = localStorage.getItem('role_id')
-    const formData={
-      role_id:role_id
-    }
-    store.dispatch(getRolehasPermissions(formData)).then((res: any) => {
-     
-        var allPermission:any = res.payload.data
-        
+        var permissions:any = localStorage.getItem('permissions')
+        var allPermission:any =JSON.parse(permissions)?JSON.parse(permissions):[];
+        if(allPermission.length != 0){
         allPermission.forEach((per:any) => {
           if(capitalizeFirstLetter(per.flag) == "Companies"){
             if(per.name == "Index"){
@@ -120,25 +111,25 @@ const Navigation = (): JSX.Element => {
               setIndexDashboard(true)
             }
           }
-          // if(capitalizeFirstLetter(per.url) == "activity_logs"){
-          //   if(per.name == "Index"){
-          //     setIndexSctivityLogs(true)
-          //   }
-          // }
-          // if(capitalizeFirstLetter(per.url) == "security_managment"){
-          //   if(per.name == "Index"){
-          //     setIndexSecurityManagment(true)
-          //   }
-          // }
+          if(capitalizeFirstLetter(per.flag) == "Activity Logs"){
+            if(per.name == "Index"){
+              setIndexSctivityLogs(true)
+            }
+          }
+          if(capitalizeFirstLetter(per.flag) == "Security Managment"){
+            if(per.name == "Index"){
+              setIndexSecurityManagment(true)
+            }
+          }
         });
-    }); 
+      }
   }
-React.useEffect(()=>{
-  addPermission();
-},[])
+  
+  useEffect(()=>{
+      addPermission();
+  },[])
 
     return <>
-    
      <Drawer variant="permanent" open={open}>
           <Toolbar
             sx={{

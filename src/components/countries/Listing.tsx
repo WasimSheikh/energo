@@ -21,17 +21,17 @@ import { store } from '../../redux/store';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 import { randomInt, randomUserName } from '@mui/x-data-grid-generator';
+import { useSelector } from 'react-redux';
 
 
 export default function ContriesList() {
+  const currentUser: any = useSelector((state: any) => state.user.currUser);
   const [countries,setCountries] = useState([]);
   const [countriesAdd,setCountriesAdd] = useState(false);
   const [countriesEdit,setCountriesEdit] = useState(false);
   const [countriesDelete,setCountriesDelete] = useState(false);
   const [countriesView,setCountriesView] = useState(false);
-
   
-
 function getCountrieData(){
     store.dispatch(getCountries()).then((res: any) => {
       if (res.payload.status == true) {
@@ -44,12 +44,15 @@ function getCountrieData(){
 }
 
 function addPermission(){
-  var role_id:any = localStorage.getItem('role_id')
-  const formData={
-    role_id:role_id
-  }
-  store.dispatch(getRolehasPermissions(formData)).then((res: any) => {
-      var allPermission:any = res.payload.data
+  // var role_id:any = localStorage.getItem('role_id')
+  // const formData={
+  //   role_id:role_id
+  // }
+  // store.dispatch(getRolehasPermissions(formData)).then((res: any) => {
+  //     var allPermission:any = res.payload.data
+
+    var allPermission:any = currentUser.permission;
+      if(allPermission.length != 0){
       allPermission.forEach((per:any) => {
         if(per.flag == "Countries"){
           if(per.name == "Add"){
@@ -61,7 +64,8 @@ function addPermission(){
           }
         }
       });
-  }); 
+  //});
+    } 
 }
 
   useEffect(() => {
