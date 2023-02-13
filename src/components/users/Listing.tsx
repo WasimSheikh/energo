@@ -33,7 +33,7 @@ function UserList() {
   const [usersEdit,setUsersEdit] = useState(false);
   const [usersDelete,setUsersDelete] = useState(false);
   const [usersView,setUsersView] = useState(false);
-
+  var permission:any =localStorage.getItem('permissions');
   const userList = ()=>{
     store.dispatch(getUsers()).then((res: any) => {
       if (res && res.payload.users) {
@@ -50,7 +50,8 @@ function UserList() {
     //   role_id:role_id
     // }
     // store.dispatch(getRolehasPermissions(formData)).then((res: any) => {
-      var allPermission:any = currentUser.permission;
+      var allPermission:any = JSON.parse(permission);
+      // var allPermission:any = currentUser.permission;
       if(allPermission.length != 0){
         allPermission.forEach((per:any) => {
           if(capitalizeFirstLetter(per.flag) == "Users"){

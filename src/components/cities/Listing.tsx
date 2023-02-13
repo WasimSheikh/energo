@@ -32,6 +32,7 @@ export default function CityList() {
   const [citiesAdd,setCitiesAdd] = useState(false);
   const [citiesEdit,setCitiesEdit] = useState(false);
   const [citiesDelete,setCitiesDelete] = useState(false);
+  var permission:any =localStorage.getItem('permissions');
   function getCitiesList(){
     store.dispatch(getCities()).then((res: any) => {
         //if (res && res.payload?.permissions) {
@@ -45,7 +46,7 @@ function addPermission(){
   //   role_id:role_id
   // }
   // store.dispatch(getRolehasPermissions(formData)).then((res: any) => { 
-  var allPermission:any = currentUser.permission;
+  var allPermission:any = JSON.parse(permission);
   if(allPermission.length != 0){
     allPermission.forEach((per:any) => {
         if(per.flag == "Cities"){

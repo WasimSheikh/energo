@@ -31,6 +31,7 @@ export default function ContriesList() {
   const [countriesEdit,setCountriesEdit] = useState(false);
   const [countriesDelete,setCountriesDelete] = useState(false);
   const [countriesView,setCountriesView] = useState(false);
+  var permission:any =localStorage.getItem('permissions');
   
 function getCountrieData(){
     store.dispatch(getCountries()).then((res: any) => {
@@ -51,7 +52,7 @@ function addPermission(){
   // store.dispatch(getRolehasPermissions(formData)).then((res: any) => {
   //     var allPermission:any = res.payload.data
 
-    var allPermission:any = currentUser.permission;
+    var allPermission:any = JSON.parse(permission);
       if(allPermission.length != 0){
       allPermission.forEach((per:any) => {
         if(per.flag == "Countries"){

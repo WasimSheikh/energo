@@ -35,7 +35,7 @@ function CompanyList() {
   const [companyEdit,setCompanyEdit] = useState(false);
   const [companyDelete,setCompanyDelete] = useState(false);
   const [companyView,setCompanyView] = useState(false);
-  
+  var permission:any =localStorage.getItem('permissions');
 const getCompanyData =()=>{
   store.dispatch(getCompanies()).then((res: any) => {
     if (res.payload.status == true) {
@@ -46,13 +46,19 @@ const getCompanyData =()=>{
   }); 
 }
 
+
 function addPermission(){
+  console.log(JSON.parse(permission),"roles permission");
   // var role_id:any = localStorage.getItem('role_id')
   // const formData={
   //   role_id:role_id
   // }
-  //store.dispatch(getRolehasPermissions(formData)).then((res: any) => {
-    var allPermission:any = currentUser.permission;
+  // store.dispatch(getRolehasPermissions(formData)).then((res: any) => {
+  //   var allPermission:any = res.payload?.data;
+  
+    var allPermission:any =  JSON.parse(permission);
+    // console.log(res,"permission");
+
     if(allPermission.length != 0){
       allPermission.forEach((per:any) => {
         if(capitalizeFirstLetter(per.flag) == "Companies"){
@@ -68,7 +74,7 @@ function addPermission(){
         }
       });
     }
-  //}); 
+  // }); 
 }
 
   useEffect(() => {

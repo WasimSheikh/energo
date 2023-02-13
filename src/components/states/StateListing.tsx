@@ -31,6 +31,7 @@ export default function StatesList() {
   const [statesAdd,setStatesAdd] = useState(false);
   const [statesEdit,setStatesEdit] = useState(false);
   const [statesDelete,setStatesDelete] = useState(false);
+  var permission:any =localStorage.getItem('permissions');
 
 function getStateList(){
     store.dispatch(getStates()).then((res: any) => {
@@ -48,7 +49,7 @@ function addPermission(){
   //   role_id:role_id
   // }
   // store.dispatch(getRolehasPermissions(formData)).then((res: any) => {
-    var allPermission:any = currentUser.permission;
+    var allPermission:any =  JSON.parse(permission);
       if(allPermission.length != 0){
       allPermission.forEach((per:any) => {
         if(per.flag == "States"){

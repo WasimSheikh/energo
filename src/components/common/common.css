@@ -1,3 +1,50 @@
 .folderSelect{
       background-color: blue;
 }
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
+
+* {
+  box-sizing: border-box;
+}
+
+
+
+img {
+  max-width: 100%;
+}
+
+.card {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  /* overflow: hidden;
+  width: 350px; */
+  height:auto;
+}
+
+.card-header {
+  height: 200px;
+}
+
+.card-header img {
+  object-fit: cover;
+  height: 100%;
+  width: 100%;
+}
+
+.card-content {
+  background-color: #fff;
+  padding: 30px;
+}
+
+.card-title {
+  height: 20px;
+  margin: 0;
+ text-align: center;
+}
+p{
+font-size:16px;  
+}
+a{
+ text-decoration: none;
+ color:#fff; 
+}

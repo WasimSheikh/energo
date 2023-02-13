@@ -42,6 +42,7 @@ export default function Login() {
       password:password
     }  
     store.dispatch(login(formData)).then((res: any) => {
+      console.log(res.payload.user.role_id,"res.payload.user.role_id");
       if (res.payload.status == true) {
         let access_token = res.payload.access_token;
         if(access_token !="" && access_token !=""){

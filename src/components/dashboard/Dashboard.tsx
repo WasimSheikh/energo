@@ -19,7 +19,8 @@ function DashboardContent() {
   const [onload,setOnload] = useState(false);
   
   useEffect(() => {
-    console.log('sdfsd')
+    console.log('remove permision');
+    localStorage.removeItem('permissions');
     if(onload==false){
       setOnload(true);
       var role_id:any = localStorage.getItem('role_id')
@@ -28,6 +29,7 @@ function DashboardContent() {
       } 
       store.dispatch(getRolehasPermissions(roles)).then((res: any) => {
         localStorage.setItem("permissions", JSON.stringify(res.payload.data));
+        console.log("add permission");
       }); 
     }
   },[]);

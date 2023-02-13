@@ -13,7 +13,6 @@ import { Link , useParams ,useNavigate} from "react-router-dom";
 import { Avatar, Button, Menu, MenuItem } from "@mui/material";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import '../common/common.css'
 import PersonIcon from '@mui/icons-material/Person';
 
 
@@ -66,6 +65,7 @@ const Header = (): JSX.Element => {
     localStorage.removeItem("access_token")
     localStorage.removeItem("user_id")
     localStorage.removeItem("role_id")
+    localStorage.removeItem("permissions")
     toast.success("Logout successfully")
     navigate('/')
   }
