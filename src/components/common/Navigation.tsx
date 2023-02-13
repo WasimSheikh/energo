@@ -19,7 +19,11 @@ import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import { Link } from "react-router-dom";
 import PublicIcon from '@mui/icons-material/Public';
 import logo from '../common/images/Energo-logo.jpg'
-
+import capitalizeFirstLetter from '../utils/FormUtils';
+import { store } from '../../redux/store';
+import { useSelector } from 'react-redux';
+import { useEffect,useState } from 'react';
+import { getRolehasPermissions, UserMgmtSlice } from '../../redux/store/reducers/slices/UserSlice';
 
 const Navigation = (): JSX.Element => {
   const drawerWidth: number = 240;
@@ -49,12 +53,83 @@ const Navigation = (): JSX.Element => {
     }),
   ); 
 
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = useState(true);
+  const currentUser: any = useSelector((state: any) => state.user.currUser);
+  const user_id = localStorage.getItem('user_id')
+  const [companyIndex, setCompanyIndex] = useState(false);
+  const [indexUsers, setIndexUsers] = useState(false);
+  const [indexNotifications, setindexNotifications] = useState(false);
+  const [indexSecurityManagment, setIndexSecurityManagment] = useState(false);
+  const [indexSctivityLogs, setIndexSctivityLogs] = useState(false);
+  const [indexRoles, setIndexRoles] = useState(false);
+  const [indexPermissions, setIndexPermissions] = useState(false);
+  const [indexCountries, setIndexCountries] = useState(false);
+  const [indexStates, setIndexStates] = useState(false);
+  const [indexCities, setIndexCities] = useState(false);
+  const [indexDashboard, setIndexDashboard] = useState(false);
   const toggleDrawer = () => {
     setOpen(!open);
   };
+
+  function addPermission(){
+        var permissions:any = localStorage.getItem('permissions')
+        var allPermission:any =JSON.parse(permissions)?JSON.parse(permissions):[];
+        if(allPermission.length != 0){
+        allPermission.forEach((per:any) => {
+          if(capitalizeFirstLetter(per.flag) == "Companies"){
+            if(per.name == "Index"){
+              setCompanyIndex(true)
+            }
+          }
+          if(capitalizeFirstLetter(per.flag) == "Users"){
+            if(per.name == "Index"){
+              setIndexUsers(true)
+            }
+          }
+          if(capitalizeFirstLetter(per.flag) == "Countries"){
+            if(per.name == "Index"){
+              setIndexCountries(true)
+            }
+          }
+          if(capitalizeFirstLetter(per.flag) == "States"){
+            if(per.name == "Index"){
+              setIndexStates(true)
+            }
+          }
+          if(capitalizeFirstLetter(per.flag) == "Cities"){
+            if(per.name == "Index"){
+              setIndexCities(true)
+            }
+          }
+          if(capitalizeFirstLetter(per.flag) == "Notifications"){
+            if(per.name == "Index"){
+              setindexNotifications(true)
+            }
+          }
+          if(capitalizeFirstLetter(per.flag) == "Dashboard"){
+            if(per.name == "Index"){
+              setIndexDashboard(true)
+            }
+          }
+          if(capitalizeFirstLetter(per.flag) == "Activity Logs"){
+            if(per.name == "Index"){
+              setIndexSctivityLogs(true)
+            }
+          }
+          if(capitalizeFirstLetter(per.flag) == "Security Managment"){
+            if(per.name == "Index"){
+              setIndexSecurityManagment(true)
+            }
+          }
+        });
+      }
+  }
+  
+  useEffect(()=>{
+      addPermission();
+  },[])
+
     return <>
-    
      <Drawer variant="permanent" open={open}>
           <Toolbar
             sx={{
@@ -74,81 +149,79 @@ const Navigation = (): JSX.Element => {
           <Divider />
           <List component="nav">
           <React.Fragment>
-          <ListItemButton component={Link} to="/dashboard" >
+         {indexDashboard && <ListItemButton component={Link} to="/dashboard" >
               <ListItemIcon>
                 <DashboardIcon />
               </ListItemIcon>
             <ListItemText primary="Dashboard" />
-            </ListItemButton>
-            <ListItemButton component={Link} to="/companies" >
+            </ListItemButton>}
+           {companyIndex && <ListItemButton component={Link} to="/companies" >
               <ListItemIcon>
                 <ManageAccountsIcon />
               </ListItemIcon>
               <ListItemText primary="Companies"  />
-            </ListItemButton>
-            <ListItemButton component={Link} to="/users" >
-           
+            </ListItemButton>}
+           {indexUsers && <ListItemButton component={Link} to="/users" >
               <ListItemIcon>
                 <PeopleIcon />
               </ListItemIcon>
               <ListItemText primary="Users" />
-            </ListItemButton>
+            </ListItemButton>}
             {/* <ListItemButton component={Link} to="/documents" >
               <ListItemIcon>
                 <FileCopyIcon />
               </ListItemIcon>
               <ListItemText primary="Documents" />
             </ListItemButton> */}
-            <ListItemButton component={Link} to="/notifications" >
+            {indexNotifications && <ListItemButton component={Link} to="/notifications" >
               <ListItemIcon>
                 <NotificationsIcon />
               </ListItemIcon>
               <ListItemText primary="Notifications" />
-            </ListItemButton>
-            <ListItemButton>
+            </ListItemButton>}
+            {indexSecurityManagment && <ListItemButton>
               <ListItemIcon>
                 <SettingsIcon />
               </ListItemIcon>
               <ListItemText primary="Security Managment" />
-            </ListItemButton>
-            <ListItemButton>
+            </ListItemButton>}
+            {indexSctivityLogs && <ListItemButton>
               <ListItemIcon>
                 <ContentPasteSearchIcon />
               </ListItemIcon>
               <ListItemText primary="Activity Logs" />
-            </ListItemButton>
+            </ListItemButton>}
 
-            <ListItemButton component={Link} to="/roles">
+            {user_id == '1' && <ListItemButton component={Link} to="/roles">
               <ListItemIcon>
                 <SettingsIcon />
               </ListItemIcon>
               <ListItemText primary="Roles" />
-            </ListItemButton>
-
-            <ListItemButton component={Link} to="/permissions">
+            </ListItemButton>}
+         {user_id == '1' && <ListItemButton component={Link} to="/permissions">
               <ListItemIcon>
                 <SettingsIcon />
               </ListItemIcon>
               <ListItemText primary="Permissions" />
-            </ListItemButton>
-            <ListItemButton component={Link} to="/countries">
+            </ListItemButton>}
+            {indexCountries && <ListItemButton component={Link} to="/countries">
               <ListItemIcon>
                 <PublicIcon />
               </ListItemIcon>
               <ListItemText primary="Countries" />
-            </ListItemButton>
-            <ListItemButton component={Link} to="/states">
+            </ListItemButton>}
+            {indexStates && <ListItemButton component={Link} to="/states">
               <ListItemIcon>
                 <PublicIcon />
               </ListItemIcon>
               <ListItemText primary="States" />
-            </ListItemButton>
-            <ListItemButton component={Link} to="/cities">
+            </ListItemButton>}
+           {indexCities && <ListItemButton component={Link} to="/cities">
               <ListItemIcon>
                 <PublicIcon />
               </ListItemIcon>
               <ListItemText primary="Cities" />
-            </ListItemButton>
+            </ListItemButton>}
             </React.Fragment>
           </List>
         </Drawer>

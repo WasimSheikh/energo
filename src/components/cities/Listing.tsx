@@ -15,29 +15,56 @@ import { Link } from "react-router-dom";
 import EditIcon from '@mui/icons-material/Edit';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { deleteCity, getCities,statusCity } from '../../redux/store/reducers/slices/UserSlice';
+import { deleteCity, getCities,getRolehasPermissions,statusCity } from '../../redux/store/reducers/slices/UserSlice';
 import React, { useEffect , useState } from 'react';
 import { store } from '../../redux/store';
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
 import { Diversity2 } from '@mui/icons-material';
+import { randomInt, randomUserName } from '@mui/x-data-grid-generator';
+import { useSelector } from 'react-redux';
 
 
 
 export default function CityList() {
+  const currentUser: any = useSelector((state: any) => state.user.currUser);
   const [cities,setCities] = useState([]);
-function getCitiesList(){
+  const [citiesAdd,setCitiesAdd] = useState(false);
+  const [citiesEdit,setCitiesEdit] = useState(false);
+  const [citiesDelete,setCitiesDelete] = useState(false);
+  var permission:any =localStorage.getItem('permissions');
+  function getCitiesList(){
     store.dispatch(getCities()).then((res: any) => {
-        console.log(res,"res")
-        // if (res && res.payload?.permissions) {
+        //if (res && res.payload?.permissions) {
           setCities(res.payload?.cities);
-        // } 
+        //} 
       }); 
 }
-
-
+function addPermission(){
+  // var role_id:any = localStorage.getItem('role_id')
+  // const formData={
+  //   role_id:role_id
+  // }
+  // store.dispatch(getRolehasPermissions(formData)).then((res: any) => { 
+  var allPermission:any = JSON.parse(permission);
+  if(allPermission.length != 0){
+    allPermission.forEach((per:any) => {
+        if(per.flag == "Cities"){
+          if(per.name == "Add"){
+            setCitiesAdd(true)
+          }else if(per.name == "Edit"){
+            setCitiesEdit(true)
+          }else if(per.name == "Delete"){
+            setCitiesDelete(true)
+          }
+        }
+     // });
+  }); 
+  }
+}
   useEffect(() => {
     getCitiesList();
+    addPermission();
   },[]);
 
   const mdTheme = createTheme();
@@ -81,9 +108,8 @@ function getCitiesList(){
         renderCell: (params) => {
           return (
             <>
-             {params.row.is_active == '1' && <div onClick={()=>{statusUpdateCity(params.row.id)}} style={{cursor: 'pointer'}}> <span className='badge badge-success'>active</span></div>}
-        {params.row.is_active == '0' &&  <div onClick={()=>{statusUpdateCity(params.row.id)}} style={{cursor: 'pointer'}}> <span className='badge badge-danger'>Inactive</span></div>}
-            
+        {params.row.is_active == '1' && <button type="button" className="btn btn-link"  onClick={()=>{statusUpdateCity(params.row.id)}} ><span className='badge badge-success'>Active</span></button>}
+          {params.row.is_active == '0' &&  <button type="button" className="btn btn-link"  onClick={()=>{statusUpdateCity(params.row.id)}} ><span className='badge badge-danger'>Inactive</span></button>}
             </>
           );
        }
@@ -96,8 +122,8 @@ function getCitiesList(){
       renderCell: (params) => {
         return (
           <>
-          <Button  sx={{ minWidth: 40 }}  component={Link} to={'edit/'+params.row.id} > <EditIcon  /> </Button>
-          <Button  sx={{ minWidth: 40 }}   onClick={()=>{deleteCityById(params.row.id)}}> <DeleteIcon  /> </Button>
+          {citiesEdit == true && <Button  sx={{ minWidth: 40 }}  component={Link} to={'edit/'+params.row.id} > <EditIcon  /> </Button>}
+          {citiesDelete == true && <Button  sx={{ minWidth: 40 }}   onClick={()=>{deleteCityById(params.row.id)}}> <DeleteIcon  /> </Button>}
           </>
         );
      }
@@ -121,8 +147,13 @@ function getCitiesList(){
             store.dispatch(deleteCity(formData)).then((res: any) => {
               if(res.payload.status==true){
                toast.success(res.payload.message);
-               setCities([]);
-               getCitiesList();
+              setCities((prevRows : any) => {
+                const rowToDeleteIndex = randomInt(0, prevRows.length - 1);
+                return [
+                  ...cities.slice(0, rowToDeleteIndex),
+                  ...cities.slice(rowToDeleteIndex + 1),
+                ];
+              });
               }else{
                    toast.error(res.payload.message);
               }
@@ -138,7 +169,6 @@ function getCitiesList(){
           store.dispatch(statusCity(formData)).then((res: any) => {
           if(res.payload.status==true){
            toast.success(res.payload.message);
-           setCities([]);
            getCitiesList();
           }else{
                toast.error(res.payload.message);
@@ -173,7 +203,7 @@ function getCitiesList(){
                   <Typography component="h2" variant="h6" color="primary" gutterBottom>
                     Cities 
                   </Typography>
-                  <Button variant="contained" component={Link} to="/cities/add">Add</Button>
+                 {citiesAdd == true && <Button variant="contained" component={Link} to="/cities/add">Add</Button>}
                 </Box>
                 <Divider />
                 <Box sx={{ height: 400, width: '100%' }}>
@@ -183,6 +213,7 @@ function getCitiesList(){
                     pageSize={10}
                     rowsPerPageOptions={[5]}
                     className="text-capitalize"
+                 
                   />
                 </Box>
                 </Paper>

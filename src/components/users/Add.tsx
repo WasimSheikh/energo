@@ -24,6 +24,8 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import { store } from '../../redux/store';
 import { createUser,getCompanies } from '../../redux/store/reducers/slices/UserSlice';
+import { toast } from 'react-toastify';
+import { ifEmpty } from '../utils/FormUtils';
 
 const mdTheme = createTheme();
 
@@ -51,7 +53,6 @@ function UserAdd() {
   const [dirtyFields, setDirtyFields] = useState({
     first_name:false,
     companyname:false,
-
     last_name:false,
     email:false,
     address:false,
@@ -69,7 +70,6 @@ function UserAdd() {
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = () => resolve(reader.result);
-      console.log(reader.result,"11111111");
       reader.onerror = (error) => reject(error);
     });
   };
@@ -84,7 +84,7 @@ function UserAdd() {
 
 
   const isValidData = ():boolean => {
-    const validateFields = ifEmpty( firstName && lastName && phone && address && street && city && country && permission && postalCode );
+    const validateFields = ifEmpty( firstName && lastName && phone && address && street && city && country && company_id && permission && postalCode );
     return validateFields;
   };
 
@@ -114,19 +114,18 @@ function UserAdd() {
         zipcode:postalCode,
         profile_picture:file,   
       } 
-      console.log(formData,'formData',email);
+      
       store.dispatch(createUser(formData)).then((res: any) => {
-        if(res.payload.status == true){
-          setErrorMessages('');
-          console.log(res,4544554)
+        if (res.payload.status == true) {
+          toast.success(res.payload?.message)
           navigate("/users");
-        }else {
-          setErrorMessages(res.payload?.message);
+        } else {
+          toast.error(res.payload?.message)
         }
+
+
       });                               
-    }else{
-      console.log('sdfssff');
-    }      
+    }     
 
   };
   const renderErrorMessage = () =>
@@ -134,9 +133,7 @@ function UserAdd() {
     <div className="error">{errorMessages}</div>
   );
 
-  const ifEmpty= (val: string): boolean => {
-    return (val !== undefined && val.length > 0);// return true;
-}
+ 
 
 const getError = (msg: string): JSX.Element => {
   return (

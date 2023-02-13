@@ -16,30 +16,70 @@ import EditIcon from '@mui/icons-material/Edit';
 import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { deleteCompany,getCompanies, statusCompany, } from '../../redux/store/reducers/slices/UserSlice';
+import { deleteCompany,getCompanies, getRolehasPermissions, statusCompany, } from '../../redux/store/reducers/slices/UserSlice';
 import React, { useEffect , useState } from 'react';
 import { store } from '../../redux/store';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
+import { randomInt, randomUserName } from '@mui/x-data-grid-generator';
+import capitalizeFirstLetter from '../utils/FormUtils';
+import { useSelector } from 'react-redux';
 
 
 
 function CompanyList() {
+  const currentUser: any = useSelector((state: any) => state.user.currUser);
   const [companiesss,setCompanies] = useState([]);
-  
+  const [companyAdd,setCompanyAdd] = useState(false);
+  const [companyEdit,setCompanyEdit] = useState(false);
+  const [companyDelete,setCompanyDelete] = useState(false);
+  const [companyView,setCompanyView] = useState(false);
+  var permission:any =localStorage.getItem('permissions');
 const getCompanyData =()=>{
   store.dispatch(getCompanies()).then((res: any) => {
-    if (res && res.payload.companies) {
-      //console.log(companies);
+    if (res.payload.status == true) {
       setCompanies(res.payload.companies);
-    } 
+    }else{
+      toast.error(res.payload.message)
+    }
   }); 
 }
 
 
+function addPermission(){
+  console.log(JSON.parse(permission),"roles permission");
+  // var role_id:any = localStorage.getItem('role_id')
+  // const formData={
+  //   role_id:role_id
+  // }
+  // store.dispatch(getRolehasPermissions(formData)).then((res: any) => {
+  //   var allPermission:any = res.payload?.data;
+  
+    var allPermission:any =  JSON.parse(permission);
+    // console.log(res,"permission");
+
+    if(allPermission.length != 0){
+      allPermission.forEach((per:any) => {
+        if(capitalizeFirstLetter(per.flag) == "Companies"){
+          if(per.name == "Add"){
+            setCompanyAdd(true)
+          }else if(per.name == "Edit"){
+            setCompanyEdit(true)
+          }else if(per.name == "Delete"){
+            setCompanyDelete(true)
+          }else if(per.name == "View"){
+            setCompanyView(true)
+          }
+        }
+      });
+    }
+  // }); 
+}
+
   useEffect(() => {
     getCompanyData();
+    addPermission();
   },[]);
 
 const mdTheme = createTheme();
@@ -47,23 +87,23 @@ const mdTheme = createTheme();
 const columns: GridColDef[] = [
   { field: 'id',
    headerName: 'S.No.',
-    width: 60,
+    width: 40,
     renderCell: (index:any) => index.api.getRowIndex(index.row.id) + 1,
   },
   {
     field: 'title',
     headerName: 'Company Name',
-    width: 170,
+    width: 140,
   },
   {
     field: 'email',
     headerName: 'Email',
-    width: 230,
+    width: 220,
   },
   {
     field: 'phone',
     headerName: 'Phone',
-    width: 120,
+    width: 110,
   },
   {
     field: 'website',
@@ -75,13 +115,13 @@ const columns: GridColDef[] = [
    {
     field: 'is_active',
     headerName: 'Status',
-    width: 180,
+    width: 100,
     sortable: false,
     renderCell: (params) => {
       return (
         <>
-         {params.row.is_active == '1' && <a href='#' onClick={()=>{statusUpdateCompany(params.row.id)}} > <span className='badge badge-success'>active</span></a>}
-    {params.row.is_active == '0' &&  <a href='#' onClick={()=>{statusUpdateCompany(params.row.id)}} > <span className='badge badge-danger'>Inactive</span></a>}
+         {params.row.is_active == '1' && <button type="button" className="btn btn-link"  onClick={()=>{statusUpdateCompany(params.row.id)}} ><span className='badge badge-success'>Active</span></button>}
+          {params.row.is_active == '0' &&  <button type="button" className="btn btn-link"  onClick={()=>{statusUpdateCompany(params.row.id)}} ><span className='badge badge-danger'>Inactive</span></button>}
         
         </>
       );
@@ -90,14 +130,14 @@ const columns: GridColDef[] = [
   {
     field: 'action',
     headerName: 'Action',
-    width: 180,
+    width: 220,
     sortable: false,
     renderCell: (params) => {
       return (
         <>
-        <Button  sx={{ minWithd: 40 }}   component={Link} to={'/companies/edit/'+params.row.id} > <EditIcon  /> </Button>
-        <Button  sx={{ minWidth: 40 }}  component={Link} to={'/companies/view/'+params.row.id} > <VisibilityIcon  /> </Button>
-        <Button onClick={()=>{deleteId(params.row.id)}}  sx={{ minWidth: 40 }}   > <DeleteIcon  /> </Button>
+       {companyEdit == true && <Button  sx={{ minWithd: 40 }}   component={Link} to={'/companies/edit/'+params.row.id} > <EditIcon  /> </Button>}
+        {companyView ==true && <Button  sx={{ minWidth: 40 }}  component={Link} to={'/companies/view/'+params.row.id} > <VisibilityIcon  /> </Button>}
+        {companyDelete ==true && <Button onClick={()=>{deleteId(params.row.id)}}  sx={{ minWidth: 40 }}   > <DeleteIcon  /> </Button>}
         <Button  sx={{ minWidth: 40 }}  component={Link} to={'/companies/document/'+params.row.id} > <FileCopyIcon  /> </Button>
         
         </>
@@ -111,12 +151,10 @@ const statusUpdateCompany=(e:any)=>{
   const formData= {
     id : e
   }
-  console.log(e,"formData",formData);
     store.dispatch(statusCompany(formData)).then((res: any) => {
     if(res.payload.status==true){
      toast.success(res.payload.message);
-     setCompanies([]);
-     getCompanyData();
+      getCompanyData();
     }else{
          toast.error(res.payload.message);
     }
@@ -137,9 +175,14 @@ const deleteId=(e:any)=>{
     if (result.isConfirmed) {
       store.dispatch(deleteCompany(e)).then((res: any) => {
         if(res.payload.status==true){
-         toast.success(res.payload.message);
-              setCompanies([]);
-              getCompanyData();
+              setCompanies((prevRows : any) => {
+                const rowToDeleteIndex = randomInt(0, prevRows.length - 1);
+                return [
+                  ...companiesss.slice(0, rowToDeleteIndex),
+                  ...companiesss.slice(rowToDeleteIndex + 1),
+                ];
+              });
+              toast.success(res.payload.message);
         }else{
              toast.error(res.payload.message);
         }
@@ -147,10 +190,6 @@ const deleteId=(e:any)=>{
     }
   })
 }
-
-  /////////////////////////////////////
-
-
 
 
   return (
@@ -180,7 +219,7 @@ const deleteId=(e:any)=>{
                   <Typography component="h2" variant="h6" color="primary" gutterBottom>
                     Companies 
                     </Typography>
-                    <Button variant="contained" component={Link} to="/companies/add">Add</Button>
+                    {companyAdd == true && <Button variant="contained" component={Link} to="/companies/add">Add</Button>}
                 </Box>
                 <Divider />
                 <Box sx={{ height: 400, width: '100%' }}>

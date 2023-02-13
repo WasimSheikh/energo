@@ -24,6 +24,8 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import { store } from '../../redux/store';
 import { updateUser, getUser, getCompanies } from '../../redux/store/reducers/slices/UserSlice';
+import { toast } from 'react-toastify';
+import { ifEmpty } from '../utils/FormUtils';
 
 const mdTheme = createTheme();
 
@@ -87,7 +89,7 @@ function UserEdit() {
     setPermission((event.target as HTMLInputElement).value);
   };
   const isValidData = ():boolean => {
-    const validateFields = ifEmpty( firstName && lastName && phone && address1 && street && city && country && permission && postalCode) && (changePassword==false || ifEmpty(password) );
+    const validateFields = ifEmpty( firstName && lastName && phone && address1 && street && city && email && country && company_id && permission && postalCode) && (changePassword==false || ifEmpty(password) );
     return validateFields;
   };
   
@@ -113,12 +115,11 @@ function UserEdit() {
       change_password:changePassword,
     }     
     store.dispatch(updateUser(formData)).then((res: any) => {
-      console.log(res)
-      if(res.payload.status == true){
-        setErrorMessages('');
+      if (res.payload.status == true) {
+        toast.success(res.payload?.message)
         navigate("/users");
-      }else{
-        setErrorMessages(res.payload?.message);
+      } else {
+        toast.error(res.payload?.message)
       }
     });                                     
   };
@@ -133,10 +134,7 @@ function UserEdit() {
     <div className="error">{errorMessages}</div>
   );
 
-  const ifEmpty= (val: string): boolean => {
-
-    return (val !== undefined && val.length > 0);// return true;
-}
+  
 
 const getError = (msg: string): JSX.Element => {
   return (
@@ -167,7 +165,7 @@ const getError = (msg: string): JSX.Element => {
               setPermission(res.payload.user?.permission);
              // setPassword(res.payload.user?.password);
               setGlobalUser(res.payload.user?.globalUser);
-              console.log(res.payload.user,44444,res.payload.user.is_global)
+              
               if(res.payload.user.is_global == '1'){
                 (document.getElementById('checkBox')as any).checked = true;
                }else{
@@ -338,7 +336,7 @@ const getError = (msg: string): JSX.Element => {
                                 }));
                               }}
                             />
-                               {dirtyFields["address"] && getError("address is requried")}
+                               {dirtyFields["address"] && getError("Address is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                         <TextField
@@ -357,7 +355,7 @@ const getError = (msg: string): JSX.Element => {
                                 }));
                               }}
                             />
-                               {dirtyFields["street"] && getError("street is requried")}
+                               {dirtyFields["street"] && getError("Street is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                         <TextField
@@ -376,7 +374,7 @@ const getError = (msg: string): JSX.Element => {
                                 }));
                               }}
                             />
-                               {dirtyFields["city"] && getError("city is requried")}
+                               {dirtyFields["city"] && getError("City is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                       <TextField
@@ -395,7 +393,7 @@ const getError = (msg: string): JSX.Element => {
                               }));
                             }}
                           />
-                             {dirtyFields["postalCode"] && getError("postalCode is requried")}
+                             {dirtyFields["postalCode"] && getError("PostalCode is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                       <TextField
@@ -443,7 +441,11 @@ const getError = (msg: string): JSX.Element => {
                               }));
                             }}
                           />
-                             {dirtyFields["email"] && getError("email is requried")}
+                         
+                          {dirtyFields["email"] && getError("Email is requried")}
+                          
+                          
+                          <Grid item xs={12} >
                           <FormControlLabel
                             control={<Checkbox  
                             onChange={(e) => {
@@ -454,6 +456,8 @@ const getError = (msg: string): JSX.Element => {
                             label="Do you want to change password ? "
                             // sx={{ : { fontSize: 28 } }}
                         />
+                        </Grid>
+                       
                      {boxValue &&  <TextField
                         margin="normal"
                         required

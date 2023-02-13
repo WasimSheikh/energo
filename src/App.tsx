@@ -1,6 +1,6 @@
 
 import './App.css';
-import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useNavigate, HashRouter, Navigate } from "react-router-dom";
 import Dashboard from "./components/dashboard/Dashboard";
 import Login from "./components/login/Login";
 import Compaines from './components/companies/Listing';
@@ -38,15 +38,20 @@ import DocumentList from './components/companies/Documents';
 import CityList from './components/cities/Listing';
 import CityAdd from './components/cities/Add';
 import EditCity from './components/cities/Edit';
-import StateAdd from './components/state/StateAdd';
-import StateEdit from './components/state/StateEdit';
-import StatesList from './components/state/StateListing';
+import StateAdd from './components/states/StateAdd';
+import StateEdit from './components/states/StateEdit';
+import StatesList from './components/states/StateListing';
+import {useIdleTimer} from 'react-idle-timer';
+import { Provider } from 'react-redux';
+import { store } from './redux/store';
+
 
 function App() {
   const navigate = useNavigate();
   const [login, setIsLogin] = React.useState(false);
   const [onload,setOnload] = React.useState(false);
   const [documenets,setDocuments] = React.useState([]);
+  
 
   function IsLoggedIn(){
     let access_token = localStorage.getItem("access_token");
@@ -55,12 +60,11 @@ function App() {
 
   function shareDataF(data:any){
     setDocuments(data)
-    console.log("app.tsx",documenets)
   }
 
-  useEffect(() => {
+  useEffect(() => { 
     var token =  localStorage.getItem('access_token')
-     if(onload==false){
+     if(onload==false && login== false){
         setIsLogin(IsLoggedIn());
         setOnload(true);
         if(token ==null){
@@ -70,7 +74,9 @@ function App() {
   }); 
 
   return (
+    <Provider store={store}>
      <>
+
       <Routes>
           <Route index element={ <Login />} />
           {login== true &&
@@ -99,8 +105,6 @@ function App() {
           <Route path="countries/add" element={<CountiesAdd/>} />
           <Route path="countries/edit/:countriesId" element={<CountiesEdit />} />
           <Route path="countries/view/:countriesId" element={<CountriesView/>} />
-          {/* <Route path="documents" element={<Documents />} /> */}
-          {/* <Route path="documents/share" element={<Share />} /> */}
           <Route path="notifications" element={<Notifications />} /> 
           <Route path="Profile" element={<ProfileEdit />} /> 
           <Route path="cities" element={<CityList />} /> 
@@ -108,13 +112,15 @@ function App() {
           <Route path="cities/edit/:cityId" element={<EditCity />} />
           <Route path="states" element={<StatesList />} /> 
           <Route path="states/add" element={<StateAdd/>} />
-          <Route path="states/edit/:cityId" element={<StateEdit />} />
+          <Route path="states/edit/:stateId" element={<StateEdit />} />
           </>
         }
-        
+     
       </Routes>
+
       <ToastContainer/>
       </>
+      </Provider>
   );
 }
 export default App;

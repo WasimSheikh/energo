@@ -15,33 +15,64 @@ import { Link } from "react-router-dom";
 import EditIcon from '@mui/icons-material/Edit';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { deleteCountry, getCountries, getPermissions, StatusCountry } from '../../redux/store/reducers/slices/UserSlice';
+import { deleteCountry, getCountries, getPermissions, getRolehasPermissions, StatusCountry } from '../../redux/store/reducers/slices/UserSlice';
 import React, { useEffect , useState } from 'react';
 import { store } from '../../redux/store';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
-
+import { randomInt, randomUserName } from '@mui/x-data-grid-generator';
+import { useSelector } from 'react-redux';
 
 
 export default function ContriesList() {
+  const currentUser: any = useSelector((state: any) => state.user.currUser);
   const [countries,setCountries] = useState([]);
-
+  const [countriesAdd,setCountriesAdd] = useState(false);
+  const [countriesEdit,setCountriesEdit] = useState(false);
+  const [countriesDelete,setCountriesDelete] = useState(false);
+  const [countriesView,setCountriesView] = useState(false);
+  var permission:any =localStorage.getItem('permissions');
+  
 function getCountrieData(){
-  if(countries.length == 0){
     store.dispatch(getCountries()).then((res: any) => {
-      console.log(res)
       if (res.payload.status == true) {
         setCountries(res.payload.countries);
       }else{
         toast.error(res.payload.message)
       }
     });
-  }
+  
+}
+
+function addPermission(){
+  // var role_id:any = localStorage.getItem('role_id')
+  // const formData={
+  //   role_id:role_id
+  // }
+  // store.dispatch(getRolehasPermissions(formData)).then((res: any) => {
+  //     var allPermission:any = res.payload.data
+
+    var allPermission:any = JSON.parse(permission);
+      if(allPermission.length != 0){
+      allPermission.forEach((per:any) => {
+        if(per.flag == "Countries"){
+          if(per.name == "Add"){
+            setCountriesAdd(true)
+          }else if(per.name == "Edit"){
+            setCountriesEdit(true)
+          }else if(per.name == "Delete"){
+            setCountriesDelete(true)
+          }
+        }
+      });
+  //});
+    } 
 }
 
   useEffect(() => {
     getCountrieData();
-  });
+    addPermission();
+  },[]);
 
   const mdTheme = createTheme();
 const columns: GridColDef[] = [
@@ -64,9 +95,8 @@ const columns: GridColDef[] = [
     renderCell: (params) => {
       return (
         <>
-         {params.row.is_active == '1' && <div onClick={()=>{statusUpdateCountrie(params.row.id)}} style={{cursor: 'pointer'}}> <span className='badge badge-success'>active</span></div>}
-    {params.row.is_active == '0' &&  <div onClick={()=>{statusUpdateCountrie(params.row.id)}} style={{cursor: 'pointer'}}> <span className='badge badge-danger'>Inactive</span></div>}
-        
+        {params.row.is_active == '1' && <button type="button" className="btn btn-link"  onClick={()=>{statusUpdateCountrie(params.row.id)}} ><span className='badge badge-success'>Active</span></button>}
+          {params.row.is_active == '0' &&  <button type="button" className="btn btn-link"  onClick={()=>{statusUpdateCountrie(params.row.id)}} ><span className='badge badge-danger'>Inactive</span></button>}
         </>
       );
    }
@@ -80,8 +110,8 @@ const columns: GridColDef[] = [
     renderCell: (params) => {
       return (
         <>
-        <Button  sx={{ minWidth: 40 }}  component={Link} to={'/countries/edit/'+params.row.id} > <EditIcon  /> </Button>
-        <Button  sx={{ minWidth: 40 }}   onClick={()=>{deleteCountryById(params.row.id)}}> <DeleteIcon  /> </Button>
+        {countriesEdit == true && <Button  sx={{ minWidth: 40 }}  component={Link} to={'/countries/edit/'+params.row.id} > <EditIcon  /> </Button>}
+        {countriesDelete == true && <Button  sx={{ minWidth: 40 }}   onClick={()=>{deleteCountryById(params.row.id)}}> <DeleteIcon  /> </Button>}
         </>
       );
    }
@@ -93,9 +123,8 @@ const statusUpdateCountrie=(e:any)=>{
   }
     store.dispatch(StatusCountry(formData)).then((res: any) => {
     if(res.payload.status==true){
-     toast.success(res.payload.message);
-     setCountries([]);
-     getCountrieData();
+      toast.success(res.payload.message);
+      getCountrieData();
     }else{
          toast.error(res.payload.message);
     }
@@ -118,9 +147,16 @@ const formData ={
     if (result.isConfirmed) {
       store.dispatch(deleteCountry(formData)).then((res: any) => {
         if(res.payload.status==true){
+          setCountries((prevRows : any) => {
+            const rowToDeleteIndex = randomInt(0, prevRows.length - 1);
+            return [
+              ...countries.slice(0, rowToDeleteIndex),
+              ...countries.slice(rowToDeleteIndex + 1),
+            ];
+          });
          toast.success(res.payload.message);
-         setCountries([]);
-         getCountrieData();
+        //  setCountries([]);
+        //  getCountrieData();
         }else{
              toast.error(res.payload.message);
         }
@@ -156,7 +192,7 @@ const formData ={
                   <Typography component="h2" variant="h6" color="primary" gutterBottom>
                   Countries 
                   </Typography>
-                  <Button variant="contained" component={Link} to="/countries/add">Add</Button>
+                  {countriesAdd == true && <Button variant="contained" component={Link} to="/countries/add">Add</Button>}
                 </Box>
                 <Divider />
                 <Box sx={{ height: 400, width: '100%' }}>

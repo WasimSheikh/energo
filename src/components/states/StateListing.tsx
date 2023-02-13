@@ -15,32 +15,67 @@ import { Link } from "react-router-dom";
 import EditIcon from '@mui/icons-material/Edit';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { deleteCity, deleteState, getStates,statusCity, statusState } from '../../redux/store/reducers/slices/UserSlice';
+import { deleteCity, deleteState, getRolehasPermissions, getStates,statusCity, statusState } from '../../redux/store/reducers/slices/UserSlice';
 import React, { useEffect , useState } from 'react';
 import { store } from '../../redux/store';
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
+import { randomInt, randomUserName } from '@mui/x-data-grid-generator';
+import { useSelector } from 'react-redux';
 
 
 
 export default function StatesList() {
+  const currentUser: any = useSelector((state: any) => state.user.currUser);
   const [cities,setCities] = useState([]);
+  const [statesAdd,setStatesAdd] = useState(false);
+  const [statesEdit,setStatesEdit] = useState(false);
+  const [statesDelete,setStatesDelete] = useState(false);
+  var permission:any =localStorage.getItem('permissions');
+
 function getStateList(){
     store.dispatch(getStates()).then((res: any) => {
-      setCities(res.payload?.states);
-        console.log(res,"res")
-      }); 
+      if (res.payload.status == true) {
+        setCities(res.payload?.states);
+      }else{
+        toast.error(res.payload.message)
+      } 
+    }); 
 }
 
+function addPermission(){
+  // var role_id:any = localStorage.getItem('role_id')
+  // const formData={
+  //   role_id:role_id
+  // }
+  // store.dispatch(getRolehasPermissions(formData)).then((res: any) => {
+    var allPermission:any =  JSON.parse(permission);
+      if(allPermission.length != 0){
+      allPermission.forEach((per:any) => {
+        if(per.flag == "States"){
+          if(per.name == "Add"){
+            setStatesAdd(true)
+          }else if(per.name == "Edit"){
+            setStatesEdit(true)
+          }else if(per.name == "Delete"){
+            setStatesDelete(true)
+          }
+        }
+      });
+    }
+ // }); 
+ 
+}
 
   useEffect(() => {
     getStateList();
+    addPermission();
   },[]);
 
   const mdTheme = createTheme();
   const columns: GridColDef[] = [
     {
-      field: 'id',
+      field: 'S.No',
       headerName: 'S.No.',
       width: 100,
       renderCell: (index:any) => index.api.getRowIndex(index.row.id) + 1,
@@ -68,9 +103,8 @@ function getStateList(){
         renderCell: (params) => {
           return (
             <>
-             {params.row.is_active == '1' && <a href='#' onClick={()=>{statusUpdateCity(params.row.id)}} > <span className='badge badge-success'>active</span></a>}
-        {params.row.is_active == '0' &&  <a href='#' onClick={()=>{statusUpdateCity(params.row.id)}} > <span className='badge badge-danger'>Inactive</span></a>}
-            
+        {params.row.is_active == '1' && <button type="button" className="btn btn-link"  onClick={()=>{statusUpdateCity(params.row.id)}} ><span className='badge badge-success'>Active</span></button>}
+          {params.row.is_active == '0' &&  <button type="button" className="btn btn-link"  onClick={()=>{statusUpdateCity(params.row.id)}} ><span className='badge badge-danger'>Inactive</span></button>}
             </>
           );
        }
@@ -83,8 +117,8 @@ function getStateList(){
       renderCell: (params) => {
         return (
           <>
-          <Button  sx={{ minWidth: 40 }}  component={Link} to={'edit/'+params.row.id} > <EditIcon  /> </Button>
-          <Button  sx={{ minWidth: 40 }}   onClick={()=>{deleteStateById(params.row.id)}}> <DeleteIcon  /> </Button>
+          {statesEdit == true && <Button  sx={{ minWidth: 40 }}  component={Link} to={'edit/'+params.row.id} > <EditIcon  /> </Button>}
+          {statesDelete == true && <Button  sx={{ minWidth: 40 }}   onClick={()=>{deleteStateById(params.row.id)}}> <DeleteIcon  /> </Button>}
           </>
         );
      }
@@ -107,11 +141,16 @@ function getStateList(){
           if (result.isConfirmed) {
             store.dispatch(deleteState(formData)).then((res: any) => {
               if(res.payload.status==true){
+                setCities((prevRows : any) => {
+                  const rowToDeleteIndex = randomInt(0, prevRows.length - 1);
+                  return [
+                    ...cities.slice(0, rowToDeleteIndex),
+                    ...cities.slice(rowToDeleteIndex + 1),
+                  ];
+                });
                toast.success(res.payload.message);
-               setCities([]);
-               getStateList();
               }else{
-                   toast.error(res.payload.message);
+                  toast.error(res.payload.message);
               }
             }); 
           }
@@ -124,9 +163,8 @@ function getStateList(){
         }
           store.dispatch(statusState(formData)).then((res: any) => {
           if(res.payload.status==true){
-           toast.success(res.payload.message);
-           setCities([]);
-           getStateList();
+           toast.success(res.payload.message);  
+            getStateList();
           }else{
                toast.error(res.payload.message);
           }
@@ -160,7 +198,7 @@ function getStateList(){
                   <Typography component="h2" variant="h6" color="primary" gutterBottom>
                     States 
                   </Typography>
-                  <Button variant="contained" component={Link} to="/states/add">Add</Button>
+                  {statesAdd == true && <Button variant="contained" component={Link} to="/states/add">Add</Button>}
                 </Box>
                 <Divider />
                 <Box sx={{ height: 400, width: '100%' }}>

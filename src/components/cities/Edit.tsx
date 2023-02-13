@@ -31,6 +31,7 @@ export default function  EditCity() {
   const [country_id,setCountry] = useState('');
   const [setSate,setState] = useState('');
   const [title,setTitle] = useState('');
+  const [cityID,setCityID] = useState('');
   const [errorMessages, setErrorMessages] = useState('');
   const [onload,setOnload] = useState(false);
   const [countries,setCountries] = useState([]);
@@ -61,14 +62,12 @@ const getError = (msg: string): JSX.Element => {
   );
 };
 const isValidData = ():boolean => {
-  console.log(country_id,title,"kkkkkkkkk");
   const validateFields = ifEmpty( title );
   
   return validateFields;
 };
 const selectCuntry = (event: SelectChangeEvent) => {
     setCountry(event.target.value);
-    console.log(event.target.value,"oooooooo")
     getCountryStatesByCountry(event.target.value);
   };
 const selectState = (event:SelectChangeEvent) => {
@@ -78,19 +77,19 @@ const selectState = (event:SelectChangeEvent) => {
 function getCountrieData(){
     if(countries.length == 0){
       store.dispatch(getCountries()).then((res: any) => {
-        console.log(res,"getCountrieData()")
+
           setCountries(res.payload.countries);
           
       });
     }
   }
 function getCountryStatesByCountry(e:any){
-    console.log(e,"event.target.value")
+    
     const formDate={
         country_id:e
     }
       store.dispatch(getCountryStates(formDate)).then((res: any) => {
-        console.log(res,"res state")
+        
         setStateId(res.payload.states);
       });
   }
@@ -103,9 +102,9 @@ function getCountryStatesByCountry(e:any){
       country_id:country_id,
       name:title,
       state_id:setSate,
-      city_id:params.cityId
+      city_id:cityID
     }
-    console.log(formData,'formData')
+  
     store.dispatch(updateCity(formData)).then((res: any) => {
       if (res.payload.status == true) {
         toast.success(res.payload.message)
@@ -121,11 +120,12 @@ const formDate={
     city_id:params.cityId
 }
     store.dispatch(getCity(formDate)).then((res: any) => {
-        console.log(res.payload.city,"getData")
+       
         setCountry(res.payload.city.country.id)
         setTitle(res.payload.city.name)
         getCountryStatesByCountry(res.payload.city.country.id)
         setState(res.payload.city.state_id)
+        setCityID(res.payload.city.id)
     });
 }
 
@@ -209,7 +209,7 @@ const formDate={
                             id="title"
                             required
                             name="title"
-                            label="Title"
+                            label="City"
                             fullWidth
                             value={title}
                             onChange={(e) => {
@@ -220,7 +220,7 @@ const formDate={
                               }));
                             }}
                           />
-                            {dirtyFields["title"] && getError("Title is requried")}
+                            {dirtyFields["title"] && getError("City is required")}
                       
                       </Grid>
                       {/* </Grid> */}

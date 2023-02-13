@@ -19,7 +19,6 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { store } from '../../redux/store';
 import { shareDocuments } from '../../redux/store/reducers/slices/UserSlice';
 import { useEffect, useState } from 'react';
-import { sendFolder } from '../../app/_services/message.service';
 import { toast } from 'react-toastify';
 import { resolve } from 'path';
 
@@ -44,7 +43,7 @@ var foldersArray:any =[]
       foldersArray.push(element.id)
     });
     var companyId = documents[0].company_id
-    console.log(companyId,"companyId")
+   
     e.preventDefault();
     const formData = {
       name: name,
@@ -53,9 +52,8 @@ var foldersArray:any =[]
       folder_ids: foldersArray,
       company_id:params.companyId
     }
-    console.log(formData,"formData")
     store.dispatch(shareDocuments(formData)).then((res: any) => {
-      console.log(res,"55555")
+     
       if (res.payload.status == true) {
         setErrorMessages('');
         toast.success(res.payload?.message)

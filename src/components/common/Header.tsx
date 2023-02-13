@@ -13,8 +13,7 @@ import { Link , useParams ,useNavigate} from "react-router-dom";
 import { Avatar, Button, Menu, MenuItem } from "@mui/material";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import '../common/common.css'
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import PersonIcon from '@mui/icons-material/Person';
 
 
 function capitalizeFirstLetter(string:string) {
@@ -27,11 +26,8 @@ const Header = (): JSX.Element => {
   interface AppBarProps extends MuiAppBarProps {
     open?: boolean;
   }
-  const [age, setAge] = React.useState('');
+  
   const navigate = useNavigate();
-  const handleChange = (event: SelectChangeEvent) => {
-    setAge(event.target.value);
-  };
   const [open, setOpen] = React.useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
@@ -68,6 +64,8 @@ const Header = (): JSX.Element => {
   const Logout = () => {
     localStorage.removeItem("access_token")
     localStorage.removeItem("user_id")
+    localStorage.removeItem("role_id")
+    localStorage.removeItem("permissions")
     toast.success("Logout successfully")
     navigate('/')
   }
@@ -110,25 +108,14 @@ const Header = (): JSX.Element => {
                 <AccountCircleIcon />
               </Badge>
             </IconButton> */}
-            <div
+              <Button className="btn"
                 id="basic-button"
                 aria-controls={open1 ? 'basic-menu' : undefined}
                 aria-haspopup="true"
                 aria-expanded={open1 ? 'true' : undefined}
                 onClick={profileClick}>
-              <IconButton color="inherit">
-              {/* <Badge badgeContent={4} color="secondary"> */}
-                <AccountCircleIcon />
-              {/* </Badge> */}
-            </IconButton>
-                {/* <Avatar src="/broken-image.jpg" /> */}
-              </div>
-              <div>
-              {/* <Avatar src="/broken-image.jpg" /> */}
-              {/* <Avatar>
-              <AccountCircleIcon />
-                     </Avatar> */}
-              </div>
+                <Avatar sx={{ bgcolor: "#bdbdbd" }} ><PersonIcon/></Avatar>
+              </Button>
             <Menu
                 id="basic-menu"
                 anchorEl={anchorEl}
@@ -144,22 +131,7 @@ const Header = (): JSX.Element => {
                   </MenuItem>
 
               </Menu>
-
-            {/* <FormControl sx={{ m: 1, minWidth: 20 }} size="small">
-      <Select
-        labelId="demo-select-small"
-        id="demo-select-small"
-        value={age}
-        label="Age"
-        onChange={handleChange}
-      >
-
-        <MenuItem component={Link} to="/ProfileEdit">Profile</MenuItem>
-        <MenuItem component={Link} to="/">Logout</MenuItem>
-      </Select>
-    </FormControl> */}
           </Toolbar>
-          <ToastContainer/>
         </AppBar>
     </>;
   };

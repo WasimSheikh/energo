@@ -13,7 +13,7 @@ import Header from '../common/Header';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { getCountries, createState, getState } from '../../redux/store/reducers/slices/UserSlice';
+import { getCountries, createState, getState, updateState } from '../../redux/store/reducers/slices/UserSlice';
 import { store } from '../../redux/store';
 import React, { useState ,useEffect } from 'react';
 import InputLabel from '@mui/material/InputLabel';
@@ -29,6 +29,7 @@ export default function  StateAdd() {
   const params = useParams();
   const navigate = useNavigate();
   const [country_id,setCountry] = useState('');
+  const [StateID,setStateID] = useState('');
   const [setSate,setState] = useState('');
   const [title,setTitle] = useState('');
   const [errorMessages, setErrorMessages] = useState('');
@@ -66,7 +67,7 @@ const isValidData = ():boolean => {
 };
 const selectCuntry = (event: SelectChangeEvent) => {
     setCountry(event.target.value);
-    console.log(event.target.value,"oooooooo")
+    
     getCountryStatesByCountry(event.target.value);
   };
 const selectState = (event:SelectChangeEvent) => {
@@ -76,29 +77,28 @@ const selectState = (event:SelectChangeEvent) => {
 function getCountrieData(){
     if(countries.length == 0){
       store.dispatch(getCountries()).then((res: any) => {
-        console.log(res,"getCountrieData()")
+       
           setCountries(res.payload.countries);
           
       });
     }
   }
 function getCountryStatesByCountry(e:any){
-    console.log(e,"event.target.value")
+   
     const formDate={
         country_id:e
     }
   }
-
-
   const handleSubmit = (e:any) => {
     e.preventDefault();
     if(isValidData()){
     const formData = {
+      state_id:StateID,
       country_id:country_id,
       name:title,
     }
-    console.log(formData,'formData')
-    store.dispatch(createState(formData)).then((res: any) => {
+    
+    store.dispatch(updateState(formData)).then((res: any) => {
       if (res.payload.status == true) {
         toast.success(res.payload.message)
         navigate("/states");
@@ -111,12 +111,13 @@ function getCountryStatesByCountry(e:any){
 
   function getStatesById(){
   const formData={
-    state_id:params.cityId
+    state_id:params.stateId
   }
     store.dispatch(getState(formData)).then((res: any) => {
       setCountry(res.payload.state.country_id)
       setTitle(res.payload.state.name)
-      console.log(res,'response')
+      setStateID(res.payload.state.id)
+      
     });  
   }
 
@@ -180,7 +181,7 @@ function getCountryStatesByCountry(e:any){
                             id="title"
                             required
                             name="title"
-                            label="Title"
+                            label="State"
                             fullWidth
                             value={title}
                             onChange={(e) => {
@@ -191,7 +192,7 @@ function getCountryStatesByCountry(e:any){
                               }));
                             }}
                           />
-                            {dirtyFields["title"] && getError("Title is requried")}
+                            {dirtyFields["title"] && getError("State is required")}
                       
                       </Grid>
                       </Grid>

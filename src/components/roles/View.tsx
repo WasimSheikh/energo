@@ -13,10 +13,11 @@ import Divider from '@mui/material/Divider';
 import Button from '@mui/material/Button';
 import { Link ,useParams } from "react-router-dom";
 import React, { useEffect, useState } from 'react';
-import { createRole, getPermissionParentChlid, getRole, createRolehasPermission } from '../../redux/store/reducers/slices/UserSlice';
+import { createRole, getPermissionParentChlid, getRole, createRolehasPermission, getRolehasPermissions } from '../../redux/store/reducers/slices/UserSlice';
 import { store } from '../../redux/store';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
+import { toast } from 'react-toastify';
 
 function CompanyView() {
   const mdTheme = createTheme();
@@ -28,10 +29,10 @@ function CompanyView() {
   const [permissions,setPermissions] = useState([]);
   const [onload,setOnload] = useState(false);
   const [errorMessages, setErrorMessages] = useState('');
+  var permissionRole:any =[];
 
-  useEffect(() => {
-    if(onload==false){
-      const roleId = window.location.href.split('/')[5]
+  function getRolesOnFunction(){
+    const roleId = window.location.href.split('/')[5]
         const formData = {id:roleId};  
         store.dispatch(getRole(formData)).then((res: any) => {
           setOnload(true);
@@ -43,24 +44,48 @@ function CompanyView() {
         store.dispatch(getPermissionParentChlid()).then((res: any) => {
           if (res && res.payload?.permissionparent) {
              setPermissions(res.payload?.permissionparent);
+             
           } 
         }); 
+  }
+
+
+  function addPermission(){
+    setTimeout(() => {
+      const roleId = window.location.href.split('/')[5]
+      const formData={
+        role_id:roleId
       }
-  });
+      store.dispatch(getRolehasPermissions(formData)).then((res: any) => {
+          var allPermission = res.payload.data
+          allPermission.forEach((e:any) => {
+            
+            if(e){
+              var data = (document.getElementById(e.id+'child')as any).checked = true;
+               givePermissionToRole(e.id);
+            }
+          });
+      
+      }); 
+    }, 2000);
+  }
+  addPermission();
+
+  useEffect(() => {
+    getRolesOnFunction();
+  },[]);
 
 
-  var permissionRole:any =[];
-  const givePermissionToRole = (value:any) => { 
+
+  function givePermissionToRole(value:any){ 
    if (!permissionRole.includes(value)){
-    //  if((document.getElementById(value+'child')as any).checked == true){
+     if((document.getElementById(value+'child')as any).checked == true){
         permissionRole.push(value);
-        console.log(permissionRole,"permissionRole")
-    //  }
+     }
   }else{
      permissionRole = permissionRole.filter((res:any)=>{
        return res != value
      })
-     console.log(permissionRole,"permissionRole else")
    }
  }; 
 
@@ -68,13 +93,17 @@ function CompanyView() {
     e.preventDefault();
     const formData:any = {
       role_id:id,
-      permissions_ids:permissionRole,
+      permissions:permissionRole,
     }
     store.dispatch(createRolehasPermission(formData)).then((res: any) => {
       if (res.payload.status == true) {
-        setErrorMessages('');
+        toast.success(res.payload.message)
+        setPermissions([]);
+        getRolesOnFunction();
+        addPermission()
       } else {
         setErrorMessages(res.payload?.message);
+        toast.error(res.payload.message)
       }
     });           
   };
@@ -126,11 +155,11 @@ function CompanyView() {
                           </Grid>
                             </Grid>
                             {permission.chlid.map((value:any,i:any) => (
-                              <Grid  sx={{ ml: 5 }} key ={value.id}>
+                              <Grid  sx={{ ml: 5 }} key ={i}>
                               <FormControlLabel
                                   control={
-                                    // <input type="checkbox"  id={i + 'child'}/>
-                                  <Checkbox name={value.name} value={value.id} id={i + 'child'} />
+                                    <input type="checkbox"  id={value.id + 'child'} style={{margin:'7px'}} className="rolecheckbox" />
+                                  // <Checkbox name={value.name}  value={value.id} id={value.id + 'child'} />
                                 }
 
                                   label={value.name}
@@ -138,6 +167,7 @@ function CompanyView() {
                                     givePermissionToRole(value.id);
                                   }} 
                                   sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
+                                  style={{margin:'7px !important'}}
                               />
                               </Grid>
                             ))} 

@@ -9,10 +9,32 @@ import Typography from '@mui/material/Typography';
 import Navigation from '../common/Navigation';
 import Footer from '../common/Footer';
 import Header from '../common/Header';
-
+import { getRolehasPermissions } from '../../redux/store/reducers/slices/UserSlice';
+import { store } from '../../app/store';
+import { useEffect, useState } from 'react';
 
 const mdTheme = createTheme();
+
 function DashboardContent() {
+  const [onload,setOnload] = useState(false);
+  
+  useEffect(() => {
+    console.log('remove permision');
+    localStorage.removeItem('permissions');
+    if(onload==false){
+      setOnload(true);
+      var role_id:any = localStorage.getItem('role_id')
+      const roles = {
+        role_id:role_id,
+      } 
+      store.dispatch(getRolehasPermissions(roles)).then((res: any) => {
+        localStorage.setItem("permissions", JSON.stringify(res.payload.data));
+        console.log("add permission");
+      }); 
+    }
+  },[]);
+
+  
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>

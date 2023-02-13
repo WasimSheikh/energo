@@ -62,7 +62,7 @@ const isValidData = ():boolean => {
       title:name,
     }
     store.dispatch(createCountry(formData)).then((res: any) => {
-      console.log(res,"ttttt")
+     
       if (res.payload.status == true) {
         toast.success(res.payload.message)
         navigate("/countries");
@@ -72,14 +72,13 @@ const isValidData = ():boolean => {
     });           
   };
   }
-  console.log(params.countriesId,"params.countriesId")
+  
   useEffect(() => {
     if(params.countriesId != null){
       const formData ={
         country_id:params.countriesId
       }
       store.dispatch(getCountry(formData)).then((res: any) => {
-        console.log(res)
         if (res.payload.status == 'true') {
           setCountry(res.payload.country);
         }else{

@@ -24,6 +24,7 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import { store } from '../../redux/store';
 import { updateUserProfile, getUser, getCompanies } from '../../redux/store/reducers/slices/UserSlice';
+import { toast } from 'react-toastify';
 
 const mdTheme = createTheme();
 
@@ -100,9 +101,11 @@ function EditProfile() {
     store.dispatch(updateUserProfile(formData)).then((res: any) => {
       if(res.payload.status == true){
         setErrorMessages('');
-        navigate("/EditProfile");
+        toast.success(res.payload?.message)
+        navigate("/profile");
       }else{
-        setErrorMessages(res.payload?.message);
+        toast.error(res.payload?.message)
+        
       }
     });                                     
   };

@@ -14,7 +14,7 @@ import Button from '@mui/material/Button';
 import { Link,useNavigate } from "react-router-dom";
 import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 import { store } from '../../redux/store';
-import { deleteUser,getUsers, statusUpdate } from '../../redux/store/reducers/slices/UserSlice';
+import { deleteUser,getRolehasPermissions,getUsers, statusUpdate } from '../../redux/store/reducers/slices/UserSlice';
 import React, { useEffect , useState } from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -22,22 +22,52 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import Swal from 'sweetalert2';
 // import { Link , useParams ,useNavigate} from "react-router-dom";
 import { toast } from 'react-toastify';
-
-
-
-
-
+import { randomInt, randomUserName } from '@mui/x-data-grid-generator';
+import capitalizeFirstLetter from '../utils/FormUtils';
+import { useSelector } from 'react-redux';
 
 function UserList() {
-
+  const currentUser: any = useSelector((state: any) => state.user.currUser);
   const [users,setUsers] = useState([]);
-
+  const [usersAdd,setUsersAdd] = useState(false);
+  const [usersEdit,setUsersEdit] = useState(false);
+  const [usersDelete,setUsersDelete] = useState(false);
+  const [usersView,setUsersView] = useState(false);
+  var permission:any =localStorage.getItem('permissions');
   const userList = ()=>{
     store.dispatch(getUsers()).then((res: any) => {
       if (res && res.payload.users) {
         setUsers(res.payload.users);
+      }else{
+        toast.error(res.payload.message);
       } 
     }); 
+  }
+
+  function addPermission(){
+    // var role_id:any = localStorage.getItem('role_id')
+    // const formData={
+    //   role_id:role_id
+    // }
+    // store.dispatch(getRolehasPermissions(formData)).then((res: any) => {
+      var allPermission:any = JSON.parse(permission);
+      // var allPermission:any = currentUser.permission;
+      if(allPermission.length != 0){
+        allPermission.forEach((per:any) => {
+          if(capitalizeFirstLetter(per.flag) == "Users"){
+            if(per.name == "Add"){
+              setUsersAdd(true)
+            }else if(per.name == "Edit"){
+              setUsersEdit(true)
+            }else if(per.name == "Delete"){
+              setUsersDelete(true)
+            }else if(per.name == "View"){
+              setUsersView(true)
+            }
+          }
+        });
+      }
+    // }); 
   }
 
   useEffect(() => {
@@ -45,6 +75,10 @@ function UserList() {
       userList();
     }
   },[]);
+
+  useEffect(() => {
+    addPermission();
+  });
 
   
 // aad delete function inside to main component function 
@@ -64,11 +98,18 @@ const deleteId=(e:any)=>{
   }).then((result) => {
     if (result.isConfirmed) {
       store.dispatch(deleteUser(e)).then((res: any) => {
-        console.log(res.payload.message,"result");
+        
         if(res.payload.status == true){
+          setUsers((prevRows : any) => {
+            const rowToDeleteIndex = randomInt(0, prevRows.length - 1);
+            return [
+              ...users.slice(0, rowToDeleteIndex),
+              ...users.slice(rowToDeleteIndex + 1),
+            ];
+          });
           toast.success(res.payload.message)
-          setUsers([]);
-          userList();
+          // setUsers([]);
+          // userList();
         }else{
           toast.error(res.payload.message)
         }
@@ -117,8 +158,8 @@ const columns: GridColDef[] = [
     renderCell: (params) => {
       return (
         <>
-            {params.row.is_active == '1' && <a href='#'  onClick={()=>{statusUpdateUser(params.row.id)}}  > <span className='badge badge-success'>active</span></a>}
-    {params.row.is_active == '0' &&  <a href='#'  onClick={()=>{statusUpdateUser(params.row.id)}}  > <span className='badge badge-danger'>Inactive</span></a>}
+          {params.row.is_active == '1' && <button type="button" className="btn btn-link"  onClick={()=>{statusUpdateUser(params.row.id)}} ><span className='badge badge-success'>Active</span></button>}
+          {params.row.is_active == '0' &&  <button type="button" className="btn btn-link"  onClick={()=>{statusUpdateUser(params.row.id)}} ><span className='badge badge-danger'>Inactive</span></button>}
     </>
       );
    }
@@ -131,9 +172,9 @@ const columns: GridColDef[] = [
     renderCell: (params) => {
     return (
         <>
-          <Button  sx={{ minWidth: 40 }}  component={Link}  to={'/users/edit/'+params.row.id}  > <EditIcon  /> </Button>
-          <Button  sx={{ minWidth: 40 }}   component={Link} to={'/users/view/'+params.row.id}  > <VisibilityIcon  /> </Button>
-                <Button onClick={()=>{deleteId(params.row.id)}}  sx={{ minWidth: 40 }}   > <DeleteIcon  /> </Button>
+          { usersEdit == true && <Button  sx={{ minWidth: 40 }}  component={Link}  to={'/users/edit/'+params.row.id}  > <EditIcon  /> </Button>}
+          { usersDelete == true && <Button  sx={{ minWidth: 40 }}   component={Link} to={'/users/view/'+params.row.id}  > <VisibilityIcon  /> </Button>}
+          { usersView == true && <Button onClick={()=>{deleteId(params.row.id)}}  sx={{ minWidth: 40 }}   > <DeleteIcon  /> </Button>}
 
         </>
       );
@@ -145,11 +186,10 @@ const statusUpdateUser=(e:any)=>{
   const formData= {
     id : e
   }
-  console.log(e,"formData",formData);
+  
     store.dispatch(statusUpdate(formData)).then((res: any) => {
     if(res.payload.status==true){
      toast.success(res.payload.message);
-     setUsers([]);
      userList();
     }else{
          toast.error(res.payload.message);
@@ -186,7 +226,7 @@ const statusUpdateUser=(e:any)=>{
                   <Typography component="h2" variant="h6" color="primary" gutterBottom>
                     Users 
                     </Typography>
-                    <Button variant="contained" component={Link} to="/users/add">Add</Button>
+                    { usersAdd == true && <Button variant="contained" component={Link} to="/users/add">Add</Button>}
                 </Box>
                 <Divider />
                 <Box sx={{ height: 400, width: '100%' }}>

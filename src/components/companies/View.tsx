@@ -54,24 +54,15 @@ function CompanyView() {
                 setCountry(res.payload.company?.address?.country);
                 setPostalCode(res.payload.company?.address?.zipcode);
                 setLogo(res.payload.company?.logo);
-                setIsHeadauator(res.payload.company?.isHeadauator);
+                if(res.payload.company?.is_headquater==1){
+                  setIsHeadauator('Yes');
+                }else{
+                  setIsHeadauator('No');
+                }
             } 
         }); 
   
       }
-
-      // store.dispatch(getDocuments(getdata)).then((res: any) => {
-      //   console.log(res,"jjjjjjjjjj")
-      //   setShowImages(res.response)
-      //   // window.location.reload();
-      //   if (res.payload.status == true) {
-      //     toast(res.message)
-      //     // navigate("/roles");
-      //   } else {
-      //     // setErrorMessages(res.payload?.message);
-      //     toast.error(res.message)
-      //   }
-      // });   
     });
 
   const theme = useTheme();
@@ -154,7 +145,6 @@ function CompanyView() {
           </Container>
         </Box>
       </Box>
-      <ToastContainer/>
     </ThemeProvider>
   );
 }

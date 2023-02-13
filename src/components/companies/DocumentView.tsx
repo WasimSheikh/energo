@@ -24,7 +24,6 @@ import {
 // import DocumentCompany from './components/companies/Documents';
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { subject } from "../../app/_services/message.service";
 import { toast } from "react-toastify";
 import DownloadForOfflineIcon from '@mui/icons-material/DownloadForOffline';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -67,7 +66,6 @@ export default function ShareAdd() {
       company_id: params.companyId,
       folder_id: params.documentId,
     };
-    console.log(data,"data-------------")
     store.dispatch(getDocuments(data)).then((res: any) => {
       if(res.payload.status == true){
         setDocuments(res.payload.folders.media)
@@ -76,7 +74,6 @@ export default function ShareAdd() {
       }else{
         toast.error(res.payload.message)
       }
-      console.log(res.payload, "jjjjjjjjjjmedia");
 
     });
 }
@@ -90,7 +87,7 @@ export default function ShareAdd() {
 
 const imagesData = cards.map((card)=>{
   return(
-    <div className="container mt-4">
+    <div className="container mt-4" key={card}>
       <div className="alert alert-primary" role="alert">
           No documents found please upload documents!
       </div>
@@ -142,7 +139,7 @@ const imagesData = cards.map((card)=>{
                         <div className="row">
                         {documents.length > 0 ? documents?.map((res:any)=>{
                           return(
-                            <div className="col-md-3 mb-2" key={res.id}>
+                            <div className="col-md-3 mb-2" key={res?.id}>
                             <div className="card" >
                               {/* <a href={res.original_url} download> */}
                               <img

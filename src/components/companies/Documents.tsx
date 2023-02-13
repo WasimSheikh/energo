@@ -33,7 +33,6 @@ import {useNavigate} from "react-router-dom"
 import { json } from 'stream/consumers';
 import '../common/common.css'
 import DocumentView from './DocumentView'
-import { sendFolder, subject } from '../../app/_services/message.service';
 
 
 const mdTheme = createTheme();
@@ -70,13 +69,13 @@ export default function DocumentList(props:data) {
     var newArray:any =[]
     var foldersData:any =[]
     const handleAdd = (e:any) => {
-      console.log(params.companyId,"params")
+     
       e.preventDefault();
       const formData = {
         company_id:params.companyId,
         title:title,
       }
-      console.log(formData,"formData")
+     
       store.dispatch(createCompanyFolder(formData)).then((res: any) => {
         setCompanyFolder(res.response)
         if (res.payload.status == true) {
@@ -93,7 +92,7 @@ export default function DocumentList(props:data) {
       if(file){
         const fileRef =file[0] || ""
         const fileType :string = fileRef.type || ""
-        console.log(fileType,"file upload type",fileRef)
+        
         const reader = new FileReader()
         reader.readAsBinaryString(fileRef)
         reader.onload = (ev:any)=>{
@@ -133,14 +132,14 @@ export default function DocumentList(props:data) {
         newArray.push(event.id);
         foldersData.push(event);
           cardID.classList.add("Active");
-          console.log('true')
+         
       }else{
-        console.log('false')
+       
         newArray = newArray.filter((id:any) => id != ID);
         foldersData = foldersData.filter((id:any) => id.id != ID);
         cardID.classList.remove("Active");
       }
-      console.log(newArray,"state",foldersData)
+      
       if(newArray.length > '0'){
         setDisabled(true)
       }else{
@@ -175,7 +174,7 @@ export default function DocumentList(props:data) {
     var role_id = localStorage.getItem('user_id')
 function getRolehasPermissiondata(){
   store.dispatch(getRolehasPermission(role_id)).then((res:any)=>{
-    console.log(res,"permission")
+    
   })
 }
 
@@ -189,7 +188,6 @@ function getRolehasPermissiondata(){
       navigate("/companies/document/share/"+params.companyId)
     }
     function viewDocument(id:any){
-      subject.next(params.companyId)
       navigate(`/companies/document/view/${id}/${params.companyId}`)
     }
   
@@ -271,7 +269,7 @@ function getRolehasPermissiondata(){
           </Container>
         </Box>
       </Box>
-      <BootstrapDialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={open} >
+      <BootstrapDialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={open}  id="addFolder">
         <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
           Documents
         <IconButton aria-label="close" onClick={handleClose} sx={{position: 'absolute',right: 8,top: 8,color: (theme) => theme.palette.grey[500],

@@ -61,14 +61,12 @@ const getError = (msg: string): JSX.Element => {
   );
 };
 const isValidData = ():boolean => {
-  console.log(country_id,title,"kkkkkkkkk");
   const validateFields = ifEmpty( title );
   
   return validateFields;
 };
 const selectCuntry = (event: SelectChangeEvent) => {
     setCountry(event.target.value);
-    console.log(event.target.value,"oooooooo")
     getCountryStatesByCountry(event.target.value);
   };
 const selectState = (event:SelectChangeEvent) => {
@@ -78,14 +76,12 @@ const selectState = (event:SelectChangeEvent) => {
 function getCountrieData(){
     if(countries.length == 0){
       store.dispatch(getCountries()).then((res: any) => {
-        console.log(res,"getCountrieData()")
           setCountries(res.payload.countries);
           
       });
     }
   }
 function getCountryStatesByCountry(e:any){
-    console.log(e,"event.target.value")
     const formDate={
         country_id:e
     }
@@ -103,7 +99,6 @@ function getCountryStatesByCountry(e:any){
       name:title,
       state_id:setSate,
     }
-    console.log(formData,'formData')
     store.dispatch(createCity(formData)).then((res: any) => {
       if (res.payload.status == true) {
         toast.success(res.payload.message)
@@ -193,7 +188,7 @@ function getCountryStatesByCountry(e:any){
                             id="title"
                             required
                             name="title"
-                            label="Title"
+                            label="City"
                             fullWidth
                             value={title}
                             onChange={(e) => {
@@ -204,7 +199,7 @@ function getCountryStatesByCountry(e:any){
                               }));
                             }}
                           />
-                            {dirtyFields["title"] && getError("Title is requried")}
+                            {dirtyFields["title"] && getError("City is required")}
                       
                       </Grid>
                       {/* </Grid> */}

@@ -63,24 +63,6 @@ export const shareDocuments = createAsyncThunk('share_Documents', async (ShareEm
 })
 
 export const login = createAsyncThunk('login', async (user: User) => {
-    // User Login info
-    // const database = [
-    //     {
-    //     username: "shoaib.shaikh@lemosys.com",
-    //     password: "123456"
-    //     } 
-    // ];
-    // const userData = database.find((credentials) => credentials.username === user.email);
-    // let result = {  };
-    // if (userData) {
-    //     if(userData.password !== user.password) {
-    //         return result = { status: false, message: 'user password is mistmachh.' };
-    //     }else{
-    //         return result = { status: true, message: '' };
-    //     }
-    // }else{
-    //     return result = { status: false, message: 'user not found' };
-    // }
     return await fetch(apiEndPoint+'/auth/login', {
         method: 'POST',
         headers: {
@@ -244,24 +226,7 @@ export const deleteUser = createAsyncThunk('delete_User', async (user: any) => {
 })
 
 
-// export const deleteUser = createAsyncThunk('delete_Company', async (user: User) => {
-//     const requestOptions = {
-//         id:`${user}`
-//     };
-//     return await fetch(apiEndPoint+'/deleteUser', {
-//         method: 'POST',
-//         headers: {
-//             'Accept': 'application/json',
-//             'Content-Type': 'application/json',
-//               'Authorization': `${token}`,
-//         },
 
-        
-//         body: JSON.stringify(requestOptions)
-//     }).then(res => {
-//         return res.json()
-//     });
-// })
 export const getUser = createAsyncThunk('get_User', async (user: User) => {
     return await fetch(apiEndPoint+'/getUser', {
         method: 'POST',
@@ -740,7 +705,34 @@ export const statusState = createAsyncThunk('statusState', async (data:any) => {
         return res.json()
     });
 })
-// add some city api code here
+export const updateState = createAsyncThunk('updateState', async (data:any) => {
+    return await fetch(apiEndPoint+'/updateState', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+              'Authorization': `${token}`,
+        },
+        body: JSON.stringify(data)
+    }).then(res => {
+        return res.json()
+    });
+})
+// add some city api code here++
+// role permission getRolehasPermissions
+export const getRolehasPermissions = createAsyncThunk('getRolehasPermissions', async (data:any) => {
+    return await fetch(apiEndPoint+'/getRolehasPermissions', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+              'Authorization': `${token}`,
+        },
+        body: JSON.stringify(data)
+    }).then(res => {
+        return res.json()
+    });
+})
 
 const INIT_STATE: AppUser = {
     currUser: {
@@ -752,7 +744,13 @@ const INIT_STATE: AppUser = {
         password:'',
         phone: '',
         isGlobal:false,
-        permission:''
+        permission:'',
+        address:'',
+        street: '',
+        country:'',
+        city:'',
+        zip: '',
+        profile_picture:'',
     }
 }
 
@@ -761,8 +759,7 @@ export const UserMgmtSlice = createSlice({
     initialState: INIT_STATE,
     reducers: {
         setAppUser(state, action: PayloadAction<User>) {
-            // console.log(state.currUser)
-            return {
+           return {
                 ...state,
                 currUser: Object.assign(action.payload)
             }
@@ -783,22 +780,21 @@ export const UserMgmtSlice = createSlice({
             }
         },
 
-        setUserTC(state, action: PayloadAction<any>) {
-            const tmpUser = state.currUser;
-            ///console.log('payload',action.payload)
-            return {
-                ...state,
-                currUser: Object.assign({
-                    ...tmpUser,
-                    [action.payload.text]: {
-                        "version": action.payload.value.version,
-                        "text": action.payload.value.text_content
-                    }
-                })
-            }
-        },
-        setUserAddress(state, action: PayloadAction<any>) {
-            // console.log(state.currUser);
+        // setUserTC(state, action: PayloadAction<any>) {
+        //     const tmpUser = state.currUser;
+            
+        //     return {
+        //         ...state,
+        //         currUser: Object.assign({
+        //             ...tmpUser,
+        //             [action.payload.text]: {
+        //                 "version": action.payload.value.version,
+        //                 "text": action.payload.value.text_content
+        //             }
+        //         })
+        //     }
+        // },
+        setUserAddress(state, action: PayloadAction<any>) {    
             const tmpUser = state.currUser;
             return {
                 ...state,
@@ -825,9 +821,6 @@ export const UserMgmtSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder.addCase(createUser.fulfilled, (state, response) => {
-            // if(response.payload.status !== "FAILED" && response.payload.msg && state.currUser){
-            //     //state.currUser.customerId=response.payload.msg;
-            // }
             console.log('createUser success' + response.payload)
         })
         builder.addCase(createUser.rejected, (state, response) => {
