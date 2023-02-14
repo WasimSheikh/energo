@@ -132,19 +132,18 @@ export default function DocumentList(props:data) {
         newArray.push(event.id);
         foldersData.push(event);
           cardID.classList.add("Active");
-         
       }else{
-       
         newArray = newArray.filter((id:any) => id != ID);
         foldersData = foldersData.filter((id:any) => id.id != ID);
         cardID.classList.remove("Active");
       }
       
-      if(newArray.length > '0'){
-        setDisabled(true)
-      }else{
-        setDisabled(false)
-      }
+      // if(newArray.length > '0'){
+      //   setDisabled(true)
+      // }else{
+      //   setDisabled(false)
+      // }
+      console.log(newArray,"newArray",foldersData,"foldersData");
       }
 
     const handleClickOpen = () => {
@@ -181,6 +180,7 @@ function getRolehasPermissiondata(){
       useEffect(() => {
         getCpmpanyFolder();
         getRolehasPermissiondata()
+
     }, []);
 
     function sendMessage(){
@@ -258,8 +258,8 @@ function getRolehasPermissiondata(){
                   </Container>
                   <Divider />
                   <Toolbar  sx={{ ml: 0 ,pl:"0 !important"}}>
-                    <Button variant="contained"  onClick={()=>{sendMessage()}} disabled={disabled == false}>Share </Button>
-                    <Button variant="contained" component={Link} to="/companies/document/share" sx={{ ml: 1 }} disabled={disabled == false}>Request </Button>
+                    <Button variant="contained"  onClick={()=>{sendMessage()}} >Share </Button>
+                    {/* <Button variant="contained" component={Link} to="/companies/document/share" sx={{ ml: 1 }} disabled={disabled == false}>Request </Button> */}
                     <Button variant="contained" component={Link} to="/companies" sx={{ ml: 1 }} >Cancel </Button>
                   </Toolbar>   
                 </Paper>

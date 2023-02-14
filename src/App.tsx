@@ -44,6 +44,7 @@ import StatesList from './components/states/StateListing';
 import {useIdleTimer} from 'react-idle-timer';
 import { Provider } from 'react-redux';
 import { store } from './redux/store';
+import PageNotFound from './PageNotFound/PageNotFound';
 
 
 function App() {
@@ -113,6 +114,7 @@ function App() {
           <Route path="states" element={<StatesList />} /> 
           <Route path="states/add" element={<StateAdd/>} />
           <Route path="states/edit/:stateId" element={<StateEdit />} />
+          <Route path="*" element={<PageNotFound />} />
           </>
         }
      
