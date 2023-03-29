@@ -6,7 +6,7 @@ const Footer = (): JSX.Element => {
       <Typography variant="body2" color="text.secondary" align="center" {...props}>
         {'Copyright © '}
         <Link color="inherit">
-          Your Website
+          Energo
         </Link>{' '}
         {new Date().getFullYear()}
         {'.'}

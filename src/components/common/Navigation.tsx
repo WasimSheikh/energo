@@ -18,7 +18,7 @@ import ContentPasteSearchIcon from '@mui/icons-material/ContentPasteSearch';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import { Link } from "react-router-dom";
 import PublicIcon from '@mui/icons-material/Public';
-import logo from '../common/images/Energo-logo.jpg'
+import logo from '../common/images/logo.png'
 import capitalizeFirstLetter from '../utils/FormUtils';
 import { store } from '../../redux/store';
 import { useSelector } from 'react-redux';
@@ -139,8 +139,8 @@ const Navigation = (): JSX.Element => {
               px: [1],
             }}
           >
-         <div style={{height: '50px' ,textAlign:'center'}}>
-          <img src={logo} alt="img" style={{maxHeight:'100%', marginRight: '30px'}} />
+         <div style={{height: '60px' ,textAlign:'center'}}>
+          <img src={logo} alt="img" style={{maxHeight:'100%'}} />
          </div>
           <IconButton onClick={toggleDrawer}>
               <ChevronLeftIcon />

@@ -19,6 +19,7 @@ import Footer from '../common/Footer';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useSelector } from 'react-redux';
+import logo from '../common/images/logo.png'
  
 const theme = createTheme();
 
@@ -51,7 +52,11 @@ export default function Login() {
           localStorage.setItem("user_id", res.payload.user.id); 
           toast.success(res.payload.message);
           navigate("dashboard");
-          window.location.reload();
+          setTimeout(function() {
+            window.location.reload();
+          }, 900);
+
+          
         }
       }else {
        toast.error(res.payload.message);
@@ -92,6 +97,9 @@ export default function Login() {
                 alignItems: 'center',
               }}
             >
+              <div style={{height: '80px' ,textAlign:'center'}}>
+          <img src={logo} alt="img" style={{maxHeight:'100%'}} />
+         </div>
             <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}></Avatar>
             <Typography component="h1" variant="h5">
               Sign in
@@ -137,16 +145,16 @@ export default function Login() {
               Sign In
               </Button>
               <Grid container>
-                <Grid item xs>
+                {/* <Grid item xs>
                   <Link href="#" variant="body2">
                     Forgot password?
                   </Link>
-                </Grid>
-                <Grid item>
+                </Grid> */}
+                {/* <Grid item>
                   <Link href="#" variant="body2">
                     {"Don't have an account? Sign Up"}
                   </Link>
-                </Grid>
+                </Grid> */}
               </Grid>
               <Footer />
             </Box>
