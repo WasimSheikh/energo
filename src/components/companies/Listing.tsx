@@ -46,7 +46,7 @@ const getCompanyData =()=>{
   }); 
 }
 
-
+console.log(companiesss, 'logo');
 function addPermission(){
   console.log(JSON.parse(permission),"roles permission");
   // var role_id:any = localStorage.getItem('role_id')
