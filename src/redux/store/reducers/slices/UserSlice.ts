@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { AppUser, Permission, Role, User, Company ,ShareEmail} from './../../../../model/User';
+import { AppUser, Permission, Role, User, Company ,ShareEmail, Vessel} from './../../../../model/User';
 
 const localEndPoint="http://localhost:8080";
 const buildEndPoint="/apis"
@@ -103,7 +103,32 @@ export const updateCompany = createAsyncThunk('Update_company', async (company: 
         return res.json()
     });
 })
-
+export const updateVessel = createAsyncThunk('Update_vessel', async (Vessel: Vessel) => {
+    return await fetch(apiEndPoint+'/updateVessel', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+              'Authorization': `${token}`,
+        },
+        body: JSON.stringify(Vessel)
+    }).then(res => {
+        return res.json()
+    });
+})
+export const createVessel = createAsyncThunk('Create_vessel', async (Vessel: Vessel) => {
+    return await fetch(apiEndPoint+'/createVessel', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+              'Authorization': `${token}`,
+        },
+        body: JSON.stringify(Vessel)
+    }).then(res => {
+        return res.json()
+    });
+})
 export const updateUser = createAsyncThunk('Update_user', async (user: User) => {
     
     return await fetch(apiEndPoint+'/updateUser', {
@@ -172,6 +197,18 @@ export const getCompanies = createAsyncThunk('get_Companies', async () => {
     });
 })
 
+export const getVessels = createAsyncThunk('get_Vessels', async () => {
+    return await fetch(apiEndPoint+'/getVessels', {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+              'Authorization': `${token}`,
+        },
+    }).then(res => {
+        return res.json()
+    });
+})
 export const getCompany = createAsyncThunk('get_Company', async (company: Company) => {
     return await fetch(apiEndPoint+'/getCompany', {
         method: 'POST',
@@ -185,12 +222,44 @@ export const getCompany = createAsyncThunk('get_Company', async (company: Compan
         return res.json()
     });
 })
+export const getVessel = createAsyncThunk('get_Company', async (Vessel: Vessel) => {
+    return await fetch(apiEndPoint+'/getVessel', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+              'Authorization': `${token}`,
+        },
+        body: JSON.stringify(Vessel)
+    }).then(res => {
+        return res.json()
+    });
+})
 
 export const deleteCompany = createAsyncThunk('delete_Company', async (company: Company) => {
     const requestOptions = {
         id:`${company}`
     };
     return await fetch(apiEndPoint+'/deleteCompany', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+              'Authorization': `${token}`,
+        },
+
+        
+        body: JSON.stringify(requestOptions)
+
+    }).then(res => {
+        return res.json()
+    });
+})
+export const deleteVessel = createAsyncThunk('delete_Vessel', async (Vessel: Vessel) => {
+    const requestOptions = {
+        id:`${Vessel}`
+    };
+    return await fetch(apiEndPoint+'/deleteVessel', {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
@@ -439,6 +508,19 @@ export const statusUpdate = createAsyncThunk('status_User', async (data:any) => 
 
 export const statusCompany = createAsyncThunk('status_Company', async (data:any) => {
     return await fetch(apiEndPoint+'/statusCompany', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+              'Authorization': `${token}`,
+        },
+        body: JSON.stringify(data)
+    }).then(res => {
+        return res.json()
+    });
+})
+export const statusVessel = createAsyncThunk('status_Vessel', async (data:any) => {
+    return await fetch(apiEndPoint+'/statusVessel', {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
