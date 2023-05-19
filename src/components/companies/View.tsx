@@ -21,6 +21,7 @@ import React, { useEffect, useState } from "react";
 import {
   getCompany,
   getDocuments,
+  getVessels
 } from "../../redux/store/reducers/slices/UserSlice";
 import { store } from "../../redux/store";
 import { ToastContainer, toast } from "react-toastify";
@@ -30,6 +31,7 @@ function CompanyView() {
   const mdTheme = createTheme();
   const [id, setId] = useState("");
   const [companyName, setCompanyName] = useState("");
+  const [vessels, setVessels] = useState([]);
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [website, setWebsite] = useState("");
@@ -43,7 +45,12 @@ function CompanyView() {
   const [showImages, setShowImages] = useState([]);
   const [onload, setOnload] = useState(false);
 
+
   useEffect(() => {
+    
+
+    
+
     if (onload == false) {
       const companyId = window.location.href.split("/")[5];
       const formData = { id: companyId };
@@ -68,6 +75,15 @@ function CompanyView() {
           }
         }
       });
+      store.dispatch(getVessels()).then((res: any) => {
+        if (res.payload.status == true) {
+          setVessels(res.payload.vessels);
+          console.log(vessels)
+        }else{
+          toast.error(res.payload.message)
+        }
+      }); 
+      
     }
   });
 
@@ -102,7 +118,7 @@ function CompanyView() {
                     color="primary"
                     gutterBottom
                   >
-                    View Company
+                    {companyName} {isHeadauator ? "- Head Office":""}
                   </Typography>
                   <Divider />
                   <Box sx={{ mt: 1 }}>
@@ -116,8 +132,7 @@ function CompanyView() {
                           </Box>
                           <Box sx={{mt:2}}>
                           {" "}
-                          Company Name :{" "}
-                          <Box component="span">{companyName}</Box>
+                          Contact: <Box component="span">Wasim Sheikh</Box>
                         </Box>
                         <Box sx={{mt:2}}>
                           {" "}
@@ -144,43 +159,14 @@ function CompanyView() {
                         </Box>
                         <Box sx={{mt:2}}>
                           {" "}
-                          Address : <Box component="span">{address1}</Box>
+                          Address: 
+                          <Box component="div">{address1} {address2}, {city}, {postalCode}, {country} </Box>
                         </Box>
                       </Grid>
                       <Grid item xs={6} sm={6}>
                    
                       </Grid>
-                      <Grid item xs={6} sm={6}>
-                        <Box>
-                          {" "}
-                          Street : <Box component="span">{address2}</Box>
-                        </Box>
-                      </Grid>
-                      <Grid item xs={6} sm={6}>
-                        <Box>
-                          {" "}
-                          City : <Box component="span">{city}</Box>
-                        </Box>
-                      </Grid>
-                      <Grid item xs={6} sm={6}>
-                        <Box>
-                          {" "}
-                          ZipCode : <Box component="span">{postalCode}</Box>
-                        </Box>
-                      </Grid>
-                      <Grid item xs={6} sm={6}>
-                        <Box>
-                          {" "}
-                          Country : <Box component="span">{country}</Box>
-                        </Box>
-                      </Grid>
-                      <Grid item xs={6} sm={6}>
-                        <Box>
-                          {" "}
-                          Company Headquater Office :{" "}
-                          <Box component="span">{isHeadauator}</Box>
-                        </Box>
-                      </Grid>
+                     
                     </Grid>
 
                     <Divider />
@@ -198,6 +184,43 @@ function CompanyView() {
                 </Paper>
               </Grid>
             </Grid>
+            <Divider />
+            <Grid>
+              <Box component="div"sx={{ mt: 4, mb: 4 }}></Box>
+              <Typography
+                    component="h2"
+                    variant="h6"
+                    color="primary"
+                    gutterBottom
+                  >
+                    {companyName}'s Vessels
+                  </Typography>
+
+            </Grid>
+        
+        {vessels.length>0 &&
+            <Grid container spacing={2}>
+              {vessels.map((items:any) =>{
+                return  <Grid item xs={12} md={3} lg={3} key={items.id}>
+                <Paper  
+                  sx={{
+                    p: 2,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    height: 200,
+                  }}
+                >
+                  <Box component="div">{items.title}</Box>
+                 <img src={items.logopath} className="img-deshboard" alt="img-text"/>
+                  
+                </Paper>
+              </Grid>
+              })}
+             
+            
+            </Grid> 
+          }
+
             <Footer />
           </Container>
         </Box>
