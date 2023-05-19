@@ -93,7 +93,7 @@ const columns: GridColDef[] = [
   {
     field: 'title',
     headerName: 'Company Name',
-    width: 140,
+    width: 250,
   },
   {
     field: 'email',
@@ -108,7 +108,7 @@ const columns: GridColDef[] = [
   {
     field: 'website',
     headerName: 'Website',
-    width: 180,
+    width: 220,
     //valueGetter: (params: GridValueGetterParams) =>
     //`${params.row.firstName || ''} ${params.row.lastName || ''}`,
   },
@@ -212,7 +212,7 @@ const deleteId=(e:any)=>{
         >
           <Toolbar />
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-            <Grid container spacing={3}>
+            <Grid container spacing={2}>
               <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
                 <Box className="headingbutton" sx={{ mb: 1 }}>
