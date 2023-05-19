@@ -9,15 +9,19 @@ import Typography from '@mui/material/Typography';
 import Navigation from '../common/Navigation';
 import Footer from '../common/Footer';
 import Header from '../common/Header';
-import { getRolehasPermissions } from '../../redux/store/reducers/slices/UserSlice';
+import { getCompanies, getRolehasPermissions } from '../../redux/store/reducers/slices/UserSlice';
 import { store } from '../../app/store';
 import { useEffect, useState } from 'react';
-
+import { toast } from 'react-toastify';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 const mdTheme = createTheme();
 
 function DashboardContent() {
+
   const [onload,setOnload] = useState(false);
-  
+  const [companiesss,setCompanies] = useState([]);
+  const navigate = useNavigate();
+
   useEffect(() => {
     localStorage.removeItem('permissions');
     if(onload==false){
@@ -32,8 +36,24 @@ function DashboardContent() {
       }); 
     }
   },[]);
+  const params = useParams();
+  const getCompanyData =()=>{
+    store.dispatch(getCompanies()).then((res: any) => {
+      if (res.payload.status == true) {
+        setCompanies(res.payload.companies);
+      }else{
+        toast.error(res.payload.message)
+      }
+    }); 
+  }
+  useEffect(() => {
+    getCompanyData();
+},[]);
 
-  
+
+const deleteId=(id:any)=>{
+  navigate(`/companies/view/${id}`)
+}
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>
@@ -54,68 +74,28 @@ function DashboardContent() {
         >
           <Toolbar />
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-            <Grid container spacing={3}>
-              <Grid item xs={12} md={4} lg={4}>
+         
+          
+            <Grid container spacing={2}>
+              {companiesss.map((items:any) =>{
+                return  <Grid item xs={12} md={3} lg={3} key={items.id}  onClick={()=>{deleteId(items.id)}}>
                 <Paper
                   sx={{
                     p: 2,
                     display: 'flex',
                     flexDirection: 'column',
-                    height: 240,
+                    height: 200,
                   }}
                 >
-                  {/* <Typography component="h2" variant="h6" color="primary" gutterBottom>
-                    Recent Deposits
-                  </Typography>
-                  <Typography component="p" variant="h4">
-                    $3,024.00
-                  </Typography>
-                  <Typography color="text.secondary" sx={{ flex: 1 }}>
-                    on 15 March, 2019
-                  </Typography> */}
+                 <img src={items.logopath} className="img-deshboard" alt="img-text"/>
+                  
                 </Paper>
               </Grid>
-              <Grid item xs={12} md={4} lg={4}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    height: 240,
-                  }}
-                >
-                  {/* <Typography component="h2" variant="h6" color="primary" gutterBottom>
-                    Recent Deposits
-                  </Typography>
-                  <Typography component="p" variant="h4">
-                    $3,024.00
-                  </Typography>
-                  <Typography color="text.secondary" sx={{ flex: 1 }}>
-                    on 15 March, 2019
-                  </Typography> */}
-                </Paper>
-              </Grid>
-              <Grid item xs={12} md={4} lg={4}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    height: 240,
-                  }}
-                >
-                  {/* <Typography component="h2" variant="h6" color="primary" gutterBottom>
-                    Recent Deposits
-                  </Typography>
-                  <Typography component="p" variant="h4">
-                    $3,024.00
-                  </Typography>
-                  <Typography color="text.secondary" sx={{ flex: 1 }}>
-                    on 15 March, 2019
-                  </Typography> */}
-                </Paper>
-              </Grid>
+              })}
+             
+            
             </Grid>
+          
            <Footer />
           </Container>
         </Box>
