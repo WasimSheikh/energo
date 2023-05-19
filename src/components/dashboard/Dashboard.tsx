@@ -19,7 +19,6 @@ function DashboardContent() {
   const [onload,setOnload] = useState(false);
   
   useEffect(() => {
-    console.log('remove permision');
     localStorage.removeItem('permissions');
     if(onload==false){
       setOnload(true);
