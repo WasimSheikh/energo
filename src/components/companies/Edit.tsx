@@ -38,7 +38,7 @@ function CompanyEdit() {
 
     const [isHeadauator,setIsHeadauator] = useState(true);
     const [checked,setchecked] = useState('');
-
+    const [state, setState] = useState('')
     const [onload,setOnload] = useState(false);
     const [errorMessages, setErrorMessages] = useState('');
     const [dirtyFields, setDirtyFields] = useState({
@@ -300,6 +300,26 @@ function CompanyEdit() {
                               }}
                             />
                             {dirtyFields["city"] && getError("City is requried")}
+                      </Grid>
+                         <Grid item xs={6} sm={6}>
+                        <TextField
+                          margin="normal"
+                          required
+                          fullWidth
+                          id="country"
+                          label="State"
+                          name="country"
+                          onChange={(e) => {
+                            setState(e.target.value);
+                            setDirtyFields((dirty) => ({
+                              ...dirty,
+                              country: !ifEmpty(e.target.value),
+                            }));
+                          }}
+                        />
+
+                         {dirtyFields["country"] && getError("Country is required ")}
+
                       </Grid>
                       <Grid item xs={6} sm={6}>
                       <TextField

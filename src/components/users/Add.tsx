@@ -47,6 +47,7 @@ function UserAdd() {
   const [permission, setPermission] = React.useState('');
   const [globalUser, setGlobalUser] = React.useState('');
   const [onload,setOnload] = useState(false);
+  const [state, setState] = useState('')
   const [errorMessages, setErrorMessages] = useState('');
   const [companies, setCompanies] = React.useState([]);
    const [file, setFile] = useState();
@@ -63,7 +64,7 @@ function UserAdd() {
     permission:false,
     postalCode:false,
     phone:false,
-
+    state:false,
   });
   const getBase64 = (file:any) => {
     return new Promise((resolve, reject) => {
@@ -389,7 +390,25 @@ const getError = (msg: string): JSX.Element => {
 
                         </Grid>
                         <Grid item xs={6} sm={6}>
-                       </Grid>
+                        <TextField
+                          margin="normal"
+                          required
+                          fullWidth
+                          id="country"
+                          label="State"
+                          name="country"
+                          onChange={(e) => {
+                            setState(e.target.value);
+                            setDirtyFields((dirty) => ({
+                              ...dirty,
+                              country: !ifEmpty(e.target.value),
+                            }));
+                          }}
+                        />
+
+                         {dirtyFields["country"] && getError("Country is requried")}
+
+                      </Grid>
                     </Grid>
                     <Typography component="h2" variant="h6" sx={{ mt: 1}} color="primary" gutterBottom>
                         Login Information
@@ -441,7 +460,7 @@ const getError = (msg: string): JSX.Element => {
                                     onChange={radioChange}
                                   >
                                     <FormControlLabel value="admin" control={<Radio />} label="Admin" />
-                                    <FormControlLabel value="author" control={<Radio />} label="Author" />
+                                    <FormControlLabel value="author" control={<Radio />} label="User" />
                                   </RadioGroup>
                                 </FormControl>
                       </Grid>

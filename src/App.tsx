@@ -36,8 +36,11 @@ import CountiesEdit from './components/countries/Edit';
 import CountriesView from './components/countries/View';
 import DocumentList from './components/companies/Documents';
 import CityList from './components/cities/Listing';
+import VesselList from './components/vessel/Listing';
 import CityAdd from './components/cities/Add';
 import EditCity from './components/cities/Edit';
+import EditVessel from './components/vessel/Edit';
+import AddVessel from './components/vessel/Add';
 import StateAdd from './components/states/StateAdd';
 import StateEdit from './components/states/StateEdit';
 import StatesList from './components/states/StateListing';
@@ -84,7 +87,11 @@ function App() {
           <>
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="companies" element={<Compaines />} />
+          <Route path="vessel" element={<VesselList />} />
+          <Route path="vessel/edit/:vesselId" element={<EditVessel />} />
+          <Route path="companies/edit/:companyId" element={<EditCompany />} />
           <Route path="companies/add" element={<AddCompany />} />
+          <Route path="vessel/add" element={<AddVessel />} />
           <Route path="companies/view/:companyId" element={<ViewCompany />} />
           <Route path="companies/edit/:companyId" element={<EditCompany />} />
           <Route path="companies/document/:companyId" element={<DocumentList documents = {shareDataF}/>} />

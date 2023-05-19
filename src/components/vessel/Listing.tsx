@@ -16,7 +16,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { deleteCompany,getCompanies, getRolehasPermissions, statusCompany, } from '../../redux/store/reducers/slices/UserSlice';
+import { deleteCompany,deleteVessel,getCompanies, getRolehasPermissions, getVessels, statusCompany, statusVessel, } from '../../redux/store/reducers/slices/UserSlice';
 import React, { useEffect , useState } from 'react';
 import { store } from '../../redux/store';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
@@ -28,58 +28,58 @@ import { useSelector } from 'react-redux';
 
 
 
-function CompanyList() {
+function VesselList() {
   const currentUser: any = useSelector((state: any) => state.user.currUser);
-  const [companiesss,setCompanies] = useState([]);
+  const [companies,setCompanies] = useState([]);
   const [companyAdd,setCompanyAdd] = useState(false);
   const [companyEdit,setCompanyEdit] = useState(false);
   const [companyDelete,setCompanyDelete] = useState(false);
   const [companyView,setCompanyView] = useState(false);
   var permission:any =localStorage.getItem('permissions');
-const getCompanyData =()=>{
-  store.dispatch(getCompanies()).then((res: any) => {
+const getVesselData =()=>{
+  store.dispatch(getVessels()).then((res: any) => {
     if (res.payload.status == true) {
-      setCompanies(res.payload.companies);
+      setCompanies(res.payload.vessels);
     }else{
       toast.error(res.payload.message)
     }
   }); 
 }
+console.log(companies);
 
-console.log(companiesss, 'logo');
-function addPermission(){
-  console.log(JSON.parse(permission),"roles permission");
-  // var role_id:any = localStorage.getItem('role_id')
-  // const formData={
-  //   role_id:role_id
-  // }
-  // store.dispatch(getRolehasPermissions(formData)).then((res: any) => {
-  //   var allPermission:any = res.payload?.data;
+// function addPermission(){
+//   console.log(JSON.parse(permission),"roles permission");
+//   // var role_id:any = localStorage.getItem('role_id')
+//   // const formData={
+//   //   role_id:role_id
+//   // }
+//   // store.dispatch(getRolehasPermissions(formData)).then((res: any) => {
+//   //   var allPermission:any = res.payload?.data;
   
-    var allPermission:any =  JSON.parse(permission);
-    // console.log(res,"permission");
+//     var allPermission:any =  JSON.parse(permission);
+//     // console.log(res,"permission");
 
-    if(allPermission.length != 0){
-      allPermission.forEach((per:any) => {
-        if(capitalizeFirstLetter(per.flag) == "Companies"){
-          if(per.name == "Add"){
-            setCompanyAdd(true)
-          }else if(per.name == "Edit"){
-            setCompanyEdit(true)
-          }else if(per.name == "Delete"){
-            setCompanyDelete(true)
-          }else if(per.name == "View"){
-            setCompanyView(true)
-          }
-        }
-      });
-    }
-  // }); 
-}
+//     // if(allPermission.length != 0){
+//     //   allPermission.forEach((per:any) => {
+//     //     if(capitalizeFirstLetter(per.flag) == "Companies"){
+//     //       if(per.name == "Add"){
+//     //         setCompanyAdd(true)
+//     //       }else if(per.name == "Edit"){
+//     //         setCompanyEdit(true)
+//     //       }else if(per.name == "Delete"){
+//     //         setCompanyDelete(true)
+//     //       }else if(per.name == "View"){
+//     //         setCompanyView(true)
+//     //       }
+//     //     }
+//     //   });
+//     // }
+//   // }); 
+// }
 
   useEffect(() => {
-    getCompanyData();
-    addPermission();
+    getVesselData();
+    // addPermission();
   },[]);
 
 const mdTheme = createTheme();
@@ -92,26 +92,17 @@ const columns: GridColDef[] = [
   },
   {
     field: 'title',
+    headerName: 'Title',
+    width: 140,
+  },
+
+  {
+    field: 'Company Name',
     headerName: 'Company Name',
     width: 140,
   },
-  {
-    field: 'email',
-    headerName: 'Email',
-    width: 220,
-  },
-  {
-    field: 'phone',
-    headerName: 'Phone',
-    width: 110,
-  },
-  {
-    field: 'website',
-    headerName: 'Website',
-    width: 180,
-    //valueGetter: (params: GridValueGetterParams) =>
-    //`${params.row.firstName || ''} ${params.row.lastName || ''}`,
-  },
+
+ 
    {
     field: 'is_active',
     headerName: 'Status',
@@ -135,10 +126,10 @@ const columns: GridColDef[] = [
     renderCell: (params) => {
       return (
         <>
-       {companyEdit == true && <Button  sx={{ minWithd: 40 }}   component={Link} to={'/companies/edit/'+params.row.id} > <EditIcon  /> </Button>}
-        {companyView ==true && <Button  sx={{ minWidth: 40 }}  component={Link} to={'/companies/view/'+params.row.id} > <VisibilityIcon  /> </Button>}
-        {companyDelete ==true && <Button onClick={()=>{deleteId(params.row.id)}}  sx={{ minWidth: 40 }}   > <DeleteIcon  /> </Button>}
-        <Button  sx={{ minWidth: 40 }}  component={Link} to={'/companies/document/'+params.row.id} > <FileCopyIcon  /> </Button>
+      <Button  sx={{ minWithd: 40 }}   component={Link} to={'/vessel/edit/'+params.row.id} > <EditIcon  /> </Button>
+        <Button  sx={{ minWidth: 40 }}  component={Link} to={'/vessel/view/'+params.row.id} > <VisibilityIcon  /> </Button>
+       <Button onClick={()=>{deleteId(params.row.id)}}  sx={{ minWidth: 40 }}   > <DeleteIcon  /> </Button>
+
         
         </>
       );
@@ -151,10 +142,10 @@ const statusUpdateCompany=(e:any)=>{
   const formData= {
     id : e
   }
-    store.dispatch(statusCompany(formData)).then((res: any) => {
+    store.dispatch(statusVessel(formData)).then((res: any) => {
     if(res.payload.status==true){
      toast.success(res.payload.message);
-      getCompanyData();
+     getVesselData();
     }else{
          toast.error(res.payload.message);
     }
@@ -173,13 +164,13 @@ const deleteId=(e:any)=>{
     confirmButtonText: 'Yes , confirm !'
   }).then((result:any) => {
     if (result.isConfirmed) {
-      store.dispatch(deleteCompany(e)).then((res: any) => {
+      store.dispatch(deleteVessel(e)).then((res: any) => {
         if(res.payload.status==true){
               setCompanies((prevRows : any) => {
                 const rowToDeleteIndex = randomInt(0, prevRows.length - 1);
                 return [
-                  ...companiesss.slice(0, rowToDeleteIndex),
-                  ...companiesss.slice(rowToDeleteIndex + 1),
+                  ...companies.slice(0, rowToDeleteIndex),
+                  ...companies.slice(rowToDeleteIndex + 1),
                 ];
               });
               toast.success(res.payload.message);
@@ -217,14 +208,14 @@ const deleteId=(e:any)=>{
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
                 <Box className="headingbutton" sx={{ mb: 1 }}>
                   <Typography component="h2" variant="h6" color="primary" gutterBottom>
-                    Companies 
+                    Vessels
                     </Typography>
-                    {companyAdd == true && <Button variant="contained" component={Link} to="/companies/add">Add</Button>}
+               <Button variant="contained" component={Link} to="/vessel/add">Add</Button>
                 </Box>
                 <Divider />
                 <Box sx={{ height: 400, width: '100%' }}>
                   <DataGrid
-                    rows={companiesss}
+                    rows={companies}
                     columns={columns}
                     pageSize={5}
                     rowsPerPageOptions={[5]}
@@ -246,5 +237,5 @@ const deleteId=(e:any)=>{
 
 
 export default function Listing() {
-  return <CompanyList />;
+  return <VesselList />;
 }

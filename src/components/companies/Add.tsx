@@ -36,6 +36,7 @@ function CompanyAdd() {
   const [city, setCity] = useState('');
   const [country, setCountry] = useState('');
   const [postalCode, setPostalCode] = useState('');
+  const [state, setState] = useState('')
   const [logo, setLogo] = useState();
   const [isHeadauator, setIsHeadauator] = useState('');
   const [errorMessages, setErrorMessages] = useState('');
@@ -51,6 +52,7 @@ function CompanyAdd() {
     logo:false,
     // isHeadauator:false,
     zipcode:false,
+    state:false
   });
   const isValidData = ():boolean => {
     const validateFields = ifEmpty( companyName && website && phone && address && street && city && country && email && postalCode && isHeadauator );
@@ -151,7 +153,7 @@ return (
                           }}
                         />
 
-                          {dirtyFields["companyName"] && getError("Company Name is requried")}
+                          {dirtyFields["companyName"] && getError("Company Name is required ")}
 
                       </Grid>
                       <Grid item xs={6} sm={6}>
@@ -171,7 +173,7 @@ return (
                           }}
                         />
 
-                          {dirtyFields["website"] && getError("Website is requried")}
+                          {dirtyFields["website"] && getError("Website is required ")}
 
                       </Grid>
                       <Grid item xs={6} sm={6}>
@@ -190,7 +192,7 @@ return (
                             }));
                           }}
                         />
-                          {dirtyFields["email"] && getError("Email is requried")}
+                          {dirtyFields["email"] && getError("Email is required ")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                         <TextField
@@ -209,7 +211,7 @@ return (
                           }}
                         />
 
-                         {dirtyFields["phone"] && getError("Phone is requried")}
+                         {dirtyFields["phone"] && getError("Phone is required ")}
 
                       </Grid>
                       <Grid item xs={6} sm={6}>
@@ -229,7 +231,7 @@ return (
                           }}
                         />
 
-                         {dirtyFields["address"] && getError("Address is requried")}
+                         {dirtyFields["address"] && getError("Address is required ")}
 
                       </Grid>
                       <Grid item xs={6} sm={6}>
@@ -238,7 +240,7 @@ return (
                           required
                           fullWidth
                           id="street 1"
-                          label="Street"
+                          label="Address 2"
                           name="address2"
                           onChange={(e) => {
                             setStreet(e.target.value);
@@ -248,7 +250,7 @@ return (
                             }));
                           }}
                         />
-                         {dirtyFields["street"] && getError("Street is requried")}
+                         {dirtyFields["street"] && getError("Street is required ")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                         <TextField
@@ -267,7 +269,7 @@ return (
                           }}
                         />
 
-                         {dirtyFields["city"] && getError("City is requried")}
+                         {dirtyFields["city"] && getError("City is required ")}
 
                       </Grid>
                       <Grid item xs={6} sm={6}>
@@ -287,7 +289,7 @@ return (
                           }}
                         />
 
-                         {dirtyFields["zipcode"] && getError("Zipcode is requried")}
+                         {dirtyFields["zipcode"] && getError("Zipcode is required ")}
 
                       </Grid>
                       <Grid item xs={6} sm={6}>
@@ -307,10 +309,30 @@ return (
                           }}
                         />
 
-                         {dirtyFields["country"] && getError("Country is requried")}
+                         {dirtyFields["country"] && getError("Country is required ")}
 
                       </Grid>
-                      <Grid item xs={2} sm={6} mt={2}>
+                      <Grid item xs={6} sm={6}>
+                        <TextField
+                          margin="normal"
+                          required
+                          fullWidth
+                          id="country"
+                          label="State"
+                          name="country"
+                          onChange={(e) => {
+                            setState(e.target.value);
+                            setDirtyFields((dirty) => ({
+                              ...dirty,
+                              country: !ifEmpty(e.target.value),
+                            }));
+                          }}
+                        />
+
+                         {dirtyFields["country"] && getError("Country is required ")}
+
+                      </Grid>
+                      <Grid item xs={2} sm={6}>
                         <FormControlLabel
                           control={<Checkbox
                             onChange={(e) => {

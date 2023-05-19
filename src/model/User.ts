@@ -52,6 +52,15 @@ export interface Company {
     city?:string;
     zip?: string;
 }
+export interface Vessel {
+    id?: string;
+    company_id?: string;
+    is_active?:string;
+    picture?: string;
+    title?: string;
+  
+}
+
 
 export interface ShareDocument {
     name?: string;
