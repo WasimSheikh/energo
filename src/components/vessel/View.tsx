@@ -32,15 +32,7 @@ function CompanyView() {
   const [id, setId] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [title, setTitle] = useState("");
-  const [phone, setPhone] = useState("");
-  const [website, setWebsite] = useState("");
-  const [address1, setAddress1] = useState("");
-  const [address2, setAddress2] = useState("");
-  const [city, setCity] = useState("");
-  const [country, setCountry] = useState("");
-  const [postalCode, setPostalCode] = useState("");
   const [logo, setLogo] = useState("");
-  const [isHeadauator, setIsHeadauator] = useState("");
   const [showImages, setShowImages] = useState([]);
   const [onload, setOnload] = useState(false);
 
@@ -49,34 +41,21 @@ function CompanyView() {
       const companyId = window.location.href.split("/")[5];
       const formData = { id: companyId };
       store.dispatch(getVessel(formData)).then((res: any) => {
-       
         setOnload(true);
         if (res && res.payload) {
-          console.log(res, 'res')
-          setTitle(res.payload.vessel.title)
-          setLogo(res.payload.vessel.picture)
-          setCompanyName(res.payload.vessel.company.title)
+          console.log(res?.payload?.vessel?.media_url, "res");
+          setTitle(res.payload.vessel.title);
+
+          setCompanyName(res.payload.vessel.company.title);
           setId(res.payload.id);
           setCompanyName(res.payload.company.title);
 
-          setPhone(res.payload.company?.phone);
-          setWebsite(res.payload.company?.website);
-          setAddress1(res.payload.company?.address?.address);
-          setAddress2(res.payload.company?.address?.street);
-          setCity(res.payload.company?.address?.city);
-          setCountry(res.payload.company?.address?.country);
-          setPostalCode(res.payload.company?.address?.zipcode);
-          setLogo(res.payload.company?.picture);
-          if (res.payload.company?.is_headquater == 1) {
-            setIsHeadauator("Yes");
-          } else {
-            setIsHeadauator("No");
-          }
+          setShowImages(res?.payload?.vessel?.media_url);
         }
       });
     }
   });
-console.log(title, "8888888")
+  console.log(logo, "logo");
   const theme = useTheme();
 
   return (
@@ -116,21 +95,17 @@ console.log(title, "8888888")
                       <Grid item xs={6} sm={6}>
                         <Box>
                           {" "}
-                         Title :
-                          <Box component="span">{title}</Box>
+                          Title :<Box component="span">{title}</Box>
                         </Box>
 
-                        <Box  sx={{ mb: 2, mt:2 }}>
-                        
-                          Company Name : <Box component="span">{companyName}</Box>
+                        <Box sx={{ mb: 2, mt: 2 }}>
+                          Company Name :{" "}
+                          <Box component="span">{companyName}</Box>
                         </Box>
 
-                     
                         <Box>
-                        
                           Company logo : <Box component="span">{logo}</Box>
                         </Box>
-
                       </Grid>
                     </Grid>
 
@@ -139,7 +114,7 @@ console.log(title, "8888888")
                       <Button
                         variant="contained"
                         component={Link}
-                        to="/companies"
+                        to="/vessel"
                         sx={{ ml: 1 }}
                       >
                         Cancel{" "}

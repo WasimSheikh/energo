@@ -69,3 +69,7 @@ input#checkBox {
   width: 36px;
   height: 16px;
 }
+.my-src-setup{
+  height: 100px;
+  width: auto;
+}

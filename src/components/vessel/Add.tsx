@@ -13,15 +13,14 @@ import Header from "../common/Header";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Checkbox from "@mui/material/Checkbox";
-
+import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import {
-  createCompany,
   createVessel,
   getCompanies,
 } from "../../redux/store/reducers/slices/UserSlice";
 import { store } from "../../redux/store";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import MenuItem from "@mui/material/MenuItem";
 
@@ -34,55 +33,32 @@ const mdTheme = createTheme();
 function CompanyAdd() {
   const navigate = useNavigate();
 
-  const [companyName, setCompanyName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [website, setWebsite] = useState("");
-  const [address, setAddress] = useState("");
-  const [street, setStreet] = useState("");
-  const [city, setCity] = useState("");
-  const [country, setCountry] = useState("");
-  const [postalCode, setPostalCode] = useState("");
   const [state, setState] = useState("");
   const [company_id, setCompanyId] = useState("");
-  const [logo, setLogo] = useState();
-  const [isHeadauator, setIsHeadauator] = useState("");
+  const [logo, setLogo] = useState("");
   const [companies, setCompanies] = React.useState([]);
   const [errorMessages, setErrorMessages] = useState("");
   const [dirtyFields, setDirtyFields] = useState({
-    companyName: false,
     state: false,
+    company_id: false,
   });
   const isValidData = (): boolean => {
-    const validateFields = ifEmpty(
-      companyName &&
-        website &&
-        phone &&
-        address &&
-        street &&
-        city &&
-        country &&
-        email &&
-        postalCode &&
-        isHeadauator
-    );
+    const validateFields = ifEmpty(state);
     return validateFields;
   };
   const handleSubmit = (e: any) => {
     e.preventDefault();
     {
-      const formData = {
-        title: state,
-        company_id: company_id,
-        picture: phone,
-      };
-      console.log(formData, "formdata");
+      const formData = new FormData();
+      formData.append("title", state);
+      formData.append("company_id", company_id);
+      formData.append("picture", logo);
       store.dispatch(createVessel(formData)).then((res: any) => {
-        if (res.payload.status == true) {
-          toast.success(res.payload?.message);
+        if (res.payload?.data?.status == true) {
+          toast.success(res.payload?.data?.message);
           navigate("/companies");
         } else {
-          toast.error(res.payload?.message);
+          toast.error(res.payload?.data?.message);
         }
       });
     }
@@ -101,7 +77,7 @@ function CompanyAdd() {
     errorMessages && <div className="error">{errorMessages}</div>;
 
   const ifEmpty = (val: string): boolean => {
-    return val !== undefined && val.length > 0; // return true;
+    return val != undefined && val != "" && val.length > 0; // return true;
   };
 
   const getError = (msg: string): JSX.Element => {
@@ -111,7 +87,9 @@ function CompanyAdd() {
       </span>
     );
   };
+  const fileInput = useRef<any | null>(null);
 
+  console.log(company_id);
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: "flex" }}>
@@ -162,11 +140,12 @@ function CompanyAdd() {
                             id="company_name"
                             value={company_id}
                             label="Company Name"
-                            onChange={selectChange}
-                            onBlur={(e) => {
+                            // onChange={selectChange}
+                            onChange={(e) => {
+                              setCompanyId(e.target.value);
                               setDirtyFields((dirty) => ({
                                 ...dirty,
-                                companyName: false,
+                                company_id: !ifEmpty(e.target.value),
                               }));
                             }}
                           >
@@ -185,43 +164,41 @@ function CompanyAdd() {
                           required
                           fullWidth
                           id="country"
-                          label="tittle"
+                          label="Title"
                           name="country"
+                          value={state}
                           onChange={(e) => {
                             setState(e.target.value);
                             setDirtyFields((dirty) => ({
                               ...dirty,
-                              country: !ifEmpty(e.target.value),
+                              state: !ifEmpty(e.target.value),
                             }));
                           }}
                         />
                       </Grid>
-
-                      <Grid item xs={6} sm={6}>
-                        <Button
-                          variant="contained"
-                          component="label"
-                          sx={{ mb: 3, mt: 3 }}
-                        >
-                          Upload Logo
-                          <input
-                            name="logo"
-                            hidden
-                            accept="image/*"
-                            multiple
-                            type="file"
-                          />
-                        </Button>
+                      <Grid item xs={6} sm={6} sx={{ mb: 2 }}>
+                        <input
+                          type="file"
+                          name="picture"
+                          id="picture"
+                          ref={fileInput}
+                          onChange={(e: any) => {
+                            setLogo(e.target.files[0]);
+                          }}
+                        
+                          className="form-control"
+                        />
                       </Grid>
                     </Grid>
                     <Divider />
                     <Toolbar sx={{ ml: 0, pl: "0 !important" }}>
                       <Button
+                        disabled={!isValidData()}
                         onClick={handleSubmit}
                         type="submit"
                         variant="contained"
                       >
-                        Update
+                        Submit
                       </Button>
                       <Button
                         variant="contained"

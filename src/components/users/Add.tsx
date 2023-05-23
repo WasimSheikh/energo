@@ -19,7 +19,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { Link, useNavigate } from "react-router-dom";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import { store } from '../../redux/store';
@@ -53,7 +53,7 @@ function UserAdd() {
   const [state, setState] = useState('')
   const [errorMessages, setErrorMessages] = useState('');
   const [companies, setCompanies] = React.useState([]);
-   const [file, setFile] = useState();
+   const [file, setFile] = useState('');
   const [dirtyFields, setDirtyFields] = useState({
     first_name:false,
     companyname:false,
@@ -91,7 +91,7 @@ function UserAdd() {
     const validateFields = ifEmpty( firstName && lastName && phone && address && street && city && country && company_id && permission && postalCode );
     return validateFields;
   };
-
+  const fileInput = useRef<any | null>(null);
   const selectChange = (event: SelectChangeEvent) => {
     setCompanyId(event.target.value);
   };
@@ -102,26 +102,26 @@ function UserAdd() {
   const handleSubmit = (e:any) => {
     e.preventDefault();
     if(isValidData()){
-      const formData = {
-        company_id:company_id,
-        first_name: firstName,
-        last_name:lastName,
-        global_user:globalUser,
-        phone:phone,
-        email:email,
-        address:address,
-        street:street,
-        city:city,
-        country:country,
-        password:password,
-        permission: permission,
-        zipcode:postalCode,
-        profile_picture:file,   
-      } 
-      
+
+      const formData = new FormData();
+      formData.append("company_id", company_id);
+      formData.append("first_name", firstName);
+      formData.append("last_name", lastName);
+      formData.append("global_user", globalUser);
+      formData.append("phone", phone);
+      formData.append("email", email);
+      formData.append("address", address);
+      formData.append("street", street);
+      formData.append("city", city);
+      formData.append("country", country);
+      formData.append("password", password);
+      formData.append("permission", permission);
+      formData.append("zipcode", postalCode);
+      formData.append("profile_picture", file);
+      formData.append("state", state);
       store.dispatch(createUser(formData)).then((res: any) => {
-        if (res.payload.status == true) {
-          toast.success(res.payload?.message)
+        if (res.payload.data.status == true) {
+          toast.success(res.payload?.data?.message)
           navigate("/users");
         } else {
           toast.error(res.payload?.message)
@@ -158,7 +158,7 @@ function UserAdd() {
   useEffect(() => {
     getCountrieData();
     getCityiesData();
-  });
+  }, []);
   const renderErrorMessage = () =>
   errorMessages && (
     <div className="error">{errorMessages}</div>
@@ -411,9 +411,9 @@ const getError = (msg: string): JSX.Element => {
 
                       <Grid item xs={6} sm={6} mt={2}>
                         <FormControl fullWidth>
-                          <InputLabel id="State">City</InputLabel>
+                          <InputLabel id="City">City</InputLabel>
                           <Select
-                            labelId="State"
+                            labelId="City"
                             required
                             id="City"
                             value={city}
@@ -506,13 +506,14 @@ const getError = (msg: string): JSX.Element => {
                                 </FormControl>
                       </Grid>
                       <Grid item xs={6} sm={6}>
-                        {/* <Button variant="contained" component="label" sx={{ mb: 3 }}> */}
-                     
-                        <p>  Upload profile</p>
-                          {/* <input type="file"  name='logo' hidden accept="image/*" multiple  /> */}
-                          <input type="file"   name='file' onChange={handleFileChange}
+                        <input
+                          type="file"
+                          ref={fileInput}
+                          onChange={(e: any) => {
+                            setFile(e.target.files[0]);
+                          }}
+                          className="form-control"
                         />
-                    {/* </Button> */}
                       </Grid>
                      </Grid>
                     

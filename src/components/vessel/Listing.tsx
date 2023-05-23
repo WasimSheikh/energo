@@ -97,7 +97,7 @@ const columns: GridColDef[] = [
   },
 
   {
-    field: 'Company Name',
+    field: 'company.title',
     headerName: 'Company Name',
     width: 140,
   },

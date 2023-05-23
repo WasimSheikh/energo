@@ -85,7 +85,7 @@ function CompanyAdd() {
 
   var token = localStorage.getItem("access_token");
 
-  var token = localStorage.getItem("access_token");
+
   const handleSubmit = (e: any) => {
     e.preventDefault();
     const headers = {
@@ -105,7 +105,7 @@ function CompanyAdd() {
     formData.append("state", state);
     formData.append("zipcode", postalCode);
     formData.append("country", country);
-    formData.append("logo", src);
+    formData.append("logopath", src);
     formData.append("isHeadquater", isHeadauator);
     formData.append("postalcode", postalCode);
 
@@ -186,7 +186,7 @@ function CompanyAdd() {
     getCountrieData();
     getCityiesData();
   });
-  console.log(src, "ahjfads");
+  console.log(state, "ahjfads");
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: "flex" }}>
@@ -228,46 +228,7 @@ function CompanyAdd() {
                     sx={{ mt: 1 }}
                   >
                     <Grid container spacing={2} rowSpacing={1}>
-                      <Grid item xs={6} sm={6}>
-                        <TextField
-                          margin="normal"
-                          id="first_name"
-                          required
-                          name="first_name"
-                          label="First Name"
-                          fullWidth
-                          onChange={(e) => {
-                            setFirstName(e.target.value);
-                            setDirtyFields((dirty) => ({
-                              ...dirty,
-                              first_name: !ifEmpty(e.target.value),
-                            }));
-                          }}
-                        />
-
-                        {dirtyFields["first_name"] &&
-                          getError("FirstName is requried")}
-                      </Grid>
-                      <Grid item xs={6} sm={6}>
-                        <TextField
-                          margin="normal"
-                          id="last_name"
-                          required
-                          name="last_name"
-                          label="Last Name"
-                          fullWidth
-                          onChange={(e) => {
-                            setLastName(e.target.value);
-                            setDirtyFields((dirty) => ({
-                              ...dirty,
-                              last_name: !ifEmpty(e.target.value),
-                            }));
-                          }}
-                        />
-
-                        {dirtyFields["last_name"] &&
-                          getError("LastName is requried")}
-                      </Grid>
+                      
                       <Grid item xs={6} sm={6}>
                         <TextField
                           margin="normal"
@@ -307,6 +268,46 @@ function CompanyAdd() {
 
                         {dirtyFields["website"] &&
                           getError("Website is required ")}
+                      </Grid>
+                      <Grid item xs={6} sm={6}>
+                        <TextField
+                          margin="normal"
+                          id="first_name"
+                          required
+                          name="first_name"
+                          label="First Name"
+                          fullWidth
+                          onChange={(e) => {
+                            setFirstName(e.target.value);
+                            setDirtyFields((dirty) => ({
+                              ...dirty,
+                              first_name: !ifEmpty(e.target.value),
+                            }));
+                          }}
+                        />
+
+                        {dirtyFields["first_name"] &&
+                          getError("FirstName is requried")}
+                      </Grid>
+                      <Grid item xs={6} sm={6}>
+                        <TextField
+                          margin="normal"
+                          id="last_name"
+                          required
+                          name="last_name"
+                          label="Last Name"
+                          fullWidth
+                          onChange={(e) => {
+                            setLastName(e.target.value);
+                            setDirtyFields((dirty) => ({
+                              ...dirty,
+                              last_name: !ifEmpty(e.target.value),
+                            }));
+                          }}
+                        />
+
+                        {dirtyFields["last_name"] &&
+                          getError("LastName is requried")}
                       </Grid>
                       <Grid item xs={6} sm={6}>
                         <TextField
