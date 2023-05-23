@@ -141,7 +141,7 @@ function CompanyAdd() {
                     color="primary"
                     gutterBottom
                   >
-                    Edit Vessel
+                    Add Vessel
                   </Typography>
                   <Divider />
                   <Box

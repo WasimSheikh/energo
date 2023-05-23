@@ -76,7 +76,7 @@ export const login = createAsyncThunk('login', async (user: User) => {
     });
 })
 
-export const createCompany = createAsyncThunk('Create_company', async (company: Company) => {
+export const createCompany = createAsyncThunk('Create_company', async (company: any) => {
     return await fetch(apiEndPoint+'/createCompany', {
         method: 'POST',
         headers: {
@@ -633,7 +633,7 @@ export const StatusCountry = createAsyncThunk('StatusCountry', async (data:any) 
 // add some city api code here
 export const getCities = createAsyncThunk('getCities', async () => {
     return await fetch(apiEndPoint+'/getCities', {
-        method: 'GET',
+        method: 'POST',
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',

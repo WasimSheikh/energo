@@ -23,7 +23,7 @@ import React, { useEffect, useState } from 'react';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import { store } from '../../redux/store';
-import { createUser,getCompanies } from '../../redux/store/reducers/slices/UserSlice';
+import { createUser,getCities,getCompanies, getCountries, getCountryStates } from '../../redux/store/reducers/slices/UserSlice';
 import { toast } from 'react-toastify';
 import { ifEmpty } from '../utils/FormUtils';
 
@@ -40,7 +40,10 @@ function UserAdd() {
   const [city,setCity] = useState('');
   const [country,setCountry] = useState('');
   const [password,setPassword] = useState('');
+  const [countries, setCountries] = useState([]);
   const [postalCode,setPostalCode] = useState('');
+  const [stateId, setStateId] = useState([]);
+  const [cityId, setCityId] = useState([]);
   const [firstName,setFirstName] = useState('');
   const [lastName,setLastName] = useState('');
   const [profilePicture,setProfilePicture] = useState('files');
@@ -129,11 +132,48 @@ function UserAdd() {
     }     
 
   };
+  function getCountryStatesByCountry(e: any) {
+    const formDate = {
+      country_id: e,
+    };
+    store.dispatch(getCountryStates(formDate)).then((res: any) => {
+      setStateId(res.payload.states);
+    });
+  }
+
+  function getCountrieData() {
+    if (countries.length == 0) {
+      store.dispatch(getCountries()).then((res: any) => {
+        setCountries(res.payload.countries);
+      });
+    }
+  }
+  function getCityiesData() {
+    
+      store.dispatch(getCities()).then((res: any) => {
+      setCityId(res.payload.cities);
+      });
+    
+  }
+  useEffect(() => {
+    getCountrieData();
+    getCityiesData();
+  });
   const renderErrorMessage = () =>
   errorMessages && (
     <div className="error">{errorMessages}</div>
   );
+  const selectCuntry = (event: SelectChangeEvent) => {
+    setCountry(event.target.value);
+    getCountryStatesByCountry(event.target.value);
+  };
 
+  const selectState = (event: SelectChangeEvent) => {
+    setState(event.target.value);
+  };
+  const selectCity = (event: SelectChangeEvent) => {
+    setCity(event.target.value);
+  };
  
 
 const getError = (msg: string): JSX.Element => {
@@ -287,8 +327,7 @@ const getError = (msg: string): JSX.Element => {
                            {dirtyFields["phone"] && getError("Phone is requried")}
 
                       </Grid>
-                      <Grid item xs={6} sm={6}> 
-                      </Grid>
+            
                       <Grid item xs={6} sm={6}>
                         <TextField
                               margin="normal"
@@ -329,26 +368,68 @@ const getError = (msg: string): JSX.Element => {
                                {dirtyFields["street"] && getError("Street is requried")}
 
                       </Grid>
-                      <Grid item xs={6} sm={6}>
-                        <TextField
-                              margin="normal"
-                              required
-                              fullWidth
-                              id="city"
-                              label="City"
-                              name="city"
-                              onChange={(e) => {
-                                setCity(e.target.value);
-                                setDirtyFields((dirty) => ({
-                                  ...dirty,
-                                  city: !ifEmpty(e.target.value),
-                                }));
-                              }}
-                            />
-
-                               {dirtyFields["city"] && getError("City is requried")}
-
+                      <Grid item xs={6} sm={6} mt={2}>
+                        <FormControl fullWidth>
+                          <InputLabel id="Country">Country</InputLabel>
+                          <Select
+                            labelId="Country"
+                            required
+                            id="Country"
+                            value={country}
+                            label="Country"
+                            onChange={selectCuntry}
+                          >
+                            <MenuItem value="">-Select-</MenuItem>
+                            {countries.map((city: any) => (
+                              <MenuItem key={city.id} value={city.id}>
+                                {city.title}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
                       </Grid>
+                      <Grid item xs={6} sm={6} mt={2}>
+                        <FormControl fullWidth>
+                          <InputLabel id="State">State</InputLabel>
+                          <Select
+                            labelId="State"
+                            required
+                            id="State"
+                            value={state}
+                            label="State"
+                            onChange={selectState}
+                          >
+                            <MenuItem value="">-Select-</MenuItem>
+                            {stateId?.map((item: any) => (
+                              <MenuItem key={item.id} value={item.id}>
+                                {item.name}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </Grid>
+
+                      <Grid item xs={6} sm={6} mt={2}>
+                        <FormControl fullWidth>
+                          <InputLabel id="State">City</InputLabel>
+                          <Select
+                            labelId="State"
+                            required
+                            id="City"
+                            value={city}
+                            label="City"
+                            onChange={selectCity}
+                          >
+                            <MenuItem value="">-Select-</MenuItem>
+                            {cityId?.map((item: any) => (
+                              <MenuItem key={item.id} value={item.id}>
+                                {item.name}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </Grid>
+                      
                       <Grid item xs={6} sm={6}>
                       <TextField
                             margin="normal"
@@ -367,46 +448,6 @@ const getError = (msg: string): JSX.Element => {
                           />
 
                              {dirtyFields["postalCode"] && getError("PostalCode is requried")}
-
-                      </Grid>
-                      <Grid item xs={6} sm={6}>
-                      <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="country"
-                            label="Country"
-                            name="country"
-                            onChange={(e) => {
-                              setCountry(e.target.value);
-                              setDirtyFields((dirty) => ({
-                                ...dirty,
-                                country: !ifEmpty(e.target.value),
-                              }));
-                            }}
-                          />
-
-                             {dirtyFields["country"] && getError("Country is requried")}
-
-                        </Grid>
-                        <Grid item xs={6} sm={6}>
-                        <TextField
-                          margin="normal"
-                          required
-                          fullWidth
-                          id="country"
-                          label="State"
-                          name="country"
-                          onChange={(e) => {
-                            setState(e.target.value);
-                            setDirtyFields((dirty) => ({
-                              ...dirty,
-                              country: !ifEmpty(e.target.value),
-                            }));
-                          }}
-                        />
-
-                         {dirtyFields["country"] && getError("Country is requried")}
 
                       </Grid>
                     </Grid>

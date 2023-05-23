@@ -58,6 +58,7 @@ function CompanyView() {
         setOnload(true);
         if (res && res.payload) {
           setId(res.payload.id);
+       
           setCompanyName(res.payload.company.title);
           setEmail(res.payload.company?.email);
           setPhone(res.payload.company?.phone);

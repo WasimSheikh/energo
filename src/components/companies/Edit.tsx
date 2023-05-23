@@ -15,11 +15,14 @@ import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { updateCompany, getCompany } from '../../redux/store/reducers/slices/UserSlice';
+import { updateCompany, getCompany, getCountryStates, getCountries, getCities } from '../../redux/store/reducers/slices/UserSlice';
 import { store } from '../../redux/store';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
 const mdTheme = createTheme();
 
 function CompanyEdit() {
@@ -35,12 +38,16 @@ function CompanyEdit() {
     const [country,setCountry] = useState('');
     const [postalCode,setPostalCode] = useState('');
     const [logo,setLogo] = useState('');
-
+    const [firstName,setFirstName] = useState('');
+    const [countries, setCountries] = useState([]);
+    const [lastName,setLastName] = useState('');
     const [isHeadauator,setIsHeadauator] = useState(true);
     const [checked,setchecked] = useState('');
     const [state, setState] = useState('')
     const [onload,setOnload] = useState(false);
     const [errorMessages, setErrorMessages] = useState('');
+    const [stateId, setStateId] = useState([]);
+    const [cityId, setCityId] = useState([]);
     const [dirtyFields, setDirtyFields] = useState({
       email: false,
       companyName:false,
@@ -52,6 +59,8 @@ function CompanyEdit() {
       country:false,
       logo:false,
       // isHeadauator:false,
+      first_name:false,
+      last_name:false,
       zipcode:false,
     });
   
@@ -73,6 +82,7 @@ function CompanyEdit() {
       street:address2,
       zipcode:postalCode,
       city:city,
+      state:state,  
       country:country,
       logo:logo,
       is_headquater:isHeadauator,
@@ -108,7 +118,25 @@ function CompanyEdit() {
       </span>
     );
   };
+  function getCountryStatesByCountry(e: any) {
+    const formDate = {
+      country_id: e,
+    };
+    store.dispatch(getCountryStates(formDate)).then((res: any) => {
+      setStateId(res.payload.states);
+    });
+  }
+  const selectCuntry = (event: SelectChangeEvent) => {
+    setCountry(event.target.value);
+    getCountryStatesByCountry(event.target.value);
+  };
 
+  const selectState = (event: SelectChangeEvent) => {
+    setState(event.target.value);
+  };
+  const selectCity = (event: SelectChangeEvent) => {
+    setCity(event.target.value);
+  };
   useEffect(() => {
     if(onload==false){
       setOnload(true);
@@ -116,15 +144,18 @@ function CompanyEdit() {
       const formData = {id:companyId};  
       store.dispatch(getCompany(formData)).then((res: any) => { 
            if(res && res.payload) {
+            console.log(res.payload.company, 'sadff')
               setId(res.payload.company?.id);
               setCompanyName(res.payload.company?.title);
+              setFirstName(res.payload.company?.first_name);
+              setLastName(res.payload.company?.last_name);
               setEmail(res.payload.company?.email);
               setPhone(res.payload.company?.phone);
               setWebsite(res.payload.company?.website);
               setAddress1(res.payload.company?.address?.address);
               setAddress2(res.payload.company?.address?.street);
               setCity(res.payload.company.address?.city);
-              setCountry(res.payload.company?.address?.country);
+              setCountry('4');
               setPostalCode(res.payload.company?.address?.zipcode);
               setLogo(res.payload.company?.logo);
               setchecked(res.payload.company?.is_headquater)
@@ -138,7 +169,25 @@ function CompanyEdit() {
        }); 
       }
    });
-
+   function getCountrieData() {
+    if (countries.length == 0) {
+      store.dispatch(getCountries()).then((res: any) => {
+        setCountries(res.payload.countries);
+      });
+    }
+  }
+  function getCityiesData() {
+    if (countries.length == 0) {
+      store.dispatch(getCities()).then((res: any) => {
+      setCityId(res.payload.cities);
+      });
+    }
+  }
+  useEffect(() => {
+    getCountrieData();
+    getCityiesData();
+  });
+console.log(country, 'dfsaddfsdfsdfs')
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>
@@ -167,7 +216,49 @@ function CompanyEdit() {
                 </Typography>
                 <Divider />
                   <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
-                  <Grid container spacing={2} rowSpacing={1} >
+                  <Grid container spacing={2} rowSpacing={1}>
+                  <Grid item xs={6} sm={6}>
+                          <TextField
+                            margin="normal"
+                            id="first_name"
+                            required
+                            name="first_name"
+                            value={firstName}
+                            label="First Name"
+                            fullWidth
+                            onChange={(e) => {
+                              setFirstName(e.target.value);
+                              setDirtyFields((dirty) => ({
+                                ...dirty,
+                                first_name: !ifEmpty(e.target.value),
+                              }));
+                            }}
+                          />
+
+                             {dirtyFields["first_name"] && getError("FirstName is requried")}
+
+                      </Grid>
+                      <Grid item xs={6} sm={6}>
+                          <TextField
+                            margin="normal"
+                            id="last_name"
+                            required
+                            name="last_name"
+                            value={lastName}
+                            label="Last Name"
+                            fullWidth
+                            onChange={(e) => {
+                              setLastName(e.target.value);
+                              setDirtyFields((dirty) => ({
+                                ...dirty,
+                                last_name: !ifEmpty(e.target.value),
+                              }));
+                            }}
+                          />
+
+                             {dirtyFields["last_name"] && getError("LastName is requried")}
+
+                      </Grid>
                       <Grid item xs={6} sm={6}>
                           <TextField
                             margin="normal"
@@ -282,45 +373,68 @@ function CompanyEdit() {
                             />
                             {dirtyFields["street"] && getError("Street is requried")}
                       </Grid>
-                      <Grid item xs={6} sm={6}>
-                        <TextField
-                              margin="normal"
-                              required
-                              fullWidth
-                              id="city"
-                              value={city}
-                              label="City"
-                              name="city"
-                              onChange={(e) => {
-                                setCity(e.target.value);
-                                setDirtyFields((dirty) => ({
-                                  ...dirty,
-                                  city: !ifEmpty(e.target.value),
-                                }));
-                              }}
-                            />
-                            {dirtyFields["city"] && getError("City is requried")}
+                      <Grid item xs={6} sm={6} mt={2}>
+                        <FormControl fullWidth>
+                          <InputLabel id="Country">Country</InputLabel>
+                          <Select
+                            labelId="Country"
+                            required
+                            id="Country"
+                            value={country}
+                            label="Country"
+                            onChange={selectCuntry}
+                          >
+                            <MenuItem value="">-Select-</MenuItem>
+                            {countries.map((city: any) => (
+                              <MenuItem key={city.id} value={city.id}>
+                                {city.id}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
                       </Grid>
-                         <Grid item xs={6} sm={6}>
-                        <TextField
-                          margin="normal"
-                          required
-                          fullWidth
-                          id="country"
-                          label="State"
-                          name="country"
-                          onChange={(e) => {
-                            setState(e.target.value);
-                            setDirtyFields((dirty) => ({
-                              ...dirty,
-                              country: !ifEmpty(e.target.value),
-                            }));
-                          }}
-                        />
-
-                         {dirtyFields["country"] && getError("Country is required ")}
-
+                      <Grid item xs={6} sm={6} mt={2}>
+                        <FormControl fullWidth>
+                          <InputLabel id="State">State</InputLabel>
+                          <Select
+                            labelId="State"
+                            required
+                            id="State"
+                            value={state}
+                            label="State"
+                            onChange={selectState}
+                          >
+                            <MenuItem value="">-Select-</MenuItem>
+                            {stateId?.map((item: any) => (
+                              <MenuItem key={item.id} value={item.id}>
+                                {item.name}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
                       </Grid>
+
+                      <Grid item xs={6} sm={6} mt={2}>
+                        <FormControl fullWidth>
+                          <InputLabel id="State">City</InputLabel>
+                          <Select
+                            labelId="State"
+                            required
+                            id="City"
+                            value={city}
+                            label="City"
+                            onChange={selectCity}
+                          >
+                            <MenuItem value="">-Select-</MenuItem>
+                            {cityId?.map((item: any) => (
+                              <MenuItem key={item.id} value={item.id}>
+                                {item.name}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </Grid>
+                       
                       <Grid item xs={6} sm={6}>
                       <TextField
                             margin="normal"
@@ -340,25 +454,7 @@ function CompanyEdit() {
                           />
                           {dirtyFields["zipcode"] && getError("Zipcode is requried")}
                       </Grid>
-                      <Grid item xs={6} sm={6}>
-                      <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            value={country}
-                            id="country"
-                            label="Country"
-                            name="country"
-                            onChange={(e) => {
-                              setCountry(e.target.value);
-                              setDirtyFields((dirty) => ({
-                                ...dirty,
-                                country: !ifEmpty(e.target.value),
-                              }));
-                            }}
-                          />
-                          {dirtyFields["country"] && getError("Country is requried")}
-                        </Grid>
+                   
                         <Grid item xs={2} sm={6} mt={2}>
                         <FormControlLabel
                             control={
