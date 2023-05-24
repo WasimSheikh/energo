@@ -532,6 +532,8 @@ function CompanyEdit() {
                           className="form-control"
                           multiple
                         />
+
+  
                         <img
                           src={image}
                           alt="img"
