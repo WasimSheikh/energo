@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import axios from 'axios';
 import { AppUser, Permission, Role, User, Company ,ShareEmail, Vessel} from './../../../../model/User';
 
 const localEndPoint="http://localhost:8080";
@@ -6,17 +7,27 @@ const buildEndPoint="/apis"
 const apiEndPoint='https://laravel.cppatidar.com/energo/backend/api'//detectEnvURL();
 var token = localStorage.getItem("access_token");
 
-export const createUser = createAsyncThunk('Create_user', async (user: User) => {
-    return await fetch(apiEndPoint+'/createUser', {
-        method: 'POST',
+// export const createUser = createAsyncThunk('Create_user', async (user: User) => {
+//     return await fetch(apiEndPoint+'/createUser', {
+//         method: 'POST',
+//         headers: {
+//             'Accept': 'application/json',
+//             'Content-Type': 'application/json',
+//               'Authorization': `${token}`,
+//         },
+//         body: JSON.stringify(user)
+//     }).then(res => {
+//         return res.json()
+//     });
+// })
+export const createUser = createAsyncThunk('Create_user', async (user: any) => {
+    return await axios.post(apiEndPoint + '/createUser', user, {
         headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-              'Authorization': `${token}`,
+            "Content-Type": "multipart/form-data",
+            'Authorization': `${token}`,
         },
-        body: JSON.stringify(user)
     }).then(res => {
-        return res.json()
+        return res;
     });
 })
 
@@ -76,7 +87,7 @@ export const login = createAsyncThunk('login', async (user: User) => {
     });
 })
 
-export const createCompany = createAsyncThunk('Create_company', async (company: Company) => {
+export const createCompany = createAsyncThunk('Create_company', async (company: any) => {
     return await fetch(apiEndPoint+'/createCompany', {
         method: 'POST',
         headers: {
@@ -90,45 +101,64 @@ export const createCompany = createAsyncThunk('Create_company', async (company: 
     });
 })
 
-export const updateCompany = createAsyncThunk('Update_company', async (company: Company) => {
-    return await fetch(apiEndPoint+'/updateCompany', {
-        method: 'POST',
+// export const updateCompany = createAsyncThunk('Update_company', async (company: Company) => {
+//     return await fetch(apiEndPoint+'/updateCompany', {
+//         method: 'POST',
+//         headers: {
+//             'Accept': 'application/json',
+//             'Content-Type': 'application/json',
+//               'Authorization': `${token}`,
+//         },
+//         body: JSON.stringify(company)
+//     }).then(res => {
+//         return res.json()
+//     });
+// })
+export const updateCompany = createAsyncThunk('Update_company', async (company: any) => {
+    return await axios.post(apiEndPoint + '/updateCompany', company, {
         headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-              'Authorization': `${token}`,
+            "Content-Type": "multipart/form-data",
+            'Authorization': `${token}`,
         },
-        body: JSON.stringify(company)
     }).then(res => {
-        return res.json()
+        return res;
     });
 })
-export const updateVessel = createAsyncThunk('Update_vessel', async (Vessel: Vessel) => {
-    return await fetch(apiEndPoint+'/updateVessel', {
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-              'Authorization': `${token}`,
-        },
-        body: JSON.stringify(Vessel)
-    }).then(res => {
-        return res.json()
-    });
-})
-export const createVessel = createAsyncThunk('Create_vessel', async (Vessel: Vessel) => {
+export const createVessel11 = createAsyncThunk('Create_vessel', async (Vessel: Vessel) => {
     return await fetch(apiEndPoint+'/createVessel', {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-              'Authorization': `${token}`,
+            'Authorization': `${token}`,
         },
         body: JSON.stringify(Vessel)
     }).then(res => {
         return res.json()
     });
 })
+
+export const createVessel = createAsyncThunk('Create_vessel', async (Vessel: any) => {
+    return await axios.post(apiEndPoint + '/createVessel', Vessel, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+            'Authorization': `${token}`,
+        },
+    }).then(res => {
+        return res;
+    });
+})
+export const updateVessel = createAsyncThunk('Update_vessel', async (Vessel: any) => {
+    return await axios.post(apiEndPoint + '/updateVessel', Vessel, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+            'Authorization': `${token}`,
+        },
+    }).then(res => {
+        return res;
+    });
+})
+
 export const updateUser = createAsyncThunk('Update_user', async (user: User) => {
     
     return await fetch(apiEndPoint+'/updateUser', {
@@ -479,17 +509,27 @@ export const getDocuments = createAsyncThunk('get_Documents', async (data:any) =
         return res.json()
     });
 })
-export const uploadeImage = createAsyncThunk('uploade_Image', async (data:any) => {
-    return await fetch(apiEndPoint+'/uploadeImage', {
-        method: 'POST',
+// export const uploadeImage = createAsyncThunk('uploade_Image', async (data:any) => {
+//     return await fetch(apiEndPoint+'/uploadeImage', {
+//         method: 'POST',
+//         headers: {
+//             'Accept': 'application/json',
+//             'Content-Type': 'application/json',
+//               'Authorization': `${token}`,
+//         },
+//         body: JSON.stringify(data)
+//     }).then(res => {
+//         return res.json()
+//     });
+// })
+export const uploadeImage = createAsyncThunk('uploade_Image', async (user: any) => {
+    return await axios.post(apiEndPoint + '/uploadeImage', user, {
         headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-              'Authorization': `${token}`,
+            "Content-Type": "multipart/form-data",
+            'Authorization': `${token}`,
         },
-        body: JSON.stringify(data)
     }).then(res => {
-        return res.json()
+        return res;
     });
 })
 export const statusUpdate = createAsyncThunk('status_User', async (data:any) => {
@@ -633,7 +673,7 @@ export const StatusCountry = createAsyncThunk('StatusCountry', async (data:any) 
 // add some city api code here
 export const getCities = createAsyncThunk('getCities', async () => {
     return await fetch(apiEndPoint+'/getCities', {
-        method: 'GET',
+        method: 'POST',
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',

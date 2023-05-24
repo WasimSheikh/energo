@@ -87,26 +87,26 @@ const mdTheme = createTheme();
 const columns: GridColDef[] = [
   { field: 'id',
    headerName: 'S.No.',
-    width: 40,
+    width: 100,
     renderCell: (index:any) => index.api.getRowIndex(index.row.id) + 1,
   },
   {
     field: 'title',
     headerName: 'Title',
-    width: 140,
+    width: 180,
   },
 
   {
-    field: 'Company Name',
+    field: 'company_title',
     headerName: 'Company Name',
-    width: 140,
+    width: 240,
   },
 
  
    {
     field: 'is_active',
     headerName: 'Status',
-    width: 100,
+    width: 130,
     sortable: false,
     renderCell: (params) => {
       return (
@@ -121,7 +121,7 @@ const columns: GridColDef[] = [
   {
     field: 'action',
     headerName: 'Action',
-    width: 220,
+    width: 180,
     sortable: false,
     renderCell: (params) => {
       return (

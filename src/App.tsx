@@ -41,6 +41,7 @@ import CityAdd from './components/cities/Add';
 import EditCity from './components/cities/Edit';
 import EditVessel from './components/vessel/Edit';
 import AddVessel from './components/vessel/Add';
+import ViewVessel from './components/vessel/View';
 import StateAdd from './components/states/StateAdd';
 import StateEdit from './components/states/StateEdit';
 import StatesList from './components/states/StateListing';
@@ -89,6 +90,7 @@ function App() {
           <Route path="companies" element={<Compaines />} />
           <Route path="vessel" element={<VesselList />} />
           <Route path="vessel/edit/:vesselId" element={<EditVessel />} />
+          <Route path="vessel/view/:vesselId" element={<ViewVessel />} />
           <Route path="companies/edit/:companyId" element={<EditCompany />} />
           <Route path="companies/add" element={<AddCompany />} />
           <Route path="vessel/add" element={<AddVessel />} />

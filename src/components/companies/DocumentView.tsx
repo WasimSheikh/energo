@@ -11,6 +11,7 @@ import Divider from "@mui/material/Divider";
 import Footer from "../common/Footer";
 import Header from "../common/Header";
 import TextField from "@mui/material/TextField";
+import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -39,6 +40,7 @@ export default function ShareAdd() {
   const [description, setDescription] = useState("");
   const [documents, setDocuments] = useState([]);
   const [folderName, setFolderName] = useState('');
+  const [folderdetail,setFolderdetail] = useState([]);
   const [errorMessages, setErrorMessages] = useState("");
   const cards = [1];
   const [companyID,setCompanyId]=useState('')
@@ -70,6 +72,7 @@ export default function ShareAdd() {
       if(res.payload.status == true){
         setDocuments(res.payload.folders.media)
         setFolderName(res.payload.folders.title)
+        setFolderdetail(res.payload.folders.media)
         // toast.success(res.payload.message)
       }else{
         toast.error(res.payload.message)
@@ -84,7 +87,8 @@ export default function ShareAdd() {
   function back(){
     navigate(`/companies/document/${params.companyId}`)
   }
-
+  console.log(folderdetail, 'media');
+const companiesss:any = [];
 const imagesData = cards.map((card)=>{
   return(
     <div className="container mt-4" key={card}>
@@ -95,7 +99,29 @@ const imagesData = cards.map((card)=>{
 
   )
 })
-
+const columns: GridColDef[] = [
+  { field: 'id',
+   headerName: 'S.No.',
+    width: 100,
+    renderCell: (index:any) => index.api.getRowIndex(index.row.id) + 1,
+  },
+  {
+    field: 'file_name',
+    headerName: 'File Name',
+    width: 400,
+  },
+  {
+    field: 'size',
+    headerName: 'File Size',
+    width: 220,
+  },
+  {
+    field: 'updated_at',
+    headerName: 'Last Modified',
+    width: 300,
+  }
+  
+];
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: "flex" }}>
@@ -148,9 +174,9 @@ const imagesData = cards.map((card)=>{
                               alt="Card image cap" style={{height: '150px'}} />
                               {/* </a> */}
                           
-                             <div className="card-body text-center">
-                             <Link to={res.original_url} target="_blank" download>  <DownloadForOfflineIcon/></Link>
-                             <a href={res.original_url} target="_blank" > <VisibilityIcon  /></a>
+                             <div className="card-body text-center my-cardItem">
+                             <Link to={res.original_url} target="_blank" download>  <DownloadForOfflineIcon className="icons-color"/></Link>
+                             <a href={res.original_url} target="_blank" > <VisibilityIcon  className="icons-color"/></a>
                              </div>
                           </div>
                             </div>
@@ -160,6 +186,14 @@ const imagesData = cards.map((card)=>{
                       </Grid>
                     </Grid>
                   </Box>
+                  <Box sx={{ height: 400, width: '100%' }}>
+                  <DataGrid
+                   rows={folderdetail}
+                   columns={columns}
+                    pageSize={5}
+                    rowsPerPageOptions={[5]}
+                  />
+                </Box>
                   <Divider />
                   <Toolbar sx={{ ml: 0, pl: "0 !important" }} className="mt-4">
                     <Button

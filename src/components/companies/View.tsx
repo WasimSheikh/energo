@@ -67,7 +67,7 @@ function CompanyView() {
           setCity(res.payload.company?.address?.city);
           setCountry(res.payload.company?.address?.country);
           setPostalCode(res.payload.company?.address?.zipcode);
-          setLogo(res.payload.company?.logopath);
+          setLogo(res.payload.company?.media_url);
           if (res.payload.company?.is_headquater == 1) {
             setIsHeadauator("Yes");
           } else {

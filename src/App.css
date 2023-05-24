@@ -69,3 +69,13 @@ input#checkBox {
   width: 36px;
   height: 16px;
 }
+.my-src-setup{
+  height: 100px;
+  width: auto;
+}
+.icons-color{
+  color: #0168d6 !important;
+}
+.my-cardItem{
+padding: 0.25rem !important;
+}
