@@ -43,6 +43,8 @@ function UserAdd() {
   const [countries, setCountries] = useState([]);
   const [postalCode,setPostalCode] = useState('');
   const [stateId, setStateId] = useState([]);
+  const [stateIdforcity, setStateIdForCity] = useState('');
+
   const [cityId, setCityId] = useState([]);
   const [firstName,setFirstName] = useState('');
   const [lastName,setLastName] = useState('');
@@ -88,7 +90,7 @@ function UserAdd() {
 
 
   const isValidData = ():boolean => {
-    const validateFields = ifEmpty( firstName && lastName && phone && address && street && city && country && company_id && permission && postalCode );
+    const validateFields = ifEmpty( firstName && lastName && phone && address && street && city && country && company_id && permission && postalCode && company_id);
     return validateFields;
   };
   const fileInput = useRef<any | null>(null);
@@ -120,11 +122,11 @@ function UserAdd() {
       formData.append("profile_picture", file);
       formData.append("state", state);
       store.dispatch(createUser(formData)).then((res: any) => {
-        if (res.payload.data.status == true) {
+        if (res.payload.data?.status == true) {
           toast.success(res.payload?.data?.message)
           navigate("/users");
         } else {
-          toast.error(res.payload?.message)
+          toast.error(res.payload?.data?.message)
         }
 
 
@@ -149,15 +151,21 @@ function UserAdd() {
     }
   }
   function getCityiesData() {
+    const formDate = {
+      country_id:country , 
+      state_id:state,
+    };
     
-      store.dispatch(getCities()).then((res: any) => {
+      store.dispatch(getCities(formDate)).then((res: any) => {
       setCityId(res.payload.cities);
       });
     
   }
   useEffect(() => {
-    getCountrieData();
     getCityiesData();
+  }, [state]);
+  useEffect(() => {
+    getCountrieData();
   }, []);
   const renderErrorMessage = () =>
   errorMessages && (
@@ -227,14 +235,14 @@ const getError = (msg: string): JSX.Element => {
                   <Grid container spacing={2} rowSpacing={1} >
                       <Grid item xs={6} sm={6} mt={2}>
                       <FormControl fullWidth >
-                      <InputLabel id="company_name_label">Company Name</InputLabel>
+                      <InputLabel id="company_name_label">Company Name *</InputLabel>
                       <Select
                         labelId="company_name_label"
                         required
                         id="company_name"
                         autoFocus
                         value={company_id}
-                        label="Company Name"
+                        label="Company Name "
                         onChange={selectChange}
                         onBlur={(e) =>{
                           setDirtyFields((dirty) => ({
@@ -271,7 +279,6 @@ const getError = (msg: string): JSX.Element => {
                             id="first_name"
                             required
                             name="first_name"
-                            
                             label="First Name"
                             fullWidth
                             onChange={(e) => {
@@ -370,7 +377,7 @@ const getError = (msg: string): JSX.Element => {
                       </Grid>
                       <Grid item xs={6} sm={6} mt={2}>
                         <FormControl fullWidth>
-                          <InputLabel id="Country">Country</InputLabel>
+                          <InputLabel id="Country">Country*</InputLabel>
                           <Select
                             labelId="Country"
                             required
@@ -390,7 +397,7 @@ const getError = (msg: string): JSX.Element => {
                       </Grid>
                       <Grid item xs={6} sm={6} mt={2}>
                         <FormControl fullWidth>
-                          <InputLabel id="State">State</InputLabel>
+                          <InputLabel id="State">State*</InputLabel>
                           <Select
                             labelId="State"
                             required
@@ -411,7 +418,7 @@ const getError = (msg: string): JSX.Element => {
 
                       <Grid item xs={6} sm={6} mt={2}>
                         <FormControl fullWidth>
-                          <InputLabel id="City">City</InputLabel>
+                          <InputLabel id="City">City*</InputLabel>
                           <Select
                             labelId="City"
                             required

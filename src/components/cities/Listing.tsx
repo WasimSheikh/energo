@@ -34,10 +34,12 @@ export default function CityList() {
   const [citiesDelete,setCitiesDelete] = useState(false);
   var permission:any =localStorage.getItem('permissions');
   function getCitiesList(){
-    store.dispatch(getCities()).then((res: any) => {
-        //if (res && res.payload?.permissions) {
+    const formDate = {
+      state_id:'',
+    };
+    
+    store.dispatch(getCities(formDate)).then((res: any) => {
           setCities(res.payload?.cities);
-        //} 
       }); 
 }
 function addPermission(){

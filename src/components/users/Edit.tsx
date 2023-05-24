@@ -19,7 +19,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { Link , useParams ,useNavigate} from "react-router-dom";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import { store } from '../../redux/store';
@@ -50,12 +50,14 @@ function UserEdit() {
   const [lastName,setLastName] = useState('');
   const [permission, setPermission] = useState('');
   const [globalUser, setGlobalUser] = useState('');
+  const [imagebinary, setImagebinary] = useState("");
   const [onload,setOnload] = useState(false);
   const [errorMessages, setErrorMessages] = useState('');
   const [companies, setCompanies] = React.useState([]);
-  const [changePassword, setChangePassword] =useState(false);
+  const [changePassword, setChangePassword] =useState <any>(false);
   const [boxValue,setBoxValue] = useState(false);
   const [stateId, setStateId] = useState([]);
+  const [image, setImage] = useState("");
   const [cityId, setCityId] = useState([]);
   const [countries, setCountries] = useState([]);
   const [state, setState] = useState('')
@@ -117,29 +119,47 @@ function UserEdit() {
   const handleSubmit = (e:any) => {
     e.preventDefault();
     if(isValidData()){
-    const formData = {
-      id:id,
-      company_id:company_id,
-      first_name: firstName,
-      last_name:lastName,
-      is_global:globalUser,
-      phone:phone,
-      email:email,
-      address:address1,
-      street:street,
-      city:city,
-      country:country,
-      zipcode:postalCode,
-      password:password,
-      permission: permission,
-      change_password:changePassword,
-    }     
+    // const formData = {
+    //   id:id,
+    //   company_id:company_id,
+    //   first_name: firstName,
+    //   last_name:lastName,
+    //   is_global:globalUser,
+    //   phone:phone,
+    //   email:email,
+    //   address:address1,
+    //   street:street,
+    //   city:city,
+    //   country:country,
+    //   zipcode:postalCode,
+    //   password:password,
+    //   permission: permission,
+    //   change_password:changePassword,
+    // }    
+    const formData = new FormData();
+    formData.append("id", id);
+    formData.append("company_id", company_id);
+    formData.append("first_name", firstName);
+    formData.append("last_name", lastName);
+    formData.append("is_global", globalUser);
+    formData.append("phone", phone);
+    formData.append("email", email);
+    formData.append("address", address1);
+    formData.append("street", street);
+    formData.append("city", city);
+    formData.append("state", state);
+    formData.append("country", country);
+    formData.append("password", password);
+    formData.append("permission", permission);
+    formData.append("zipcode", postalCode);
+    formData.append("profile_picture", imagebinary);
+    formData.append("change_password", changePassword); 
     store.dispatch(updateUser(formData)).then((res: any) => {
-      if (res.payload.status == true) {
-        toast.success(res.payload?.message)
+      if (res.payload?.data?.status == true) {
+        toast.success(res.payload?.data?.message)
         navigate("/users");
       } else {
-        toast.error(res.payload?.message)
+        toast.error(res.payload?.data?.message)
       }
     });                                     
   };
@@ -163,7 +183,11 @@ const getError = (msg: string): JSX.Element => {
     </span>
   );
 };
-
+const fileInput = useRef<any | null>(null);
+const handleChangeImgUrl = (e: any) => {
+  setImagebinary(e.target.files[0]);
+  setImage(URL.createObjectURL(e.target.files[0]));
+};
   useEffect(() => {
     if(onload==false){
       const userId = window.location.href.split('/')[5]
@@ -183,7 +207,7 @@ const getError = (msg: string): JSX.Element => {
               setCountry(res.payload.user?.address?.country);
               setPostalCode(res.payload.user?.address?.zipcode);
               setPermission(res.payload.user?.permission);
-             // setPassword(res.payload.user?.password);
+               setImage(res.payload.user?.image_url);
               setGlobalUser(res.payload.user?.globalUser);
               setState(res.payload.user?.address?.state);
               if(res.payload.user.is_global == '1'){
@@ -210,17 +234,24 @@ const getError = (msg: string): JSX.Element => {
     }
   }
   function getCityiesData() {
+    const formDate = {
+      country_id:country , 
+      state_id:state,
+    };
     
-      store.dispatch(getCities()).then((res: any) => {
+      store.dispatch(getCities(formDate)).then((res: any) => {
       setCityId(res.payload.cities);
       });
     
   }
+  useEffect(() => {
+    getCityiesData();
+  }, [state]);
    useEffect(() => {
     getCountrieData();
-    getCityiesData();
-  }, []);
 
+  }, []);
+console.log(image, 'image');
   return (
     <ThemeProvider theme={mdTheme}> 
       <Box sx={{ display: 'flex' }}>
@@ -475,7 +506,23 @@ const getError = (msg: string): JSX.Element => {
                              {dirtyFields["postalCode"] && getError("PostalCode is requried")}
                       </Grid>
                     
-                        <Grid item xs={6} sm={6}>
+                      <Grid item xs={6} sm={6}>
+                        <input
+                          type="file"
+                          ref={fileInput}
+                          onChange={handleChangeImgUrl}
+                          className="form-control"
+                          multiple
+                        />
+
+  
+                        <img
+                          src={image}
+                          alt="img"
+                          style={{ height: "100px", width: "auto" }}
+                          className="mt-3 mb-2 my-src-setup img-thumbnail"
+                        />
+                        <br />
                       </Grid>
                     </Grid>
                     <Typography component="h2" variant="h6" sx={{ mt: 1}} color="primary" gutterBottom>
