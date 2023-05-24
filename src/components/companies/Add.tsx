@@ -105,7 +105,7 @@ function CompanyAdd() {
     formData.append("state", state);
     formData.append("zipcode", postalCode);
     formData.append("country", country);
-    formData.append("logopath", src);
+    formData.append("logo", src);
     formData.append("isHeadquater", isHeadauator);
     formData.append("postalcode", postalCode);
 
@@ -155,6 +155,11 @@ function CompanyAdd() {
       });
     }
   }
+  function getCityByState(event: string) {
+    store.dispatch(getCities()).then((res: any) => {
+      setCityId(res.payload.cities);
+    });
+  } 
   function getCityiesData() {
     if (countries.length == 0) {
       store.dispatch(getCities()).then((res: any) => {
@@ -180,6 +185,7 @@ function CompanyAdd() {
   };
   const selectCity = (event: SelectChangeEvent) => {
     setCity(event.target.value);
+    getCityByState(event.target.value);
   };
 
   useEffect(() => {

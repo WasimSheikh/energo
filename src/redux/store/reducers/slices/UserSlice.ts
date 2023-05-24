@@ -101,20 +101,29 @@ export const createCompany = createAsyncThunk('Create_company', async (company: 
     });
 })
 
-export const updateCompany = createAsyncThunk('Update_company', async (company: Company) => {
-    return await fetch(apiEndPoint+'/updateCompany', {
-        method: 'POST',
+// export const updateCompany = createAsyncThunk('Update_company', async (company: Company) => {
+//     return await fetch(apiEndPoint+'/updateCompany', {
+//         method: 'POST',
+//         headers: {
+//             'Accept': 'application/json',
+//             'Content-Type': 'application/json',
+//               'Authorization': `${token}`,
+//         },
+//         body: JSON.stringify(company)
+//     }).then(res => {
+//         return res.json()
+//     });
+// })
+export const updateCompany = createAsyncThunk('Update_company', async (company: any) => {
+    return await axios.post(apiEndPoint + '/updateCompany', company, {
         headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-              'Authorization': `${token}`,
+            "Content-Type": "multipart/form-data",
+            'Authorization': `${token}`,
         },
-        body: JSON.stringify(company)
     }).then(res => {
-        return res.json()
+        return res;
     });
 })
-
 export const createVessel11 = createAsyncThunk('Create_vessel', async (Vessel: Vessel) => {
     return await fetch(apiEndPoint+'/createVessel', {
         method: 'POST',
@@ -500,17 +509,27 @@ export const getDocuments = createAsyncThunk('get_Documents', async (data:any) =
         return res.json()
     });
 })
-export const uploadeImage = createAsyncThunk('uploade_Image', async (data:any) => {
-    return await fetch(apiEndPoint+'/uploadeImage', {
-        method: 'POST',
+// export const uploadeImage = createAsyncThunk('uploade_Image', async (data:any) => {
+//     return await fetch(apiEndPoint+'/uploadeImage', {
+//         method: 'POST',
+//         headers: {
+//             'Accept': 'application/json',
+//             'Content-Type': 'application/json',
+//               'Authorization': `${token}`,
+//         },
+//         body: JSON.stringify(data)
+//     }).then(res => {
+//         return res.json()
+//     });
+// })
+export const uploadeImage = createAsyncThunk('uploade_Image', async (user: any) => {
+    return await axios.post(apiEndPoint + '/uploadeImage', user, {
         headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-              'Authorization': `${token}`,
+            "Content-Type": "multipart/form-data",
+            'Authorization': `${token}`,
         },
-        body: JSON.stringify(data)
     }).then(res => {
-        return res.json()
+        return res;
     });
 })
 export const statusUpdate = createAsyncThunk('status_User', async (data:any) => {

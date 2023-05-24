@@ -175,7 +175,9 @@ function CompanyAdd() {
                             }));
                           }}
                         />
+                         {dirtyFields["state"] && getError("Title is required ")}
                       </Grid>
+                     
                       <Grid item xs={6} sm={6} sx={{ mb: 2 }}>
                         <input
                           type="file"

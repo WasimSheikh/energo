@@ -23,7 +23,7 @@ import {
   getCities,
 } from "../../redux/store/reducers/slices/UserSlice";
 import { store } from "../../redux/store";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -43,15 +43,16 @@ function CompanyEdit() {
   const [city, setCity] = useState("");
   const [country, setCountry] = useState("");
   const [postalCode, setPostalCode] = useState("");
-  const [logo, setLogo] = useState("");
   const [firstName, setFirstName] = useState("");
   const [countries, setCountries] = useState([]);
   const [lastName, setLastName] = useState("");
-  const [isHeadauator, setIsHeadauator] = useState(true);
+  const [isHeadauator, setIsHeadauator] = useState<any>(true);
   const [checked, setchecked] = useState("");
   const [state, setState] = useState("");
+  const [imagebinary, setImagebinary] = useState("");
   const [onload, setOnload] = useState(false);
   const [errorMessages, setErrorMessages] = useState("");
+  const [image, setImage] = useState("");
   const [stateId, setStateId] = useState([]);
   const [cityId, setCityId] = useState([]);
   const [dirtyFields, setDirtyFields] = useState({
@@ -84,31 +85,52 @@ function CompanyEdit() {
     );
     return validateFields;
   };
-
+  const fileInput = useRef<any | null>(null);
+  const handleChangeImgUrl = (e: any) => {
+    setImagebinary(e.target.files[0]);
+    setImage(URL.createObjectURL(e.target.files[0]));
+  };
   const handleSubmit = (e: any) => {
     e.preventDefault();
     if (isValidData()) {
-      const formData = {
-        id: id,
-        title: companyName,
-        website: website,
-        phone: phone,
-        email: email,
-        address: address1,
-        street: address2,
-        zipcode: postalCode,
-        city: city,
-        state: state,
-        country: country,
-        logo: logo,
-        is_headquater: isHeadauator,
-      };
+      // const formData = {
+      //   id: id,
+      //   title: companyName,
+      //   website: website,
+      //   phone: phone,
+      //   email: email,
+      //   address: address1,
+      //   street: address2,
+      //   zipcode: postalCode,
+      //   city: city,
+      //   state: state,
+      //   country: country,
+      //   logo: imagebinary,
+      //   is_headquater: isHeadauator,
+      // };
+      const formData = new FormData();
+      formData.append("id", id);
+      formData.append("title", companyName);
+      formData.append("first_name", firstName);
+      formData.append("last_name", lastName);
+      formData.append("website", website);
+      formData.append("phone", phone);
+      formData.append("email", email);
+      formData.append("address", address1);
+      formData.append("street", address2);
+      formData.append("city", city);
+      formData.append("state", state);
+      formData.append("zipcode", postalCode);
+      formData.append("country", country);
+      formData.append("logo", imagebinary);
+      formData.append("is_headquater", isHeadauator);
+
       store.dispatch(updateCompany(formData)).then((res: any) => {
-        if (res.payload.status == true) {
-          toast.success(res.payload?.message);
+        if (res.payload?.data?.status == true) {
+          toast.success(res.payload?.data?.message);
           navigate("/companies");
         } else {
-          toast.error(res.payload?.message);
+          toast.error(res.payload?.data?.message);
         }
       });
     }
@@ -171,7 +193,7 @@ function CompanyEdit() {
           setCountry(res.payload.company.address?.country);
           setState(res.payload.company.address?.state);
           setPostalCode(res.payload.company?.address?.zipcode);
-          setLogo(res.payload.company?.media_url);
+          setImage(res.payload.company?.logo);
           setchecked(res.payload.company?.is_headquater);
           setIsHeadauator(res.payload.company?.is_headquater);
           if (res.payload.company.is_headquater == "1") {
@@ -503,6 +525,22 @@ function CompanyEdit() {
                       </Grid>
                       <Box></Box>
                       <Grid item xs={6} sm={6}>
+                        <input
+                          type="file"
+                          ref={fileInput}
+                          onChange={handleChangeImgUrl}
+                          className="form-control"
+                          multiple
+                        />
+                        <img
+                          src={image}
+                          alt="img"
+                          style={{ height: "100px", width: "auto" }}
+                          className="mt-3 mb-2 my-src-setup img-thumbnail"
+                        />
+                        <br />
+                      </Grid>
+                      {/* <Grid item xs={6} sm={6}>
                         <Box>
                       
                         <Button
@@ -521,7 +559,7 @@ function CompanyEdit() {
                         </Button>
                         </Box>
                      
-                      </Grid>
+                      </Grid> */}
                     </Grid>
                     <Divider />
                     <Toolbar sx={{ ml: 0, pl: "0 !important" }}>

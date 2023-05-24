@@ -26,7 +26,7 @@ import CloseIcon from '@mui/icons-material/Close'
 import TextField from '@mui/material/TextField';
 import React, { ChangeEvent, useEffect, useState, useRef } from 'react';
 import { useParams } from "react-router-dom";
-import { createCompanyFolder, getCompanyFolder, uploadeImage ,getRolehasPermission} from '../../redux/store/reducers/slices/UserSlice';
+import { createCompanyFolder, getCompanyFolder, uploadeImage ,getRolehasPermission, getCompany} from '../../redux/store/reducers/slices/UserSlice';
 import {  toast } from 'react-toastify';
 import { store } from '../../redux/store';
 import {useNavigate} from "react-router-dom"
@@ -63,8 +63,10 @@ export default function DocumentList(props:data) {
     const [ addFolders, setAddFolders]= useState([])
     const [ folderId, setFolderId]= useState('')
     const [ disabled, setDisabled]= useState(false)
-
-    
+    const [id, setId] = useState("");
+    const [companyName, setCompanyName] = useState("");
+    const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+    const [src, setSrc] = useState<any>([]);
     var noData:any=[1]
     var newArray:any =[]
     var foldersData:any =[]
@@ -100,23 +102,65 @@ export default function DocumentList(props:data) {
         }
       }
     };
-    
-    
+
+    useEffect(() => {
+ 
+      const companyId = window.location.href.split("/")[5];
+      const formData = { id: companyId };
+        store.dispatch(getCompany(formData)).then((res: any) => {
+          if (res && res.payload) {
+            console.log(res.payload, "sadff");
+            setId(res.payload.company?.id);
+            setCompanyName(res.payload.company?.title);
+          if (res.payload.company.is_headquater == "1") {
+              (document.getElementById("checkBox") as any).checked = true;
+            } else {
+              (document.getElementById("checkBox") as any).checked = false;
+            }
+          }
+        });
+     
+    });
+    const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+      if (event.target.files) {
+        const filesArray = Array.from(event.target.files).slice(0, 5);
+        setSrc(filesArray);
+        const previewsArray = filesArray.map((file) => URL.createObjectURL(file));
+        setImagePreviews(previewsArray);
+      }
+    };
     function UploadDocument(e:any){
       e.preventDefault();
       var imageUrl:any;
-     var folderIds = JSON.stringify(folderId)
-     var company_id = params.companyId
-     var company_ids = JSON.stringify(company_id)
-      const formData:any = {
-        'company_id':company_id,
-        'folder_id':folderId,
-        'documents':documents,
-      }
+      const folderIds: string = JSON.stringify(folderId);
+      const companyid: any = params.companyId;
+      const company_ids: string = JSON.stringify(companyid);
+      
+      // const formData:any = {
+      //   'company_id':company_id,
+      //   'folder_id':folderId,
+      //   'documents':documents,
+      // }
+      const formData = new FormData();
+      formData.append("company_id", companyid);
+      formData.append("folder_id", folderId);
+      // formData.append("documents", src);
+      // src.forEach((image:any, index:any) => {
+      //   formData.append(`documents`, image);
+      // });
+      src.forEach((image:any, index:any) => {
+        if (image instanceof File) {
+          formData.append(`documents[${index}]`, image);
+        } else {
+          console.error(`Invalid image data at index ${index}`);
+        }
+      });
+      
       store.dispatch(uploadeImage(formData)).then((res: any) => {
         setCompanyFolder(res.response)
-        if (res.payload.status == true) {
-          toast.success(res.message)
+        console.log(res)
+        if (res.payload.data.status == true) {
+          toast.success(res.payload.data.message)
           navigate(`/companies/document/${params.companyId}`)
           handleCloseFolder()
         } else {
@@ -201,7 +245,12 @@ function getRolehasPermissiondata(){
     
       )
     })
-
+    useEffect(() => {
+      return () => {
+        imagePreviews.forEach((preview) => URL.revokeObjectURL(preview));
+      };
+    }, [imagePreviews]);
+    
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>
@@ -227,7 +276,7 @@ function getRolehasPermissiondata(){
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
                 <Box className="headingbutton" sx={{ mb: 1 }}>
                   <Typography component="h2" variant="h6" color="primary" gutterBottom>
-                    Documents 
+                    {companyName}
                     </Typography>
                     <Button variant="contained"  onClick={handleClickOpen} >Add</Button>
                 </Box>
@@ -311,8 +360,11 @@ function getRolehasPermissiondata(){
       <label>
         Upload file:
         </label> 
-        <input type="file" ref={fileInput} onChange={(e)=>{getBase64(e.target.files)}} className="form-control" multiple/>
-        {documents && <img src={documents} alt="img"  style={{height: '150px', width: '100%'}} className="mt-2 mb-2"/>}
+        <input type="file" ref={fileInput}  onChange={handleImageSelect}
+                           className="form-control" multiple/>
+       {imagePreviews.map((preview, index) => (
+  <img key={index} src={preview}   style={{margin:"4px"}}/>
+))}
      
       <br />
       <div className="text-center">
