@@ -587,6 +587,7 @@ function CompanyEdit() {
             </Grid>
             <Footer />
           </Container>
+          
         </Box>
       </Box>
     </ThemeProvider>
