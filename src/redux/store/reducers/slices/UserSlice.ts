@@ -159,21 +159,30 @@ export const updateVessel = createAsyncThunk('Update_vessel', async (Vessel: any
     });
 })
 
-export const updateUser = createAsyncThunk('Update_user', async (user: User) => {
+// export const updateUser = createAsyncThunk('Update_user', async (user: User) => {
     
-    return await fetch(apiEndPoint+'/updateUser', {
-        method: 'POST',
+//     return await fetch(apiEndPoint+'/updateUser', {
+//         method: 'POST',
+//         headers: {
+//             'Accept': 'application/json',
+//             'Content-Type': 'application/json',
+//               'Authorization': `${token}`,
+//         },
+//         body: JSON.stringify(user)
+//     }).then(res => {
+//         return res.json()
+//     });
+// })
+export const updateUser = createAsyncThunk('Update_user', async (user: any) => {
+    return await axios.post(apiEndPoint + '/updateUser', user, {
         headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-              'Authorization': `${token}`,
+            "Content-Type": "multipart/form-data",
+            'Authorization': `${token}`,
         },
-        body: JSON.stringify(user)
     }).then(res => {
-        return res.json()
+        return res;
     });
 })
-
 export const updateUserProfile = createAsyncThunk('Update_user', async (user: User) => {
     
     return await fetch(apiEndPoint+'/updateUserProfile', {
@@ -671,7 +680,7 @@ export const StatusCountry = createAsyncThunk('StatusCountry', async (data:any) 
     });
 })
 // add some city api code here
-export const getCities = createAsyncThunk('getCities', async () => {
+export const getCities = createAsyncThunk('getCities', async (data :any) => {
     return await fetch(apiEndPoint+'/getCities', {
         method: 'POST',
         headers: {
@@ -679,6 +688,7 @@ export const getCities = createAsyncThunk('getCities', async () => {
             'Content-Type': 'application/json',
               'Authorization': `${token}`,
         },
+        body: JSON.stringify(data)
     }).then(res => {
         return res.json()
     });

@@ -155,18 +155,27 @@ function CompanyAdd() {
       });
     }
   }
-  function getCityByState(event: string) {
-    store.dispatch(getCities()).then((res: any) => {
-      setCityId(res.payload.cities);
-    });
-  } 
   function getCityiesData() {
-    if (countries.length == 0) {
-      store.dispatch(getCities()).then((res: any) => {
-       setCityId(res.payload.cities);
+    const formDate = {
+      country_id:country , 
+      state_id:state,
+    };
+    
+      store.dispatch(getCities(formDate)).then((res: any) => {
+      setCityId(res.payload.cities);
       });
-    }
+    
   }
+  useEffect(() => {
+    getCityiesData();
+  }, [state]);
+  // function getCityiesData() {
+  //   if (countries.length == 0) {
+  //     store.dispatch(getCities()).then((res: any) => {
+  //      setCityId(res.payload.cities);
+  //     });
+  //   }
+  // }
 
   const getError = (msg: string): JSX.Element => {
     return (
@@ -185,12 +194,12 @@ function CompanyAdd() {
   };
   const selectCity = (event: SelectChangeEvent) => {
     setCity(event.target.value);
-    getCityByState(event.target.value);
+    // getCityByState(event.target.value);m
   };
 
   useEffect(() => {
     getCountrieData();
-    getCityiesData();
+    // getCityiesData();
   });
   console.log(state, "ahjfads");
   return (

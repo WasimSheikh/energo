@@ -213,15 +213,22 @@ function CompanyEdit() {
     }
   }
   function getCityiesData() {
-    if (countries.length == 0) {
-      store.dispatch(getCities()).then((res: any) => {
-        setCityId(res.payload.cities);
+    const formDate = {
+      country_id:country , 
+      state_id:state,
+    };
+    
+      store.dispatch(getCities(formDate)).then((res: any) => {
+      setCityId(res.payload.cities);
       });
-    }
+    
   }
   useEffect(() => {
-    getCountrieData();
     getCityiesData();
+  }, [state]);
+  useEffect(() => {
+    getCountrieData();
+   
   });
   console.log(state, "dfsaddfsdfsdfs");
   return (
