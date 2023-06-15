@@ -79,3 +79,8 @@ input#checkBox {
 .my-cardItem{
 padding: 0.25rem !important;
 }
+.rapiImg{
+  margin: 8px;
+  width: auto;
+  height: 128px;
+}

@@ -154,7 +154,7 @@ function CompanyEdit() {
   };
   function getCountryStatesByCountry(e: any) {
     const formDate = {
-      country_id: e,
+      country_id: country,
     };
     store.dispatch(getCountryStates(formDate)).then((res: any) => {
       console.log(res);
@@ -217,7 +217,7 @@ function CompanyEdit() {
       country_id:country , 
       state_id:state,
     };
-    
+  
       store.dispatch(getCities(formDate)).then((res: any) => {
       setCityId(res.payload.cities);
       });
@@ -230,7 +230,7 @@ function CompanyEdit() {
     getCountrieData();
    
   });
-  console.log(state, "dfsaddfsdfsdfs");
+
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: "flex" }}>
@@ -481,7 +481,8 @@ function CompanyEdit() {
                             value={city}
                             label="City"
                             onChange={selectCity}
-                          >
+                            >
+                          
                             <MenuItem value="">-Select-</MenuItem>
                             {cityId?.map((item: any) => (
                               <MenuItem key={item.id} value={item.id}>

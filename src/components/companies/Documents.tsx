@@ -363,7 +363,7 @@ function getRolehasPermissiondata(){
         <input type="file" ref={fileInput}  onChange={handleImageSelect}
                            className="form-control" multiple/>
        {imagePreviews.map((preview, index) => (
-  <img key={index} src={preview}   style={{margin:"4px"}}/>
+  <img key={index} src={preview} className="rapiImg"  style={{margin:"4px"}}/>
 ))}
      
       <br />

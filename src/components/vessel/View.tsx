@@ -50,7 +50,7 @@ function CompanyView() {
           setId(res.payload.id);
           setCompanyName(res.payload.company.title);
 
-          setShowImages(res?.payload?.vessel?.media_url);
+          setShowImages(res?.payload?.vessel?.media_url?.picture);
         }
       });
     }
@@ -87,7 +87,7 @@ function CompanyView() {
                     color="primary"
                     gutterBottom
                   >
-                    View Company
+                    View Vessel
                   </Typography>
                   <Divider />
                   <Box sx={{ mt: 1 }}>
@@ -104,7 +104,8 @@ function CompanyView() {
                         </Box>
 
                         <Box>
-                          Company logo : <Box component="span">{logo}</Box>
+                          Company logo : <Box component="span">
+                            {showImages}</Box>
                         </Box>
                       </Grid>
                     </Grid>

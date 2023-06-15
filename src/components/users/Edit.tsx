@@ -226,6 +226,7 @@ const handleChangeImgUrl = (e: any) => {
      }); 
     }
    });
+
    function getCountrieData() {
     if (countries.length == 0) {
       store.dispatch(getCountries()).then((res: any) => {
@@ -251,7 +252,7 @@ const handleChangeImgUrl = (e: any) => {
     getCountrieData();
 
   }, []);
-console.log(image, 'image');
+  console.log(city, 'city')
   return (
     <ThemeProvider theme={mdTheme}> 
       <Box sx={{ display: 'flex' }}>

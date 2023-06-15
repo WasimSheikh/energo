@@ -123,17 +123,22 @@ const columns: GridColDef[] = [
     headerName: 'Action',
     width: 180,
     sortable: false,
+    flex: 1,
     renderCell: (params) => {
       return (
         <>
-      <Button  sx={{ minWithd: 40 }}   component={Link} to={'/vessel/edit/'+params.row.id} > <EditIcon  /> </Button>
-        <Button  sx={{ minWidth: 40 }}  component={Link} to={'/vessel/view/'+params.row.id} > <VisibilityIcon  /> </Button>
-       <Button onClick={()=>{deleteId(params.row.id)}}  sx={{ minWidth: 40 }}   > <DeleteIcon  /> </Button>
-
-        
+          <Button sx={{ minWidth: 40 }} component={Link} to={'/vessel/edit/' + params.row.id}>
+            <EditIcon />
+          </Button>
+          <Button sx={{ minWidth: 40 }} component={Link} to={'/vessel/view/' + params.row.id}>
+            <VisibilityIcon />
+          </Button>
+          <Button onClick={() => { deleteId(params.row.id) }} sx={{ minWidth: 40 }}>
+            <DeleteIcon />
+          </Button>
         </>
       );
-   }
+    },
   },
 ];
 
