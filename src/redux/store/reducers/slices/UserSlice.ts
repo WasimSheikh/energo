@@ -20,6 +20,7 @@ var token = localStorage.getItem("access_token");
 //         return res.json()
 //     });
 // })
+
 export const createUser = createAsyncThunk('Create_user', async (user: any) => {
     return await axios.post(apiEndPoint + '/createUser', user, {
         headers: {
@@ -158,7 +159,26 @@ export const updateVessel = createAsyncThunk('Update_vessel', async (Vessel: any
         return res;
     });
 })
-
+export const updateInspection = createAsyncThunk('Update_inspection', async (Vessel: any) => {
+    return await axios.post(apiEndPoint + '/updateCompanyAudit', Vessel, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+            'Authorization': `${token}`,
+        },
+    }).then(res => {
+        return res;
+    });
+})
+export const updateAuditVessel = createAsyncThunk('Update_inspection', async (Vessel: any) => {
+    return await axios.post(apiEndPoint + '/updateVesselAudit', Vessel, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+            'Authorization': `${token}`,
+        },
+    }).then(res => {
+        return res;
+    });
+})
 // export const updateUser = createAsyncThunk('Update_user', async (user: User) => {
     
 //     return await fetch(apiEndPoint+'/updateUser', {
@@ -248,6 +268,18 @@ export const getVessels = createAsyncThunk('get_Vessels', async () => {
         return res.json()
     });
 })
+export const getCompaniesAudit = createAsyncThunk('get_audits', async () => {
+    return await fetch(apiEndPoint+'/getCompaniesAudit', {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+              'Authorization': `${token}`,
+        },
+    }).then(res => {
+        return res.json()
+    });
+})
 export const getCompany = createAsyncThunk('get_Company', async (company: Company) => {
     return await fetch(apiEndPoint+'/getCompany', {
         method: 'POST',
@@ -274,7 +306,32 @@ export const getVessel = createAsyncThunk('get_Company', async (Vessel: Vessel) 
         return res.json()
     });
 })
-
+export const getinspectionAudit = createAsyncThunk('get_audit', async (Vessel: Vessel) => {
+    return await fetch(apiEndPoint+'/getCompanyAudit', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+              'Authorization': `${token}`,
+        },
+        body: JSON.stringify(Vessel)
+    }).then(res => {
+        return res.json()
+    });
+})
+export const getvesselAudit = createAsyncThunk('get_audit_vessel', async (Vessel: Vessel) => {
+    return await fetch(apiEndPoint+'/getVesselAudit', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+              'Authorization': `${token}`,
+        },
+        body: JSON.stringify(Vessel)
+    }).then(res => {
+        return res.json()
+    });
+})
 export const deleteCompany = createAsyncThunk('delete_Company', async (company: Company) => {
     const requestOptions = {
         id:`${company}`
@@ -299,6 +356,25 @@ export const deleteVessel = createAsyncThunk('delete_Vessel', async (Vessel: Ves
         id:`${Vessel}`
     };
     return await fetch(apiEndPoint+'/deleteVessel', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+              'Authorization': `${token}`,
+        },
+
+        
+        body: JSON.stringify(requestOptions)
+
+    }).then(res => {
+        return res.json()
+    });
+})
+export const deleteAudit = createAsyncThunk('delete_Vessel', async (Vessel: Vessel) => {
+    const requestOptions = {
+        id:`${Vessel}`
+    };
+    return await fetch(apiEndPoint+'/deleteAuditCategory', {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
@@ -581,6 +657,32 @@ export const statusVessel = createAsyncThunk('status_Vessel', async (data:any) =
         return res.json()
     });
 })
+export const statusCategory = createAsyncThunk('status_category', async (data:any) => {
+    return await fetch(apiEndPoint+'/statusAuditCategory', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+              'Authorization': `${token}`,
+        },
+        body: JSON.stringify(data)
+    }).then(res => {
+        return res.json()
+    });
+})
+export const statusAuditVessel = createAsyncThunk('status_audit', async (data:any) => {
+    return await fetch(apiEndPoint+'/statusVesselAudit', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+              'Authorization': `${token}`,
+        },
+        body: JSON.stringify(data)
+    }).then(res => {
+        return res.json()
+    });
+})
 export const getRolehasPermission = createAsyncThunk('getRolehasPermission', async (data:any) => {
     const requestOptions = {
         role_id:`${data}`
@@ -733,6 +835,19 @@ export const getCity = createAsyncThunk('getCity', async (data:any) => {
         return res.json()
     });
 })
+export const getCoatery = createAsyncThunk('getCotegory', async (data:any) => {
+    return await fetch(apiEndPoint+'/getAuditCategory', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+              'Authorization': `${token}`,
+        },
+        body: JSON.stringify(data)
+    }).then(res => {
+        return res.json()
+    });
+})
 export const updateCity = createAsyncThunk('updateCity', async (data:any) => {
     return await fetch(apiEndPoint+'/updateCity', {
         method: 'POST',
@@ -746,8 +861,47 @@ export const updateCity = createAsyncThunk('updateCity', async (data:any) => {
         return res.json()
     });
 })
+export const updateCategory = createAsyncThunk('updateCategory', async (data:any) => {
+    return await fetch(apiEndPoint+'/updateAuditCategory', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+              'Authorization': `${token}`,
+        },
+        body: JSON.stringify(data)
+    }).then(res => {
+        return res.json()
+    });
+})
 export const deleteCity = createAsyncThunk('deleteCity', async (data:any) => {
     return await fetch(apiEndPoint+'/deleteCity', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+              'Authorization': `${token}`,
+        },
+        body: JSON.stringify(data)
+    }).then(res => {
+        return res.json()
+    });
+})
+export const deleteCategory = createAsyncThunk('deleteCategory', async (data:any) => {
+    return await fetch(apiEndPoint+'/deleteAuditCategory', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+              'Authorization': `${token}`,
+        },
+        body: JSON.stringify(data)
+    }).then(res => {
+        return res.json()
+    });
+})
+export const deleteVesselAudit = createAsyncThunk('deleteVesselAudit', async (data:any) => {
+    return await fetch(apiEndPoint+'/deleteVesselAudit', {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
@@ -785,8 +939,45 @@ export const createState = createAsyncThunk('createState', async (data:any) => {
         return res.json()
     });
 })
+export const createCatogories = createAsyncThunk('createCategory', async (data:any) => {
+    return await fetch(apiEndPoint+'/createAuditCategory', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+              'Authorization': `${token}`,
+        },
+        body: JSON.stringify(data)
+    }).then(res => {
+        return res.json()
+    });
+})
 export const getStates = createAsyncThunk('getStates', async () => {
     return await fetch(apiEndPoint+'/getStates', {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+              'Authorization': `${token}`,
+        },
+    }).then(res => {
+        return res.json()
+    });
+})
+export const getCategory = createAsyncThunk('getCategory', async () => {
+    return await fetch(apiEndPoint+'/getAuditCategories', {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+              'Authorization': `${token}`,
+        },
+    }).then(res => {
+        return res.json()
+    });
+})
+export const getAuditVessels = createAsyncThunk('getAuditVessel', async () => {
+    return await fetch(apiEndPoint+'/getVesselsAudit', {
         method: 'GET',
         headers: {
             'Accept': 'application/json',

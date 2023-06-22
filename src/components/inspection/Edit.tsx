@@ -16,6 +16,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Checkbox from "@mui/material/Checkbox";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
+import DatePicker from "react-datepicker";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import {
@@ -25,6 +26,9 @@ import {
   getVessel,
   getCompanies,
   updateVessel,
+  getinspectionAudit,
+  getCategory,
+  updateInspection,
 } from "../../redux/store/reducers/slices/UserSlice";
 import { store } from "../../redux/store";
 import React, { useEffect, useRef, useState } from "react";
@@ -46,6 +50,12 @@ function VesselEdit() {
   const [imagebinary, setImagebinary] = useState("");
   const [image, setImage] = useState("");
   const [errorMessages, setErrorMessages] = useState("");
+  const [category, setCategory] = useState("");
+  const [cities, setCities] = useState([]);
+  const [date, setDate] = useState('');
+  const [src, setSrc] = useState("");
+  const {companyId} = useParams();
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [dirtyFields, setDirtyFields] = useState({
     state: false,
     company_id: false,
@@ -56,27 +66,49 @@ function VesselEdit() {
     return validateFields;
   };
   const fileInput = useRef<any | null>(null);
+  function formatDate(dateString:any) {
+    const date = new Date(dateString);
+    // const formattedDate = `${date.getMonth() + 1}-${date.getDate()}-${date.getFullYear()}`;
+    const formattedDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
 
+    return formattedDate;
+  }
+  
+  const dateString = selectedDate;
+  const formattedDate = formatDate(dateString);
   const handleSubmit = (e: any) => {
     e.preventDefault();
     const formData = new FormData();
     formData.append("id", id);
     formData.append("company_id", company_id);
-
-    formData.append("title", state);
-    Array.from(imagebinary).forEach((file, index) => {
-      formData.append(`picture`, file);
-    });
-    store.dispatch(updateVessel(formData)).then((res: any) => {
+     formData.append("title", state);
+    formData.append("picture", src);
+    formData.append("audit_date", formattedDate);
+    formData.append("category_id",  category);
+    store.dispatch(updateInspection(formData)).then((res: any) => {
       if (res?.payload?.data?.status == true) {
         toast.success(res.payload?.data?.message);
-        navigate("/vessel");
+        navigate(`/companies/view/${companyId}`);
       } else {
         toast.error(res.payload?.message);
       }
     });
   };
-
+  const dateTimeString = date;
+  const dateOnly = dateTimeString.split(' ')[0];
+  const handleDateChange = (date: any) => {
+    setSelectedDate(date);
+  };
+  function getCategoryList() {
+    store.dispatch(getCategory()).then((res: any) => {
+      console.log(res);
+      if (res.payload.status == true) {
+        setCities(res.payload?.vessels_audit);
+      } else {
+        toast.error(res.payload.message);
+      }
+    });
+  }
   const renderErrorMessage = () =>
     errorMessages && <div className="error">{errorMessages}</div>;
 
@@ -98,14 +130,17 @@ function VesselEdit() {
   useEffect(() => {
     if (onload == false) {
       setOnload(true);
-      const vesselId = window.location.href.split("/")[5];
-      const formData = { id: vesselId };
-      store.dispatch(getVessel(formData)).then((res: any) => {
+      const auditId = window.location.href.split("/")[5];
+      const formData = { id: auditId };
+      store.dispatch(getinspectionAudit(formData)).then((res: any) => {
         if (res && res.payload) {
-          setId(res.payload.vessel?.id);
-          setCompanyId(res.payload.vessel?.company_id);
-          setState(res?.payload?.vessel?.title);
-          setImage(res?.payload?.vessel?.media_url);
+          console.log(res, "res");
+          setId(res.payload.companies_audit?.id);
+          setCompanyId(res.payload.companies_audit?.company_id);
+          setState(res?.payload?.companies_audit?.title);
+          setImage(res?.payload?.companies_audit?.picture);
+          setCategory(res?.payload?.companies_audit?.category_id);
+          setDate((res?.payload?.companies_audit?.audit_date));
         }
       });
       store.dispatch(getCompanies()).then((res: any) => {
@@ -115,11 +150,15 @@ function VesselEdit() {
       });
     }
   });
+
+  console.log(date, "image");
   const handleChangeImgUrl = (e: any) => {
     setImagebinary(e.target.files);
     setImage(URL.createObjectURL(e.target.files[0]));
   };
-
+  useEffect(() => {
+    getCategoryList();
+  }, []);
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: "flex" }}>
@@ -149,7 +188,7 @@ function VesselEdit() {
                     color="primary"
                     gutterBottom
                   >
-                    Edit Vessel
+                    Edit Inspection
                   </Typography>
                   <Divider />
                   <Box
@@ -159,35 +198,7 @@ function VesselEdit() {
                     sx={{ mt: 1 }}
                   >
                     <Grid container spacing={2} rowSpacing={1}>
-                      <Grid item xs={6} sm={6} mt={2}>
-                        <FormControl fullWidth>
-                          <InputLabel id="company_name_label">
-                            Company Name
-                          </InputLabel>
-                          <Select
-                            labelId="company_name_label"
-                            required
-                            id="company_name"
-                            value={company_id}
-                            label="Company Name"
-                            onChange={selectChange}
-                            onBlur={(e) => {
-                              setDirtyFields((dirty) => ({
-                                ...dirty,
-                                companyName: false,
-                              }));
-                            }}
-                          >
-                            <MenuItem value="">-Select-</MenuItem>
-                            {companies.map((opt: any) => (
-                              <MenuItem key={opt.id} value={opt.id}>
-                                {opt.title}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
-                      </Grid>
-                      <Grid item xs={6} sm={6}>
+                      <Grid item xs={6} sm={6} sx={{ px: 3 }}>
                         <TextField
                           margin="normal"
                           required
@@ -206,25 +217,64 @@ function VesselEdit() {
                         />
                         {dirtyFields["state"] && getError("Title is required ")}
                       </Grid>
-                      <Grid item xs={6} sm={6}>
+                      <Grid item xs={6} sm={6} mt={2} sx={{ px: 3 }}>
+                        <FormControl fullWidth>
+                          <InputLabel id="company_name_label">
+                            Category Name
+                          </InputLabel>
+                          <Select
+                            labelId="company_name_label"
+                            required
+                            id="company_name"
+                            value={category}
+                            label="Company Name"
+                            // onChange={selectChange}
+                            onChange={(e) => {
+                              setCategory(e.target.value);
+                              setDirtyFields((dirty) => ({
+                                ...dirty,
+                                company_id: !ifEmpty(e.target.value),
+                              }));
+                            }}
+                          >
+                            <MenuItem value="">-Select-</MenuItem>
+                            {cities.map((opt: any) => (
+                              <MenuItem key={opt.id} value={opt.id}>
+                                {opt.title}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </Grid>
+                      <Grid item xs={6} sm={6} mt={1} sx={{ px: 3 }}>
+                        <DatePicker
+                    selected={selectedDate} 
+                    onChange={handleDateChange}
+                    dateFormat="yyyy-MM-dd"
+                          placeholderText="Select a Audit date"
+                          className="date_new"
+                        />
+                      </Grid>
+                      <Grid item xs={6} sm={6} mt={1} sx={{ px: 3 }}>
+                        <input
+                          type="file"
+                          ref={fileInput}
+                          onChange={(e: any) => {
+                            setSrc(e.target.files[0]);
+                          }}
+                          className="form-control"
+                        />
+
                         <img
                           src={image}
                           alt="img"
                           style={{ height: "100px", width: "auto" }}
-                          className="mt-0 mb-2 my-src-setup"
+                          className="mt-3 mb-2 my-src-setup img-thumbnail"
                         />
-                        <input
-                          type="file"
-                          ref={fileInput}
-                          onChange={handleChangeImgUrl}
-                          className="form-control"
-                          multiple
-                        />
-
                         <br />
                       </Grid>
                     </Grid>
-                    <Divider />
+                    <Divider sx={{ mt: 2 }} />
                     <Toolbar sx={{ ml: 0, pl: "0 !important" }}>
                       <Button
                         onClick={handleSubmit}
@@ -236,7 +286,7 @@ function VesselEdit() {
                       <Button
                         variant="contained"
                         component={Link}
-                        to="/vessel"
+                        to={'/companies/view/' + companyId}
                         sx={{ ml: 1 }}
                       >
                         Cancel{" "}

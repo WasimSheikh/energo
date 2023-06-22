@@ -16,7 +16,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { deleteCompany,deleteVessel,getCompanies, getRolehasPermissions, getVessels, statusCompany, statusVessel, } from '../../redux/store/reducers/slices/UserSlice';
+import { deleteCompany,deleteVessel,getCompanies, getCompaniesAudit, getRolehasPermissions, getVessels, statusCompany, statusVessel, } from '../../redux/store/reducers/slices/UserSlice';
 import React, { useEffect , useState } from 'react';
 import { store } from '../../redux/store';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
@@ -37,15 +37,15 @@ function VesselList() {
   const [companyView,setCompanyView] = useState(false);
   var permission:any =localStorage.getItem('permissions');
 const getVesselData =()=>{
-  store.dispatch(getVessels()).then((res: any) => {
+  store.dispatch(getCompaniesAudit()).then((res: any) => {
     if (res.payload.status == true) {
-      setCompanies(res.payload.vessels);
+      setCompanies(res.payload.companies_audit);
     }else{
       toast.error(res.payload.message)
     }
   }); 
 }
-
+console.log(companies, 'dsfggfg');
 
 // function addPermission(){
 //   console.log(JSON.parse(permission),"roles permission");
@@ -101,7 +101,11 @@ const columns: GridColDef[] = [
     headerName: 'Company Name',
     width: 240,
   },
-
+  {
+    field: 'compan',
+    headerName: 'Category',
+    width: 240,
+  },
  
    {
     field: 'is_active',
@@ -127,10 +131,10 @@ const columns: GridColDef[] = [
     renderCell: (params) => {
       return (
         <>
-          <Button sx={{ minWidth: 40 }} component={Link} to={'/vessel/edit/' + params.row.id}>
+          <Button sx={{ minWidth: 40 }} component={Link} to={'/inspection/edit/' + params.row.id}>
             <EditIcon />
           </Button>
-          <Button sx={{ minWidth: 40 }} component={Link} to={'/vessel/view/' + params.row.id}>
+          <Button sx={{ minWidth: 40 }} component={Link} to={'/inspection/edit/' + params.row.id}>
             <VisibilityIcon />
           </Button>
           <Button onClick={() => { deleteId(params.row.id) }} sx={{ minWidth: 40 }}>
@@ -213,7 +217,7 @@ const deleteId=(e:any)=>{
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
                 <Box className="headingbutton" sx={{ mb: 1 }}>
                   <Typography component="h2" variant="h6" color="primary" gutterBottom>
-                    Vessels
+                    Inspection
                     </Typography>
                <Button variant="contained" component={Link} to="/vessel/add">Add</Button>
                 </Box>

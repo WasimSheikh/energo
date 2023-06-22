@@ -84,3 +84,25 @@ padding: 0.25rem !important;
   width: auto;
   height: 128px;
 }
+.react-datepicker__input-container{
+  border: 1px solid #c4c4c4;
+  width: 490px !important;
+  height: 53px;
+  border-radius: 3px;
+
+}
+.date_new .react-datepicker__input-container{
+  border: 1px solid #c4c4c4;
+  width: 400px !important;
+  height: 53px;
+  border-radius: 3px;
+
+}
+.react-datepicker__input-container input{
+  border: none !important;
+  outline: none;
+  margin: 12px;
+}
+.react-datepicker__input-container input:focus-visible{
+  border: none !important;
+}

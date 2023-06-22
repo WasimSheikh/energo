@@ -168,6 +168,12 @@ const Navigation = (): JSX.Element => {
               </ListItemIcon>
               <ListItemText primary="Vessel"  />
             </ListItemButton>}
+            {companyIndex && <ListItemButton component={Link} to="/auditcategories/list" >
+              <ListItemIcon>
+                <ManageAccountsIcon />
+              </ListItemIcon>
+              <ListItemText primary="Audits & Inspections"  />
+            </ListItemButton>}
            {indexUsers && <ListItemButton component={Link} to="/users" >
               <ListItemIcon>
                 <PeopleIcon />
@@ -211,7 +217,7 @@ const Navigation = (): JSX.Element => {
               </ListItemIcon>
               <ListItemText primary="Permissions" />
             </ListItemButton>}
-            {indexCountries && <ListItemButton component={Link} to="/countries">
+            {/* {indexCountries && <ListItemButton component={Link} to="/countries">
               <ListItemIcon>
                 <PublicIcon />
               </ListItemIcon>
@@ -228,7 +234,7 @@ const Navigation = (): JSX.Element => {
                 <PublicIcon />
               </ListItemIcon>
               <ListItemText primary="Cities" />
-            </ListItemButton>}
+            </ListItemButton>} */}
             </React.Fragment>
           </List>
         </Drawer>

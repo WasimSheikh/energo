@@ -32,7 +32,7 @@ function DashboardContent() {
       } 
       store.dispatch(getRolehasPermissions(roles)).then((res: any) => {
         localStorage.setItem("permissions", JSON.stringify(res.payload.data));
-        console.log("add permission");
+      
       }); 
     }
   },[]);

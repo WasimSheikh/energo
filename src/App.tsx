@@ -49,8 +49,17 @@ import {useIdleTimer} from 'react-idle-timer';
 import { Provider } from 'react-redux';
 import { store } from './redux/store';
 import PageNotFound from './PageNotFound/PageNotFound';
-
-
+import AuditCateAdd from './components/auditcategories/StateAdd';
+import AuditCateEdit from './components/auditcategories/StateEdit';
+import AuditCateView from './components/auditcategories/StateView';
+import AuditCateList from './components/auditcategories/StateListing';
+import InspectionAdd from './components/inspection/Add';
+import Inspection from './components/inspection/Listing';
+import InspectionEdit from './components/inspection/Edit';
+import InspectionView from './components/inspection/View';
+import AuditVesselEdit from './components/auditvessel/Edit';
+import AuditVesselView from './components/auditvessel/View';
+import DucumentAudit from './components/inspection/Share';
 function App() {
   const navigate = useNavigate();
   const [login, setIsLogin] = React.useState(false);
@@ -123,6 +132,17 @@ function App() {
           <Route path="states" element={<StatesList />} /> 
           <Route path="states/add" element={<StateAdd/>} />
           <Route path="states/edit/:stateId" element={<StateEdit />} />
+          <Route path="auditcategories/add" element={<AuditCateAdd/>} />
+          <Route path="auditcategories/list" element={<AuditCateList/>} />
+          <Route path="auditcategories/edit/:categoryId" element={<AuditCateEdit/>} />
+          <Route path="auditcategories/view/:categoryId" element={<AuditCateView/>} />
+          <Route path="inspection" element={<InspectionAdd/>} />
+          <Route path="inspection/list" element={<Inspection/>} />
+          <Route path="inspection/edit/:auditId" element={<InspectionEdit/>} />
+          <Route path="inspection/view/:auditId" element={<InspectionView/>} />
+          <Route path="inspection/share/:auditId" element={<DucumentAudit shareData={documenets}/>} />
+          <Route path="vesselaudit/edit/:vesselauditId" element={<AuditVesselEdit/>} />
+          <Route path="vesselaudit/view/:vesselauditId" element={<AuditVesselView/>} />
           <Route path="*" element={<PageNotFound />} />
           </>
         }
