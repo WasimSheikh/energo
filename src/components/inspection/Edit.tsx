@@ -82,7 +82,9 @@ function VesselEdit() {
     formData.append("id", id);
     formData.append("company_id", company_id);
      formData.append("title", state);
-    formData.append("picture", src);
+     for (let i = 0; i < src.length; i++) {
+      formData.append('picture', src[i]);
+    }
     formData.append("audit_date", formattedDate);
     formData.append("category_id",  category);
     store.dispatch(updateInspection(formData)).then((res: any) => {
@@ -257,11 +259,13 @@ function VesselEdit() {
                       </Grid>
                       <Grid item xs={6} sm={6} mt={1} sx={{ px: 3 }}>
                         <input
-                          type="file"
-                          ref={fileInput}
-                          onChange={(e: any) => {
-                            setSrc(e.target.files[0]);
-                          }}
+                           type="file"
+                           accept=".pdf, .xls, .xlsx, .csv"
+                           ref={fileInput}
+                           multiple
+                           onChange={(e: any) => {
+                             setSrc(e.target.files);
+                           }}
                           className="form-control"
                         />
 

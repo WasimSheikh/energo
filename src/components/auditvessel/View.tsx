@@ -36,10 +36,11 @@ function CompanyView() {
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
   const [logo, setLogo] = useState("");
-  const [showImages, setShowImages] = useState('');
+  const [showImages, setShowImages] = useState([]);
   const [onload, setOnload] = useState(false);
-  const {companyId} = useParams();
+ 
   const [date, setDate] = useState("");
+  const companyId = window.location.href.split("/")[5];
   useEffect(() => {
     if (onload == false) {
       const companyId = window.location.href.split("/")[5];
@@ -115,9 +116,18 @@ function CompanyView() {
                         </Box>
                         <Box>
                           file : <Box component="span">
-                            <Grid>
-
-                            <img src={showImages} style={{width:"auto", height:"100px"}} alt="dsaff"/>
+                          <Grid container spacing={2}>
+                              {showImages.map((item:any, index:any) => (
+                                <Grid item xs={12} sm={6} md={6} key={index}>
+                                  <embed
+                                    src={item}
+                                    type="application/pdf"
+                                    width="100%"
+                                    height="300px"
+                                  />
+                                  Share Document
+                                </Grid>
+                              ))}
                             </Grid>
                             </Box>
                         </Box>

@@ -28,6 +28,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import { Link, useParams } from "react-router-dom";
 import React, { useEffect, useRef, useState } from "react";
 import {
+  companywithAudit,
   deleteCategory,
   deleteVesselAudit,
   getAuditVessels,
@@ -37,6 +38,7 @@ import {
   getVessel,
   statusAuditVessel,
   statusCategory,
+  vesselwithAudit,
 } from "../../redux/store/reducers/slices/UserSlice";
 import { store } from "../../redux/store";
 import { ToastContainer, toast } from "react-toastify";
@@ -63,11 +65,11 @@ function CompanyView() {
   const [showImages, setShowImages] = useState([]);
   const [onload, setOnload] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-
+  const [audit, setAudit] = useState([])
   const handleDateChange = (date:any) => {
     setSelectedDate(date);
   };
-
+const companyId = window.location.href.split("/")[5];
   useEffect(() => {
     if (onload == false) {
       const companyId = window.location.href.split("/")[5];
@@ -75,7 +77,7 @@ function CompanyView() {
       store.dispatch(getVessel(formData)).then((res: any) => {
         setOnload(true);
         if (res && res.payload) {
-         
+       
           setTitle(res.payload.vessel.title);
 
           setCompanyName(res.payload.vessel.company.title);
@@ -179,6 +181,17 @@ function CompanyView() {
       }
     });
   };
+  const statusUpdategetnew = () => {
+    const formData =  { "vessel_id": companyId };
+    store.dispatch(vesselwithAudit(formData)).then((res: any) => {
+     console.log(res, 'res');
+     setOnload(true);
+     if (res && res.payload) {
+       setAudit(res.payload.vessels_audits);
+     }
+   });
+     };
+
   const dateString = selectedDate;
   const formattedDate = formatDate(dateString);
   var token = localStorage.getItem("access_token");
@@ -193,7 +206,9 @@ function CompanyView() {
     formData.append("category_id",  category);
     formData.append("vessel_id", id);
     formData.append("audit_date", formattedDate);
-    formData.append("picture", src);
+    for (let i = 0; i < src.length; i++) {
+      formData.append('picture', src[i]);
+    }
     formData.append("owner_user_id", '4');
     const imageFile = document.getElementById(
       "imageId"
@@ -221,7 +236,13 @@ function CompanyView() {
   useEffect(() =>{
     getCategoryList()
     getVesselData()
+    statusUpdategetnew()
   }, [])
+
+  const filteredAudits = companies.filter(
+    (company: any) => company.company_title === title
+  );
+
   const columns: GridColDef[] = [
     { field: 'id',
      headerName: 'S.No.',
@@ -273,10 +294,10 @@ function CompanyView() {
       renderCell: (params) => {
         return (
           <>
-            <Button sx={{ minWidth: 40 }} component={Link} to={'/vesselaudit/edit/' + params.row.id}>
+            <Button sx={{ minWidth: 40 }} component={Link} to={'/vessel/audit/' + params.row.id}>
               <EditIcon />
             </Button>
-            <Button sx={{ minWidth: 40 }} component={Link} to={'/vesselaudit/view/' + params.row.id}>
+            <Button sx={{ minWidth: 40 }} component={Link} to={'/vessel/auditview/' + params.row.id}>
               <VisibilityIcon />
             </Button>
             <Button 
@@ -289,6 +310,7 @@ function CompanyView() {
       },
     },
   ];  
+  
   const theme = useTheme();
   const fileInput = useRef<any | null>(null);
   return (
@@ -373,7 +395,7 @@ function CompanyView() {
                 <Divider />
                 <Box sx={{ height: 300, width: '100%' }}>
                   <DataGrid
-                    rows={companies}
+                    rows={filteredAudits}
                     columns={columns}
                     pageSize={5}
                     rowsPerPageOptions={[5]}
@@ -454,11 +476,13 @@ function CompanyView() {
     
         </Grid>
         <Grid item xs={6} sm={6}  mt={1}  sx={{ px: 3 }}>
-                        <input
+        <input
                           type="file"
+                          accept=".pdf, .xls, .xlsx, .csv"
                           ref={fileInput}
+                          multiple
                           onChange={(e: any) => {
-                            setSrc(e.target.files[0]);
+                            setSrc(e.target.files);
                           }}
                           className="form-control"
                         />

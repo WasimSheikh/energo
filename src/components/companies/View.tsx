@@ -28,13 +28,16 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import EditIcon from "@mui/icons-material/Edit";
 import Modal from "react-modal";
 import {
+  companywithAudit,
   deleteCategory,
+  deleteCompanyaudit,
   getCategory,
   getCompaniesAudit,
   getCompany,
   getDocuments,
   getVessels,
   statusCategory,
+  statusCompanyAudit,
 } from "../../redux/store/reducers/slices/UserSlice";
 import { store } from "../../redux/store";
 import { ToastContainer, toast } from "react-toastify";
@@ -77,7 +80,7 @@ function CompanyView() {
   const [RemoveuserIsOpen, setIsRemoveuserOpen] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const [openFolder, setFolder] = React.useState(false);
-  const [folder, setCompanyFolder] = useState([]);
+  const [audit, setAudit] = useState([]);
   const [title, setTitle] = useState("");
   const [state, setState] = useState("");
   const [companies,setCompanies] = useState([]);
@@ -112,11 +115,13 @@ function CompanyView() {
       </span>
     );
   };
-  const companyId = window.location.href.split("/")[5];
+  let companyId = window.location.href.split("/")[5];
   useEffect(() => {
     if (onload == false) {
       const companyId = window.location.href.split("/")[5];
       const formData = { id: companyId };
+      const data = { "company_id": companyId };
+      
       store.dispatch(getCompany(formData)).then((res: any) => {
         setOnload(true);
         if (res && res.payload) {
@@ -138,6 +143,7 @@ function CompanyView() {
           }
         }
       });
+  
       store.dispatch(getVessels()).then((res: any) => {
         if (res.payload.status == true) {
           setVessels(res.payload.vessels);
@@ -145,6 +151,7 @@ function CompanyView() {
           toast.error(res.payload.message);
         }
       });
+
     }
   });
   const getVesselData =()=>{
@@ -195,7 +202,11 @@ function CompanyView() {
     formData.append("category_id",  category);
     formData.append("company_id", id);
     formData.append("audit_date", formattedDate);
-    formData.append("picture", src);
+    // formData.append("picture", src);
+    for (let i = 0; i < src.length; i++) {
+      formData.append('picture', src[i]);
+    }
+
     formData.append("owner_user_id", '4');
     const imageFile = document.getElementById(
       "imageId"
@@ -214,7 +225,7 @@ function CompanyView() {
         if (res.data.status == true) {
           toast.success(res.data.message);
           handleClose()
-          getCategoryList()
+          statusUpdategetnew()
         } else {
           toast.error(res.data.message);
         }
@@ -236,9 +247,9 @@ function CompanyView() {
         const formdata = {
           id: e,
         };
-        store.dispatch(deleteCategory(formdata)).then((res: any) => {
+        store.dispatch(deleteCompanyaudit(formdata)).then((res: any) => {
           if (res.payload.status == true) {
-            getCategoryList();
+             statusUpdategetnew()
             toast.success(res.payload.message);
           } else {
             toast.error(res.payload.message);
@@ -257,15 +268,24 @@ function CompanyView() {
       transform: "translate(-50%, -50%)",
     },
   };
-
+  const statusUpdategetnew = () => {
+ const formData =  { "company_id": companyId };
+ store.dispatch(companywithAudit(formData)).then((res: any) => {
+  console.log(res, "companywithaudit")
+  setOnload(true);
+  if (res && res.payload) {
+    setAudit(res.payload.companies_audit);
+  }
+});
+  };
   const statusUpdateCompany = (e: any) => {
     const formData = {
       id: e,
     };
-    store.dispatch(statusCategory(formData)).then((res: any) => {
+    store.dispatch(statusCompanyAudit(formData)).then((res: any) => {
       if (res.payload.status == true) {
         toast.success(res.payload.message);
-        getCategoryList();
+        statusUpdategetnew()
       } else {
         toast.error(res.payload.message);
       }
@@ -277,10 +297,11 @@ function CompanyView() {
     company_title: string;
     // other properties of the vessel object
   }
-  const filteredCompanies = vessels.filter(
+  const filteredCompanies = companies.filter(
     (company: Vessel) => company.company_title === companyName
   );
-  console.log(filteredCompanies, "vessels");
+  console.log(filteredCompanies, 'filteredCompanies')
+
   const theme = useTheme();
 
   const columns: GridColDef[] = [
@@ -314,8 +335,29 @@ function CompanyView() {
       renderCell: (params) => {
         return (
           <>
-           {params.row.is_active == '1' && <button type="button" className="btn btn-link"  onClick={()=>{statusUpdateCompany(params.row.id)}} ><span className='badge badge-success'>Active</span></button>}
-            {params.row.is_active == '0' &&  <button type="button" className="btn btn-link"  onClick={()=>{statusUpdateCompany(params.row.id)}} ><span className='badge badge-danger'>Inactive</span></button>}
+ {params.row.is_active == "1" && (
+              <button
+                type="button"
+                className="btn btn-link"
+                onClick={() => {
+                  statusUpdateCompany(params.row.id);
+                }}
+              >
+                <span className="badge badge-success">Active</span>
+              </button>
+            )}
+            {params.row.is_active == "0" && (
+              <button
+                type="button"
+                className="btn btn-link"
+                onClick={() => {
+                  statusUpdateCompany(params.row.id);
+                }}
+              >
+                <span className="badge badge-danger">Inactive</span>
+              </button>
+            )}
+            {console.log(params.row.is_active, "params.row.is_active")}
           
           </>
         );
@@ -330,18 +372,16 @@ function CompanyView() {
       renderCell: (params) => {
         return (
           <>
-            <Button sx={{ minWidth: 40 }} component={Link} to={'/inspection/edit/' + params.row.id}>
+            <Button sx={{ minWidth: 40 }} component={Link} to= {'/companies/auditedit/'+ params.row.id}>
               <EditIcon />
             </Button>
-            <Button sx={{ minWidth: 40 }} component={Link} to={'/inspection/view/' + params.row.id}>
+            <Button sx={{ minWidth: 40 }} component={Link} to={'/companies/auditview/' + params.row.id}>
               <VisibilityIcon />
             </Button>
             <Button onClick={() => { deleteId(params.row.id) }} sx={{ minWidth: 40 }}>
               <DeleteIcon />
             </Button>
-            <Button  component={Link} to={'/inspection/share/' + params.row.id} sx={{ minWidth: 40 }}>
-            <FileCopyIcon />{" "}
-            </Button>
+            
           </>
         );
       },
@@ -350,6 +390,7 @@ function CompanyView() {
   useEffect(() => {
     getCategoryList();
     getVesselData();
+    statusUpdategetnew()
   }, []);
 
  
@@ -514,7 +555,7 @@ function CompanyView() {
                 <Divider />
                 <Box sx={{ height: 400, width: '100%' }}>
                   <DataGrid
-                    rows={companies}
+                    rows={filteredCompanies}
                     columns={columns}
                     pageSize={5}
                     rowsPerPageOptions={[5]}
@@ -588,9 +629,11 @@ function CompanyView() {
         <Grid item xs={6} sm={6}  mt={1}  sx={{ px: 3 }}>
                         <input
                           type="file"
+                          accept=".pdf, .xls, .xlsx, .csv"
                           ref={fileInput}
+                          multiple
                           onChange={(e: any) => {
-                            setSrc(e.target.files[0]);
+                            setSrc(e.target.files);
                           }}
                           className="form-control"
                         />

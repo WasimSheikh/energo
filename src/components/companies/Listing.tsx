@@ -199,6 +199,7 @@ function CompanyList() {
   ];
 
   const statusUpdateCompany = (e: any) => {
+
     const formData = {
       id: e,
     };

@@ -27,7 +27,7 @@ import {
 import { store } from "../../redux/store";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import { EmailShareButton, FacebookShareButton } from 'react-share';
 function CompanyView() {
   const mdTheme = createTheme();
   const [id, setId] = useState("");
@@ -35,21 +35,19 @@ function CompanyView() {
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
   const [logo, setLogo] = useState("");
-  const [showImages, setShowImages] = useState('');
+  const [showImages, setShowImages] = useState([]);
   const [onload, setOnload] = useState(false);
-  const {companyId} = useParams();
+  const companyId = window.location.href.split("/")[5];
   const [date, setDate] = useState("");
   useEffect(() => {
     if (onload == false) {
       const companyId = window.location.href.split("/")[5];
       const formData = { id: companyId };
       store.dispatch(getinspectionAudit(formData)).then((res: any) => {
-        console.log(res, 'res');
+        console.log(res, "res");
         setOnload(true);
         if (res && res.payload) {
-         
           setTitle(res.payload.companies_audit.title);
-
           setCompanyName(res.payload.companies_audit.company_title);
           setId(res.payload.id);
           setCategory(res.payload.companies_audit.category_title);
@@ -60,7 +58,9 @@ function CompanyView() {
       });
     }
   });
- 
+  interface ShowImagesProps {
+    showImages: string[];
+  }
   const theme = useTheme();
 
   return (
@@ -100,7 +100,7 @@ function CompanyView() {
                       <Grid item xs={6} sm={6}>
                         <Box>
                           {" "}
-                          Title : {" "}<Box component="span">{title}</Box>
+                          Title : <Box component="span">{title}</Box>
                         </Box>
 
                         <Box sx={{ mb: 1, mt: 1 }}>
@@ -108,34 +108,49 @@ function CompanyView() {
                           <Box component="span">{companyName}</Box>
                         </Box>
                         <Box sx={{ mb: 1, mt: 1 }}>
-                          Audit: {" "}
-                          <Box component="span">
-                            {category}</Box>
+                          Audit: <Box component="span">{category}</Box>
                         </Box>
                         <Box>
-                          file : <Box component="span">
-                            <Grid>
-
-                            <img src={showImages} style={{width:"auto", height:"100px"}} alt="dsaff"/>
+                          Download file :{" "}
+                          <Box
+                            component="span"
+                            sx={{
+                              display: "flex",
+                              gap: "16px",
+                              width: "600px",
+                            }}
+                          >
+                            {/* {showImages.map((url:any, index:any) => (
+        <embed src={url} key={index} type="application/pdf" width="100%" height="300px" />
+      ))} */}
+                            <Grid container spacing={2}>
+                              {showImages.map((item, index) => (
+                                <Grid item xs={12} sm={6} md={6} key={index}>
+                                  <embed
+                                    src={item}
+                                    type="application/pdf"
+                                    width="100%"
+                                    height="300px"
+                                  />
+                                  Share Document
+                                </Grid>
+                              ))}
                             </Grid>
-                            </Box>
+                            {/* <img src={showImages} style={{width:"auto", height:"100px"}} alt="dsaff"/> */}
+                          </Box>
                         </Box>
                         <Box sx={{ mb: 1, mt: 1 }}>
-                          Audit date: {" "}
-                          <Box component="span">
-                            {date}</Box>
+                          Audit date: <Box component="span">{date}</Box>
                         </Box>
                       </Grid>
                     </Grid>
-                     
-            
 
                     <Divider />
                     <Toolbar sx={{ ml: 0, pl: "0 !important" }}>
                       <Button
                         variant="contained"
                         component={Link}
-                        to={'/companies/view/' + companyId}
+                        to={"/companies/view/" + companyId}
                         sx={{ ml: 1 }}
                       >
                         Cancel{" "}
