@@ -39,6 +39,7 @@ import { toast } from "react-toastify";
 const mdTheme = createTheme();
 
 function VesselEdit() {
+  const params = useParams(); 
   const navigate = useNavigate();
   const [id, setId] = useState("");
   const [companyName, setCompanyName] = useState("");
@@ -54,8 +55,9 @@ function VesselEdit() {
   const [errorMessages, setErrorMessages] = useState("");
   const [category, setCategory] = useState("");
   const [cities, setCities] = useState([]);
-  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [src, setSrc] = useState("");
+  const [date, setDate] = useState('');
   const companyId = window.location.href.split("/")[5];
   const [dirtyFields, setDirtyFields] = useState({
     state: false,
@@ -98,6 +100,11 @@ function VesselEdit() {
       }
     });
   };
+  const defaultDate:any = new Date();
+  console.log(defaultDate, "defaultDate");
+  useEffect(() => {
+    setSelectedDate(defaultDate);
+  }, []);
   const handleDateChange = (date: any) => {
     setSelectedDate(date);
   };
@@ -132,7 +139,7 @@ function VesselEdit() {
   useEffect(() => {
     if (onload == false) {
       setOnload(true);
-      let vesselauditId = window.location.href.split("/")[5];
+      let vesselauditId = params.auditId;
       const formData = { id: vesselauditId };
       store.dispatch(getvesselAudit(formData)).then((res: any) => {
         console.log(res, "55555555555");
@@ -142,7 +149,7 @@ function VesselEdit() {
           setState(res?.payload?.vessel_audit?.title);
           setImage(res?.payload?.vessel_audit?.picture);
           setCategory(res?.payload?.vessel_audit?.category_id);
-    
+          setDate(res?.payload?.vessel_audit?.audit_date);
       });
       store.dispatch(getCompanies()).then((res: any) => {
         if (res && res.payload.companies) {
@@ -151,7 +158,7 @@ function VesselEdit() {
       });
     }
   });
-console.log(id, state, vessel, category, "dfsffds");
+console.log(date, "datesadfdd");
   const handleChangeImgUrl = (e: any) => {
     setImagebinary(e.target.files);
     setImage(URL.createObjectURL(e.target.files[0]));
@@ -248,7 +255,7 @@ console.log(id, state, vessel, category, "dfsffds");
                       </Grid>
                       <Grid item xs={6} sm={6} mt={1} sx={{ px: 3 }}>
                         <DatePicker
-                          value={selectedDate}
+                          selected={selectedDate}
                           onChange={handleDateChange}
                           placeholderText="Select a Audit date"
                           className="date_new"

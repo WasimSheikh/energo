@@ -37,6 +37,7 @@ import { toast } from "react-toastify";
 const mdTheme = createTheme();
 
 function VesselEdit() {
+  const params = useParams(); 
   const navigate = useNavigate();
   const [id, setId] = useState("");
   const [companyName, setCompanyName] = useState("");
@@ -96,8 +97,11 @@ function VesselEdit() {
       }
     });
   };
-  const dateTimeString = date;
-  const dateOnly = dateTimeString.split(' ')[0];
+  const defaultDate:any = new Date();
+  console.log(defaultDate, "defaultDate");
+  useEffect(() => {
+    setSelectedDate(defaultDate);
+  }, []);
   const handleDateChange = (date: any) => {
     setSelectedDate(date);
   };
@@ -132,7 +136,7 @@ function VesselEdit() {
   useEffect(() => {
     if (onload == false) {
       setOnload(true);
-      const auditId = window.location.href.split("/")[5];
+      const auditId = params.auditId;
       const formData = { id: auditId };
       store.dispatch(getinspectionAudit(formData)).then((res: any) => {
         if (res && res.payload) {
@@ -252,7 +256,7 @@ function VesselEdit() {
                         <DatePicker
                     selected={selectedDate} 
                     onChange={handleDateChange}
-                    dateFormat="yyyy-MM-dd"
+               
                           placeholderText="Select a Audit date"
                           className="date_new"
                         />

@@ -48,17 +48,23 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import MenuItem from "@mui/material/MenuItem";
+import { styled, alpha } from "@mui/material/styles";
+
 import FileCopyIcon from "@mui/icons-material/FileCopy";
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import DatePicker from 'react-datepicker';
+import DatePicker from "react-datepicker";
 import axios from "axios";
-import 'react-datepicker/dist/react-datepicker.css';
+import "react-datepicker/dist/react-datepicker.css";
 import Swal from "sweetalert2";
+
+import SearchIcon from "@mui/icons-material/Search";
+
 function CompanyView() {
   const mdTheme = createTheme();
+  const params = useParams();
   const [id, setId] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [vessels, setVessels] = useState([]);
@@ -83,18 +89,18 @@ function CompanyView() {
   const [audit, setAudit] = useState([]);
   const [title, setTitle] = useState("");
   const [state, setState] = useState("");
-  const [companies,setCompanies] = useState([]);
+  const [companies, setCompanies] = useState([]);
   const [category, setCategory] = useState("");
-  const [start_date, setStartDate] = useState<any> (dayjs(""));
-  const [src, setSrc] = useState("");
-
+  const [start_date, setStartDate] = useState<any>(dayjs(""));
+  const [src, setSrc] = useState<any>([]);
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [errorMessages, setErrorMessages] = useState("");
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-
+  const [searchTerm, setSearchTerm] = useState("");
   const handleDateChange = (date: Date | null) => {
     setSelectedDate(date);
   };
-
 
   const [dirtyFields, setDirtyFields] = useState({
     state: false,
@@ -115,13 +121,21 @@ function CompanyView() {
       </span>
     );
   };
+  const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      const filesArray = Array.from(event.target.files).slice(0, 5);
+      setSrc(filesArray);
+      const previewsArray = filesArray.map((file) => URL.createObjectURL(file));
+      
+    }
+  };
   let companyId = window.location.href.split("/")[5];
   useEffect(() => {
     if (onload == false) {
       const companyId = window.location.href.split("/")[5];
       const formData = { id: companyId };
-      const data = { "company_id": companyId };
-      
+      const data = { company_id: companyId };
+
       store.dispatch(getCompany(formData)).then((res: any) => {
         setOnload(true);
         if (res && res.payload) {
@@ -143,7 +157,8 @@ function CompanyView() {
           }
         }
       });
-  
+     
+
       store.dispatch(getVessels()).then((res: any) => {
         if (res.payload.status == true) {
           setVessels(res.payload.vessels);
@@ -151,21 +166,19 @@ function CompanyView() {
           toast.error(res.payload.message);
         }
       });
-
     }
   });
-  const getVesselData =()=>{
+  const getVesselData = () => {
     store.dispatch(getCompaniesAudit()).then((res: any) => {
       if (res.payload.status == true) {
         setCompanies(res.payload.companies_audit);
-      }else{
-        toast.error(res.payload.message)
+      } else {
+        toast.error(res.payload.message);
       }
-    }); 
-  }
+    });
+  };
   function getCategoryList() {
     store.dispatch(getCategory()).then((res: any) => {
-      console.log(res);
       if (res.payload.status == true) {
         setCities(res.payload?.vessels_audit);
       } else {
@@ -178,19 +191,22 @@ function CompanyView() {
   const handleOpen = () => {
     setOpen(true);
   };
-  function formatDate(dateString:any) {
+  function formatDate(dateString: any) {
     const date = new Date(dateString);
     // const formattedDate = `${date.getMonth() + 1}-${date.getDate()}-${date.getFullYear()}`;
-    const formattedDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+    const formattedDate = `${date.getFullYear()}-${
+      date.getMonth() + 1
+    }-${date.getDate()}`;
 
     return formattedDate;
   }
-  
+
   const dateString = selectedDate;
   const formattedDate = formatDate(dateString);
   const handleClose = () => {
     setOpen(false);
   };
+  console.log(src)
   const handleSubmit = (e: any) => {
     e.preventDefault();
     const headers = {
@@ -199,15 +215,18 @@ function CompanyView() {
     };
     const formData = new FormData();
     formData.append("title", state);
-    formData.append("category_id",  category);
+    formData.append("category_id", category);
     formData.append("company_id", id);
     formData.append("audit_date", formattedDate);
     // formData.append("picture", src);
-    for (let i = 0; i < src.length; i++) {
-      formData.append('picture', src[i]);
-    }
-
-    formData.append("owner_user_id", '4');
+    src.forEach((image:any, index:any) => {
+      if (image instanceof File) {
+        formData.append(`picture[${index}]`, image, `file${index}`);
+      } else {
+        console.error(`Invalid image data at index ${index}`);
+      }
+    });
+    formData.append("owner_user_id", "4");
     const imageFile = document.getElementById(
       "imageId"
     ) as HTMLInputElement | null;
@@ -224,15 +243,15 @@ function CompanyView() {
       .then((res: any) => {
         if (res.data.status == true) {
           toast.success(res.data.message);
-          handleClose()
-          statusUpdategetnew()
+          handleClose();
+
+          getVesselData();
         } else {
           toast.error(res.data.message);
         }
       });
   };
 
- 
   const deleteId = (e: any) => {
     Swal.fire({
       title: "Are you sure want to delete?",
@@ -249,7 +268,7 @@ function CompanyView() {
         };
         store.dispatch(deleteCompanyaudit(formdata)).then((res: any) => {
           if (res.payload.status == true) {
-             statusUpdategetnew()
+            companyauthGet();
             toast.success(res.payload.message);
           } else {
             toast.error(res.payload.message);
@@ -258,25 +277,23 @@ function CompanyView() {
       }
     });
   };
-  const customStyles = {
-    content: {
-      top: "50%",
-      left: "50%",
-      right: "auto",
-      bottom: "auto",
-      marginRight: "-50%",
-      transform: "translate(-50%, -50%)",
-    },
-  };
-  const statusUpdategetnew = () => {
- const formData =  { "company_id": companyId };
- store.dispatch(companywithAudit(formData)).then((res: any) => {
-  console.log(res, "companywithaudit")
-  setOnload(true);
-  if (res && res.payload) {
-    setAudit(res.payload.companies_audit);
+
+  interface Vessel {
+    company_title: string;
+    // other properties of the vessel object
   }
-});
+  const filteredCompanies = companies.filter(
+    (company: Vessel) => company.company_title === companyName
+  );
+  const companyauthGet = () => {
+    const data = { company_id: companyId };
+    store.dispatch(companywithAudit(data)).then((res: any) => {
+      setOnload(true);
+      if (res && res.payload) {
+        setAudit(res.payload.companies_audit);
+       
+      }
+    });
   };
   const statusUpdateCompany = (e: any) => {
     const formData = {
@@ -285,57 +302,48 @@ function CompanyView() {
     store.dispatch(statusCompanyAudit(formData)).then((res: any) => {
       if (res.payload.status == true) {
         toast.success(res.payload.message);
-        statusUpdategetnew()
+        companyauthGet();
       } else {
         toast.error(res.payload.message);
       }
     });
   };
 
- 
-  interface Vessel {
-    company_title: string;
-    // other properties of the vessel object
-  }
-  const filteredCompanies = companies.filter(
-    (company: Vessel) => company.company_title === companyName
-  );
-  console.log(filteredCompanies, 'filteredCompanies')
-
   const theme = useTheme();
 
   const columns: GridColDef[] = [
-    { field: 'id',
-     headerName: 'S.No.',
+    {
+      field: "id",
+      headerName: "S.No.",
       width: 100,
-      renderCell: (index:any) => index.api.getRowIndex(index.row.id) + 1,
+      renderCell: (index: any) => index.api.getRowIndex(index.row.id) + 1,
     },
     {
-      field: 'title',
-      headerName: 'Title',
+      field: "title",
+      headerName: "Title",
       width: 180,
     },
-  
+
     {
-      field: 'company_title',
-      headerName: 'Company Name',
+      field: "company_title",
+      headerName: "Company Name",
       width: 240,
     },
     {
-      field: 'category_title',
-      headerName: 'Category',
+      field: "category_title",
+      headerName: "Category",
       width: 200,
     },
-   
-     {
-      field: 'is_active',
-      headerName: 'Status',
+
+    {
+      field: "is_active",
+      headerName: "Status",
       width: 130,
       sortable: false,
       renderCell: (params) => {
         return (
           <>
- {params.row.is_active == "1" && (
+            {params.row.is_active == "1" && (
               <button
                 type="button"
                 className="btn btn-link"
@@ -357,44 +365,52 @@ function CompanyView() {
                 <span className="badge badge-danger">Inactive</span>
               </button>
             )}
-            {console.log(params.row.is_active, "params.row.is_active")}
-          
           </>
         );
-     }
+      },
     },
     {
-      field: 'action',
-      headerName: 'Action',
+      field: "action",
+      headerName: "Action",
       width: 180,
       sortable: false,
       flex: 1,
       renderCell: (params) => {
         return (
           <>
-            <Button sx={{ minWidth: 40 }} component={Link} to= {'/companies/auditedit/'+ params.row.id}>
+            <Button
+              sx={{ minWidth: 40 }}
+              component={Link}
+              to={`/companies/auditedit/${companyId}` + "/" + params.row.id}
+            >
               <EditIcon />
             </Button>
-            <Button sx={{ minWidth: 40 }} component={Link} to={'/companies/auditview/' + params.row.id}>
+            <Button
+              sx={{ minWidth: 40 }}
+              component={Link}
+              to={`/companies/view/${companyId}` + "/" + params.row.id}
+            >
               <VisibilityIcon />
             </Button>
-            <Button onClick={() => { deleteId(params.row.id) }} sx={{ minWidth: 40 }}>
+            <Button
+              onClick={() => {
+                deleteId(params.row.id);
+              }}
+              sx={{ minWidth: 40 }}
+            >
               <DeleteIcon />
             </Button>
-            
           </>
         );
       },
     },
-  ];  
+  ];
   useEffect(() => {
     getCategoryList();
     getVesselData();
-    statusUpdategetnew()
+    companyauthGet();
   }, []);
 
- 
-  console.log(cities, 'cityies');
   const fileInput = useRef<any | null>(null);
   return (
     <ThemeProvider theme={mdTheme}>
@@ -539,30 +555,49 @@ function CompanyView() {
                 })}
               </Grid>
             )}
-          
-           
-            
-            <Grid item xs={12} sx={{mt:4}}>
-                <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+
+            <Grid item xs={12} sx={{ mt: 4 }}>
+              <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
                 <Box className="headingbutton" sx={{ mb: 1 }}>
-                  <Typography component="h2" variant="h6" color="primary" gutterBottom>
+                  <Typography
+                    component="h2"
+                    variant="h6"
+                    color="primary"
+                    gutterBottom
+                  >
                     Company Audits
-                    </Typography>
-                    <Button variant="contained" onClick={handleOpen} >
-              Add Inspections{" "}
-            </Button>
+                  </Typography>
+                  <Box sx={{ display: "flex" }}>
+                    {/* <Box sx={{ mx: 3 }}>
+                      <TextField
+                        variant="outlined"
+                        placeholder="Enter a company name"
+                        size="small"
+                        fullWidth
+                        InputProps={{
+                          startAdornment: <SearchIcon />,
+                        }}
+                        value={searchTerm}
+                        // onChange={handleSearch}
+                      />
+                    </Box> */}
+
+                    <Button variant="contained" onClick={handleOpen}>
+                      Add Inspections{" "}
+                    </Button>
+                  </Box>
                 </Box>
                 <Divider />
-                <Box sx={{ height: 400, width: '100%' }}>
+                <Box sx={{ height: 400, width: "100%" }}>
                   <DataGrid
-                    rows={filteredCompanies}
+                    rows={audit}
                     columns={columns}
                     pageSize={5}
                     rowsPerPageOptions={[5]}
                   />
                 </Box>
-                </Paper>
-              </Grid>
+              </Paper>
+            </Grid>
             <Footer />
           </Container>
         </Box>
@@ -615,45 +650,37 @@ function CompanyView() {
             </Select>
           </FormControl>
         </Grid>
+        <Grid item xs={6} sm={6} mt={1} sx={{ px: 3 }}></Grid>
         <Grid item xs={6} sm={6} mt={1} sx={{ px: 3 }}>
+          <DatePicker
+            selected={selectedDate}
+            onChange={handleDateChange}
+            dateFormat="yyyy-MM-dd"
+            placeholderText="Select a Audit date"
+          />
         </Grid>
-        <Grid item xs={6} sm={6} mt={1}  sx={{ px: 3 }}>
-        <DatePicker
-         selected={selectedDate}
-         onChange={handleDateChange}
-         dateFormat="yyyy-MM-dd"
-      placeholderText="Select a Audit date"
-    />
-    
+        <Grid item xs={6} sm={6} mt={1} sx={{ px: 3 }}>
+        
+            <input
+              type="file"
+              ref={fileInput}
+              onChange={handleImageSelect}
+              className="form-control"
+              multiple
+            
+            />
         </Grid>
-        <Grid item xs={6} sm={6}  mt={1}  sx={{ px: 3 }}>
-                        <input
-                          type="file"
-                          accept=".pdf, .xls, .xlsx, .csv"
-                          ref={fileInput}
-                          multiple
-                          onChange={(e: any) => {
-                            setSrc(e.target.files);
-                          }}
-                          className="form-control"
-                        />
-                      </Grid>
-                      
+
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleSubmit}  color="primary" autoFocus>
+          <Button onClick={handleSubmit} color="primary" autoFocus>
             Submit
           </Button>
         </DialogActions>
       </Dialog>
-       
     </ThemeProvider>
   );
 }
 export default function Add() {
   return <CompanyView />;
 }
-
-
-
-

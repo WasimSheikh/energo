@@ -25,8 +25,8 @@ import { toast } from 'react-toastify';
 import { randomInt, randomUserName } from '@mui/x-data-grid-generator';
 import capitalizeFirstLetter from '../utils/FormUtils';
 import { useSelector } from 'react-redux';
-
-
+import TextField from "@mui/material/TextField";
+import SearchIcon from "@mui/icons-material/Search";
 
 function VesselList() {
   const currentUser: any = useSelector((state: any) => state.user.currUser);
@@ -35,6 +35,8 @@ function VesselList() {
   const [companyEdit,setCompanyEdit] = useState(false);
   const [companyDelete,setCompanyDelete] = useState(false);
   const [companyView,setCompanyView] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
   var permission:any =localStorage.getItem('permissions');
 const getVesselData =()=>{
   store.dispatch(getVessels()).then((res: any) => {
@@ -187,6 +189,30 @@ const deleteId=(e:any)=>{
   })
 }
 
+useEffect(() => {
+  // Retrieve the search term from local storage
+  const savedSearchTerm = localStorage.getItem('searchTerm');
+  if (savedSearchTerm) {
+    setSearchTerm(savedSearchTerm);
+  }
+}, []);
+
+useEffect(() => {
+  // Update the search results whenever the search term or data changes
+  const results = companies.filter((item:any) =>
+    item.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+  setSearchResults(results);
+
+  // Save the search term to local storage
+  localStorage.setItem('searchTerm', searchTerm);
+}, [searchTerm, companies]);
+
+const handleSearch = (event:any) => {
+  const value = event.target.value;
+  setSearchTerm(value);
+};
+
 
   return (
     <ThemeProvider theme={mdTheme}>
@@ -215,12 +241,27 @@ const deleteId=(e:any)=>{
                   <Typography component="h2" variant="h6" color="primary" gutterBottom>
                     Vessels
                     </Typography>
+                    <Box sx={{display: "flex"}}>
+                    <Box sx={{mx:2}}>
+                      <TextField
+                        variant="outlined"
+                        placeholder="Enter a vessel name"
+                        size="small"
+                        fullWidth
+                        InputProps={{
+                          startAdornment: <SearchIcon />,
+                        }}
+                        value={searchTerm}
+                        onChange={handleSearch}
+                      />
+                    </Box>
                <Button variant="contained" component={Link} to="/vessel/add">Add</Button>
+                    </Box>
                 </Box>
                 <Divider />
                 <Box sx={{ height: 400, width: '100%' }}>
                   <DataGrid
-                    rows={companies}
+                    rows={searchResults}
                     columns={columns}
                     pageSize={5}
                     rowsPerPageOptions={[5]}
