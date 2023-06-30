@@ -126,7 +126,6 @@ function CompanyView() {
       const filesArray = Array.from(event.target.files).slice(0, 5);
       setSrc(filesArray);
       const previewsArray = filesArray.map((file) => URL.createObjectURL(file));
-      
     }
   };
   let companyId = window.location.href.split("/")[5];
@@ -149,7 +148,8 @@ function CompanyView() {
           setCity(res.payload.company?.address?.city);
           setCountry(res.payload.company?.address?.country);
           setPostalCode(res.payload.company?.address?.zipcode);
-          setLogo(res.payload.company?.media_url);
+
+          setLogo(res?.payload?.company?.logopath);
           if (res.payload.company?.is_headquater == 1) {
             setIsHeadauator("Yes");
           } else {
@@ -157,7 +157,6 @@ function CompanyView() {
           }
         }
       });
-     
 
       store.dispatch(getVessels()).then((res: any) => {
         if (res.payload.status == true) {
@@ -168,6 +167,7 @@ function CompanyView() {
       });
     }
   });
+  console.log(vessels, "safdmk");
   const getVesselData = () => {
     store.dispatch(getCompaniesAudit()).then((res: any) => {
       if (res.payload.status == true) {
@@ -206,7 +206,7 @@ function CompanyView() {
   const handleClose = () => {
     setOpen(false);
   };
-  console.log(src)
+  console.log(src);
   const handleSubmit = (e: any) => {
     e.preventDefault();
     const headers = {
@@ -219,13 +219,9 @@ function CompanyView() {
     formData.append("company_id", id);
     formData.append("audit_date", formattedDate);
     // formData.append("picture", src);
-    src.forEach((image:any, index:any) => {
-      if (image instanceof File) {
-        formData.append(`picture[${index}]`, image, `file${index}`);
-      } else {
-        console.error(`Invalid image data at index ${index}`);
-      }
-    });
+    for (let i = 0; i < src.length; i++) {
+      formData.append(`picture[${i}]`, src[i]);
+    }
     formData.append("owner_user_id", "4");
     const imageFile = document.getElementById(
       "imageId"
@@ -244,7 +240,7 @@ function CompanyView() {
         if (res.data.status == true) {
           toast.success(res.data.message);
           handleClose();
-
+          companyauthGet();
           getVesselData();
         } else {
           toast.error(res.data.message);
@@ -282,16 +278,16 @@ function CompanyView() {
     company_title: string;
     // other properties of the vessel object
   }
-  const filteredCompanies = companies.filter(
+  const filteredCompanies = vessels.filter(
     (company: Vessel) => company.company_title === companyName
   );
+  console.log(filteredCompanies, "sadffdssdf");
   const companyauthGet = () => {
     const data = { company_id: companyId };
     store.dispatch(companywithAudit(data)).then((res: any) => {
       setOnload(true);
       if (res && res.payload) {
         setAudit(res.payload.companies_audit);
-       
       }
     });
   };
@@ -410,8 +406,13 @@ function CompanyView() {
     getVesselData();
     companyauthGet();
   }, []);
-
-  const fileInput = useRef<any | null>(null);
+ const fileInput = useRef<any | null>(null);
+const num = [2, 4, 6, 8, 12];
+let sum = 0;
+for(let i = 0; i < num.length; i++){
+  sum += num[i];
+}
+console.log(sum);
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: "flex" }}>
@@ -543,12 +544,21 @@ function CompanyView() {
                           height: 200,
                         }}
                       >
+                        {/* picture_urls */}
+
                         <Box component="div">{items.title}</Box>
-                        <img
-                          src={items.logopath}
-                          className="img-deshboard"
-                          alt="img-text"
-                        />
+                        {items.picture_urls.map((item: any, index: any) => {
+                        return (
+                            index === 0 && (
+                              <img
+                                key={index}
+                                src={item}
+                                className="img-deshboard"
+                                alt="img-text"
+                              />
+                            )
+                          );
+                        })}
                       </Paper>
                     </Grid>
                   );
@@ -660,15 +670,13 @@ function CompanyView() {
           />
         </Grid>
         <Grid item xs={6} sm={6} mt={1} sx={{ px: 3 }}>
-        
-            <input
-              type="file"
-              ref={fileInput}
-              onChange={handleImageSelect}
-              className="form-control"
-              multiple
-            
-            />
+          <input
+            type="file"
+            ref={fileInput}
+            onChange={handleImageSelect}
+            className="form-control"
+            multiple
+          />
         </Grid>
 
         <DialogActions>

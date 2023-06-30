@@ -67,7 +67,6 @@ function CompanyView() {
     "https://www.africau.edu/images/default/sample.pdf",
    
   ]
- 
   const theme = useTheme();
 
   return (
@@ -122,14 +121,14 @@ function CompanyView() {
                         <Box>
                           file : <Box component="span">
                           <Grid container spacing={2}>
+
                               {showImages.map((item:any, index:any) => (
                                 <Grid item xs={12} sm={6} md={6} key={index}>
-                                  <embed
-                                    src={item}
-                                    type="application/pdf"
-                                    width="100%"
-                                    height="300px"
-                                  />
+                       
+                                     <a href={item} download="filename.xlsx">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#007dca" viewBox="0 0 256 256"><path d="M213.66,82.34l-56-56A8,8,0,0,0,152,24H56A16,16,0,0,0,40,40V216a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V88A8,8,0,0,0,213.66,82.34Zm-56,83.32-24,24a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L120,164.69V120a8,8,0,0,1,16,0v44.69l10.34-10.35a8,8,0,0,1,11.32,11.32ZM152,88V44l44,44Z"></path></svg>                              </a>
+                               
+                                 
                                    <Box sx={{display:"flex"}}>
                               <Box>
                        Share on 

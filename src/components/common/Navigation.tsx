@@ -74,6 +74,7 @@ const Navigation = (): JSX.Element => {
   function addPermission(){
         var permissions:any = localStorage.getItem('permissions')
         var allPermission:any =JSON.parse(permissions)?JSON.parse(permissions):[];
+        console.log(allPermission, "permission");
         if(allPermission.length != 0){
         allPermission.forEach((per:any) => {
           if(capitalizeFirstLetter(per.flag) == "Companies"){
@@ -157,7 +158,7 @@ const Navigation = (): JSX.Element => {
             </ListItemButton>}
            {companyIndex && <ListItemButton component={Link} to="/companies" >
               <ListItemIcon>
-                <ManageAccountsIcon />
+              <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="#757575" viewBox="0 0 256 256"><path d="M239.73,208H224V96a16,16,0,0,0-16-16H164a4,4,0,0,0-4,4V208H144V32.41a16.43,16.43,0,0,0-6.16-13,16,16,0,0,0-18.72-.69L39.12,72A16,16,0,0,0,32,85.34V208H16.27A8.18,8.18,0,0,0,8,215.47,8,8,0,0,0,16,224H240a8,8,0,0,0,8-8.53A8.18,8.18,0,0,0,239.73,208ZM76,184a8,8,0,0,1-8.53,8A8.18,8.18,0,0,1,60,183.72V168.27A8.19,8.19,0,0,1,67.47,160,8,8,0,0,1,76,168Zm0-56a8,8,0,0,1-8.53,8A8.19,8.19,0,0,1,60,127.72V112.27A8.19,8.19,0,0,1,67.47,104,8,8,0,0,1,76,112Zm40,56a8,8,0,0,1-8.53,8,8.18,8.18,0,0,1-7.47-8.26V168.27a8.19,8.19,0,0,1,7.47-8.26,8,8,0,0,1,8.53,8Zm0-56a8,8,0,0,1-8.53,8,8.19,8.19,0,0,1-7.47-8.26V112.27a8.19,8.19,0,0,1,7.47-8.26,8,8,0,0,1,8.53,8Z"></path></svg>
               </ListItemIcon>
               <ListItemText primary="Companies"  />
             </ListItemButton>}
@@ -170,8 +171,7 @@ const Navigation = (): JSX.Element => {
             </ListItemButton>}
             {companyIndex && <ListItemButton component={Link} to="/auditcategories/list" >
               <ListItemIcon>
-                <ManageAccountsIcon />
-              </ListItemIcon>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#757575" viewBox="0 0 256 256"><path d="M160,112a24,24,0,1,1-24-24A24,24,0,0,1,160,112Zm64-72V216a16,16,0,0,1-16,16H64a16,16,0,0,1-16-16V192H32a8,8,0,0,1,0-16H48V136H32a8,8,0,0,1,0-16H48V80H32a8,8,0,0,1,0-16H48V40A16,16,0,0,1,64,24H208A16,16,0,0,1,224,40ZM190.4,163.2A67.88,67.88,0,0,0,163,141.51a40,40,0,1,0-53.94,0A67.88,67.88,0,0,0,81.6,163.2a8,8,0,1,0,12.8,9.6,52,52,0,0,1,83.2,0,8,8,0,1,0,12.8-9.6Z"></path></svg>              </ListItemIcon>
               <ListItemText primary="Audits & Inspections"  />
             </ListItemButton>}
            {indexUsers && <ListItemButton component={Link} to="/users" >
