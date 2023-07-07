@@ -292,14 +292,18 @@ function CompanyView() {
     {
       field: 'title',
       headerName: 'Title',
-      width: 180,
+      width: 250,
+      renderCell: (params) => {
+        return (
+          <>
+            {params.row.title} - {params.row.audit_date},
+          </>
+        )
+      }
+
+      
     },
   
-    {
-      field: 'company_title',
-      headerName: 'Company Name',
-      width: 240,
-    },
     {
       field: 'category_title',
       headerName: 'Category',
@@ -394,7 +398,7 @@ function CompanyView() {
                           {" "}
                           <Box component="span" sx={{ height: "25px" }}>
                             <img
-                              src={logo}
+                              src="https://energo.codingserver.com/static/media/APM-Maersk.png"
                               alt="img-setup"
                               className="img-compony-theme"
                             />
@@ -488,7 +492,7 @@ function CompanyView() {
                       >
                         <Box component="div">{items.title}</Box>
                         <img
-                          src={items.logopath}
+                          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6jNdWPUoDo1W-E5JaTjFzU60l0hPtfg_GZcopUow7mqztXjZ-Vgn_dgzx8CPAkrLoFx4&usqp=CAU"
                           className="img-deshboard"
                           alt="img-text"
                         />

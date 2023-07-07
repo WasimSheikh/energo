@@ -37,11 +37,11 @@ function CompanyView() {
   const [logo, setLogo] = useState("");
   const [showImages, setShowImages] = useState('');
   const [onload, setOnload] = useState(false);
-  const {companyId} = useParams();
+  const [companyId,setCompanyId] = useState(window.location.href.split("/")[5])
   const [date, setDate] = useState("");
   useEffect(() => {
     if (onload == false) {
-      const companyId = window.location.href.split("/")[5];
+     
       const formData = { id: companyId };
       store.dispatch(getinspectionAudit(formData)).then((res: any) => {
         console.log(res, 'res');
@@ -113,10 +113,10 @@ function CompanyView() {
                             {category}</Box>
                         </Box>
                         <Box>
-                          file : <Box component="span">
+                          Attachment: <Box component="span">
                             <Grid>
-
-                            <img src={showImages} style={{width:"auto", height:"100px"}} alt="dsaff"/>
+                              <a href="showImages" className="downloadfile">Download File</a>
+                            {/* <img src={showImages} style={{width:"auto", height:"100px"}} alt=""/> */}
                             </Grid>
                             </Box>
                         </Box>

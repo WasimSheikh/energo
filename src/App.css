@@ -106,3 +106,6 @@ padding: 0.25rem !important;
 .react-datepicker__input-container input:focus-visible{
   border: none !important;
 }
+.downloadfile{
+  color: blue;
+}

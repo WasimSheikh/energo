@@ -339,6 +339,8 @@ function CompanyView() {
                         <Box>
                           Company logo : <Box component="span">
                             {showImages}</Box>
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6jNdWPUoDo1W-E5JaTjFzU60l0hPtfg_GZcopUow7mqztXjZ-Vgn_dgzx8CPAkrLoFx4&usqp=CAU" width={250}></img>
+                            
                         </Box>
                       </Grid>
                     </Grid>
