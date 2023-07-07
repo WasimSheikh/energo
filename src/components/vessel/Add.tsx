@@ -89,7 +89,7 @@ function CompanyAdd() {
   };
   const fileInput = useRef<any | null>(null);
 
-  console.log(company_id);
+ 
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: "flex" }}>

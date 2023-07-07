@@ -77,10 +77,8 @@ const selectState = (event:SelectChangeEvent) => {
 function getCountrieData(){
     if(countries.length == 0){
       store.dispatch(getCountries()).then((res: any) => {
-
-          setCountries(res.payload.countries);
-          
-      });
+       setCountries(res.payload.countries);
+    });
     }
   }
 function getCountryStatesByCountry(e:any){

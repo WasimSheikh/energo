@@ -169,13 +169,7 @@ function CompanyAdd() {
   useEffect(() => {
     getCityiesData();
   }, [state]);
-  // function getCityiesData() {
-  //   if (countries.length == 0) {
-  //     store.dispatch(getCities()).then((res: any) => {
-  //      setCityId(res.payload.cities);
-  //     });
-  //   }
-  // }
+  
 
   const getError = (msg: string): JSX.Element => {
     return (
@@ -200,8 +194,8 @@ function CompanyAdd() {
   useEffect(() => {
     getCountrieData();
     // getCityiesData();
-  });
-  console.log(state, "ahjfads");
+  }, []);
+
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: "flex" }}>
