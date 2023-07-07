@@ -90,7 +90,7 @@ function UserAdd() {
 
 
   const isValidData = ():boolean => {
-    const validateFields = ifEmpty( firstName && lastName && phone && address && street && city && country && company_id && permission && postalCode && company_id);
+    const validateFields = ifEmpty( firstName && lastName && phone && address && street && city && country && company_id && permission && postalCode );
     return validateFields;
   };
   const fileInput = useRef<any | null>(null);

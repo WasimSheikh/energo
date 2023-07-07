@@ -154,13 +154,13 @@ function CompanyEdit() {
   };
   function getCountryStatesByCountry(e: any) {
     const formDate = {
-      country_id: e,
+      country_id: country,
     };
     store.dispatch(getCountryStates(formDate)).then((res: any) => {
-      console.log(res);
       setStateId(res.payload.states);
     });
   }
+  
   const selectCuntry = (event: SelectChangeEvent) => {
     setCountry(event.target.value);
     getCountryStatesByCountry(event.target.value);
@@ -176,10 +176,10 @@ function CompanyEdit() {
     if (onload == false) {
       setOnload(true);
       const companyId = window.location.href.split("/")[5];
+      console.log(companyId, "companyId");
       const formData = { id: companyId };
       store.dispatch(getCompany(formData)).then((res: any) => {
         if (res && res.payload) {
-          console.log(res.payload, "sadff");
           setId(res.payload.company?.id);
           setCompanyName(res.payload.company?.title);
           setFirstName(res.payload.company?.first_name);
@@ -214,23 +214,21 @@ function CompanyEdit() {
   }
   function getCityiesData() {
     const formDate = {
-      country_id:country , 
-      state_id:state,
+      country_id: country,
+      state_id: state,
     };
-    
-      store.dispatch(getCities(formDate)).then((res: any) => {
+
+    store.dispatch(getCities(formDate)).then((res: any) => {
       setCityId(res.payload.cities);
-      });
-    
+    });
   }
   useEffect(() => {
     getCityiesData();
   }, [state]);
   useEffect(() => {
     getCountrieData();
-   
   });
-  console.log(state, "dfsaddfsdfsdfs");
+
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: "flex" }}>
@@ -540,7 +538,6 @@ function CompanyEdit() {
                           multiple
                         />
 
-  
                         <img
                           src={image}
                           alt="img"
@@ -549,26 +546,7 @@ function CompanyEdit() {
                         />
                         <br />
                       </Grid>
-                      {/* <Grid item xs={6} sm={6}>
-                        <Box>
-                      
-                        <Button
-                          variant="contained"
-                          component="label"
-                          sx={{ mb: 3 }}
-                        >
-                          Upload Logo
-                          <input
-                            name="logo"
-                            hidden
-                            accept="image/*"
-                            multiple
-                            type="file"
-                          />
-                        </Button>
-                        </Box>
-                     
-                      </Grid> */}
+                   
                     </Grid>
                     <Divider />
                     <Toolbar sx={{ ml: 0, pl: "0 !important" }}>
@@ -594,7 +572,6 @@ function CompanyEdit() {
             </Grid>
             <Footer />
           </Container>
-          
         </Box>
       </Box>
     </ThemeProvider>

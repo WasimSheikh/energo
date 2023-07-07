@@ -74,7 +74,7 @@ const isValidData = ():boolean => {
   const handleSubmit = (e:any) => {
     e.preventDefault();
     if(isValidData()){
-      console.log(flag);
+    
     const formData = {
       name:name,
       url:url,

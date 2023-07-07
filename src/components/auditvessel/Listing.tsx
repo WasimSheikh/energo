@@ -16,7 +16,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { deleteCompany,deleteVessel,getCompanies, getRolehasPermissions, getVessels, statusCompany, statusVessel, } from '../../redux/store/reducers/slices/UserSlice';
+import { deleteCompany,deleteVessel,getCompanies, getCompaniesAudit, getRolehasPermissions, getVessels, statusCompany, statusVessel, } from '../../redux/store/reducers/slices/UserSlice';
 import React, { useEffect , useState } from 'react';
 import { store } from '../../redux/store';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
@@ -25,8 +25,8 @@ import { toast } from 'react-toastify';
 import { randomInt, randomUserName } from '@mui/x-data-grid-generator';
 import capitalizeFirstLetter from '../utils/FormUtils';
 import { useSelector } from 'react-redux';
-import TextField from "@mui/material/TextField";
-import SearchIcon from "@mui/icons-material/Search";
+
+
 
 function VesselList() {
   const currentUser: any = useSelector((state: any) => state.user.currUser);
@@ -35,19 +35,17 @@ function VesselList() {
   const [companyEdit,setCompanyEdit] = useState(false);
   const [companyDelete,setCompanyDelete] = useState(false);
   const [companyView,setCompanyView] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
   var permission:any =localStorage.getItem('permissions');
 const getVesselData =()=>{
-  store.dispatch(getVessels()).then((res: any) => {
+  store.dispatch(getCompaniesAudit()).then((res: any) => {
     if (res.payload.status == true) {
-      setCompanies(res.payload.vessels);
+      setCompanies(res.payload.companies_audit);
     }else{
       toast.error(res.payload.message)
     }
   }); 
 }
-
+console.log(companies, 'dsfggfg');
 
 // function addPermission(){
 //   console.log(JSON.parse(permission),"roles permission");
@@ -103,7 +101,11 @@ const columns: GridColDef[] = [
     headerName: 'Company Name',
     width: 240,
   },
-
+  {
+    field: 'compan',
+    headerName: 'Category',
+    width: 240,
+  },
  
    {
     field: 'is_active',
@@ -129,10 +131,10 @@ const columns: GridColDef[] = [
     renderCell: (params) => {
       return (
         <>
-          <Button sx={{ minWidth: 40 }} component={Link} to={'/vessel/edit/' + params.row.id}>
+          <Button sx={{ minWidth: 40 }} component={Link} to={'/inspection/edit/' + params.row.id}>
             <EditIcon />
           </Button>
-          <Button sx={{ minWidth: 40 }} component={Link} to={'/vessel/view/' + params.row.id}>
+          <Button sx={{ minWidth: 40 }} component={Link} to={'/inspection/edit/' + params.row.id}>
             <VisibilityIcon />
           </Button>
           <Button onClick={() => { deleteId(params.row.id) }} sx={{ minWidth: 40 }}>
@@ -189,30 +191,6 @@ const deleteId=(e:any)=>{
   })
 }
 
-useEffect(() => {
-  // Retrieve the search term from local storage
-  const savedSearchTerm = localStorage.getItem('searchTerm');
-  if (savedSearchTerm) {
-    setSearchTerm(savedSearchTerm);
-  }
-}, []);
-
-useEffect(() => {
-  // Update the search results whenever the search term or data changes
-  const results = companies.filter((item:any) =>
-    item.title.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-  setSearchResults(results);
-
-  // Save the search term to local storage
-  localStorage.setItem('searchTerm', searchTerm);
-}, [searchTerm, companies]);
-
-const handleSearch = (event:any) => {
-  const value = event.target.value;
-  setSearchTerm(value);
-};
-
 
   return (
     <ThemeProvider theme={mdTheme}>
@@ -239,29 +217,14 @@ const handleSearch = (event:any) => {
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
                 <Box className="headingbutton" sx={{ mb: 1 }}>
                   <Typography component="h2" variant="h6" color="primary" gutterBottom>
-                    Vessels
+                    Inspection
                     </Typography>
-                    <Box sx={{display: "flex"}}>
-                    <Box sx={{mx:2}}>
-                      <TextField
-                        variant="outlined"
-                        placeholder="Enter a vessel name"
-                        size="small"
-                        fullWidth
-                        InputProps={{
-                          startAdornment: <SearchIcon />,
-                        }}
-                        value={searchTerm}
-                        onChange={handleSearch}
-                      />
-                    </Box>
                <Button variant="contained" component={Link} to="/vessel/add">Add</Button>
-                    </Box>
                 </Box>
                 <Divider />
                 <Box sx={{ height: 400, width: '100%' }}>
                   <DataGrid
-                    rows={searchResults}
+                    rows={companies}
                     columns={columns}
                     pageSize={5}
                     rowsPerPageOptions={[5]}

@@ -12,79 +12,72 @@ import Footer from "../common/Footer";
 import Header from "../common/Header";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import MenuItem from "@mui/material/MenuItem";
 import Checkbox from "@mui/material/Checkbox";
-import InputLabel from "@mui/material/InputLabel";
-import FormControl from "@mui/material/FormControl";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
 import {
-  updateCompany,
-  getCompany,
-  getVessels,
-  getVessel,
+  createVessel,
   getCompanies,
-  updateVessel,
 } from "../../redux/store/reducers/slices/UserSlice";
 import { store } from "../../redux/store";
 import React, { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
+import MenuItem from "@mui/material/MenuItem";
+
+import InputLabel from "@mui/material/InputLabel";
+import FormControl from "@mui/material/FormControl";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
 
 const mdTheme = createTheme();
 
-function VesselEdit() {
+function CompanyAdd() {
   const navigate = useNavigate();
-  const [id, setId] = useState("");
-  const [companyName, setCompanyName] = useState("");
 
-  const [logo, setLogo] = useState("");
-  const [company_id, setCompanyId] = useState("");
   const [state, setState] = useState("");
-  const [documents, setFile] = React.useState<any | null>(null);
+  const [company_id, setCompanyId] = useState("");
+  const [logo, setLogo] = useState("");
   const [companies, setCompanies] = React.useState([]);
-  const [onload, setOnload] = useState(false);
-  const [imagebinary, setImagebinary] = useState("");
-  const [image, setImage] = useState("");
   const [errorMessages, setErrorMessages] = useState("");
   const [dirtyFields, setDirtyFields] = useState({
     state: false,
     company_id: false,
   });
-
   const isValidData = (): boolean => {
-    const validateFields = ifEmpty(company_id);
+    const validateFields = ifEmpty(state);
     return validateFields;
   };
-  const fileInput = useRef<any | null>(null);
-
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append("id", id);
-    formData.append("company_id", company_id);
-
-    formData.append("title", state);
-    Array.from(imagebinary).forEach((file, index) => {
-      formData.append(`picture`, file);
-    });
-    store.dispatch(updateVessel(formData)).then((res: any) => {
-      if (res?.payload?.data?.status == true) {
-        toast.success(res.payload?.data?.message);
-        navigate("/vessel");
-      } else {
-        toast.error(res.payload?.message);
+    {
+      const formData = new FormData();
+      formData.append("title", state);
+      formData.append("company_id", company_id);
+      formData.append("picture", logo);
+      store.dispatch(createVessel(formData)).then((res: any) => {
+        if (res.payload?.data?.status == true) {
+          toast.success(res.payload?.data?.message);
+          navigate("/companies");
+        } else {
+          toast.error(res.payload?.data?.message);
+        }
+      });
+    }
+  };
+  useEffect(() => {
+    store.dispatch(getCompanies()).then((res: any) => {
+      if (res && res.payload.companies) {
+        setCompanies(res.payload.companies);
       }
     });
+  }, []);
+  const selectChange = (event: SelectChangeEvent) => {
+    setCompanyId(event.target.value);
   };
-
   const renderErrorMessage = () =>
     errorMessages && <div className="error">{errorMessages}</div>;
 
   const ifEmpty = (val: string): boolean => {
-    return val !== undefined && val.length > 0; // return true;
-  };
-  const selectChange = (event: SelectChangeEvent) => {
-    setCompanyName(event.target.value);
+    return val != undefined && val != "" && val.length > 0; // return true;
   };
 
   const getError = (msg: string): JSX.Element => {
@@ -94,32 +87,9 @@ function VesselEdit() {
       </span>
     );
   };
+  const fileInput = useRef<any | null>(null);
 
-  useEffect(() => {
-    if (onload == false) {
-      setOnload(true);
-      const vesselId = window.location.href.split("/")[5];
-      const formData = { id: vesselId };
-      store.dispatch(getVessel(formData)).then((res: any) => {
-        if (res && res.payload) {
-          setId(res.payload.vessel?.id);
-          setCompanyId(res.payload.vessel?.company_id);
-          setState(res?.payload?.vessel?.title);
-          setImage(res?.payload?.vessel?.media_url);
-        }
-      });
-      store.dispatch(getCompanies()).then((res: any) => {
-        if (res && res.payload.companies) {
-          setCompanies(res.payload.companies);
-        }
-      });
-    }
-  });
-  const handleChangeImgUrl = (e: any) => {
-    setImagebinary(e.target.files);
-    setImage(URL.createObjectURL(e.target.files[0]));
-  };
-
+ 
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: "flex" }}>
@@ -149,7 +119,7 @@ function VesselEdit() {
                     color="primary"
                     gutterBottom
                   >
-                    Edit Vessel
+                    Add Audit Inspection
                   </Typography>
                   <Divider />
                   <Box
@@ -170,11 +140,12 @@ function VesselEdit() {
                             id="company_name"
                             value={company_id}
                             label="Company Name"
-                            onChange={selectChange}
-                            onBlur={(e) => {
+                            // onChange={selectChange}
+                            onChange={(e) => {
+                              setCompanyId(e.target.value);
                               setDirtyFields((dirty) => ({
                                 ...dirty,
-                                companyName: false,
+                                company_id: !ifEmpty(e.target.value),
                               }));
                             }}
                           >
@@ -204,34 +175,32 @@ function VesselEdit() {
                             }));
                           }}
                         />
-                        {dirtyFields["state"] && getError("Title is required ")}
+                         {dirtyFields["state"] && getError("Title is required ")}
                       </Grid>
-                      <Grid item xs={6} sm={6}>
-                        <img
-                          src={image}
-                          alt="img"
-                          style={{ height: "100px", width: "auto" }}
-                          className="mt-0 mb-2 my-src-setup"
-                        />
+                     
+                      <Grid item xs={6} sm={6} sx={{ mb: 2 }}>
                         <input
                           type="file"
+                          name="picture"
+                          id="picture"
                           ref={fileInput}
-                          onChange={handleChangeImgUrl}
+                          onChange={(e: any) => {
+                            setLogo(e.target.files[0]);
+                          }}
+                        
                           className="form-control"
-                          multiple
                         />
-
-                        <br />
                       </Grid>
                     </Grid>
                     <Divider />
                     <Toolbar sx={{ ml: 0, pl: "0 !important" }}>
                       <Button
+                        disabled={!isValidData()}
                         onClick={handleSubmit}
                         type="submit"
                         variant="contained"
                       >
-                        Update
+                        Submit
                       </Button>
                       <Button
                         variant="contained"
@@ -253,6 +222,6 @@ function VesselEdit() {
     </ThemeProvider>
   );
 }
-export default function Edit() {
-  return <VesselEdit />;
+export default function Add() {
+  return <CompanyAdd />;
 }
