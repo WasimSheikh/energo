@@ -465,6 +465,7 @@ function CompanyView() {
                 HSSE Specifications Questionnaire
               </Typography>
             </Grid>
+<<<<<<< Updated upstream
             <Grid>
               <Box component="div" sx={{ mt: 4, mb: 4 }}></Box>
               <Typography
@@ -524,6 +525,26 @@ function CompanyView() {
                     rowsPerPageOptions={[5]}
                   />
                 </Box>
+=======
+        
+        {vessels.length>0 &&
+            <Grid container spacing={2}>
+              {vessels.map((items:any) =>{
+                return  <Grid item xs={12} md={3} lg={3} key={items.id}>
+                <Paper  
+                  sx={{
+                    p: 2,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    height: 200,
+                  }}
+                >
+                  <Box component="div">{items.title}</Box>
+                  <Box component="div" fontSize={10}>IMO / MMSI	9214898 / 219031419</Box>
+                  
+                 <img src="https://static.vesselfinder.net/ship-photo/9214898-563084700-ea8cfb9432515c6132748b230c591a35/1?v1" className="img-deshboard" alt="img-text"/>
+                  
+>>>>>>> Stashed changes
                 </Paper>
               </Grid>
             <Footer />
