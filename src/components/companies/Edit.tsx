@@ -176,6 +176,7 @@ function CompanyEdit() {
     if (onload == false) {
       setOnload(true);
       const companyId = window.location.href.split("/")[5];
+      console.log(companyId, "companyId");
       const formData = { id: companyId };
       store.dispatch(getCompany(formData)).then((res: any) => {
         if (res && res.payload) {

@@ -28,6 +28,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import { Link, useParams } from "react-router-dom";
 import React, { useEffect, useRef, useState } from "react";
 import {
+  companywithAudit,
   deleteCategory,
   deleteVesselAudit,
   getAuditVessels,
@@ -37,6 +38,7 @@ import {
   getVessel,
   statusAuditVessel,
   statusCategory,
+  vesselwithAudit,
 } from "../../redux/store/reducers/slices/UserSlice";
 import { store } from "../../redux/store";
 import { ToastContainer, toast } from "react-toastify";
@@ -45,12 +47,15 @@ import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 import MenuItem from "@mui/material/MenuItem";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import DatePicker from 'react-datepicker';
+import DatePicker from "react-datepicker";
 import Swal from "sweetalert2";
 import axios from "axios";
+
+import SearchIcon from "@mui/icons-material/Search";
 function CompanyView() {
   const mdTheme = createTheme();
   const [id, setId] = useState("");
+  const params = useParams();
   const [companyName, setCompanyName] = useState("");
   const [title, setTitle] = useState("");
   const [open, setOpen] = React.useState(false);
@@ -58,16 +63,19 @@ function CompanyView() {
   const [state, setState] = useState("");
   const [cities, setCities] = useState([]);
   const [category, setCategory] = useState("");
-  const [src, setSrc] = useState("");
-  const [companies,setCompanies] = useState([]);
+  const [src, setSrc] = useState([]);
+  const [companies, setCompanies] = useState([]);
   const [showImages, setShowImages] = useState([]);
   const [onload, setOnload] = useState(false);
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-
-  const handleDateChange = (date:any) => {
+  const [selectedDate, setSelectedDate] = useState<Date | null>();
+  const [audit, setAudit] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+ 
+  const handleDateChange = (date: any) => {
     setSelectedDate(date);
   };
-
+  const companyId = window.location.href.split("/")[5];
   useEffect(() => {
     if (onload == false) {
       const companyId = window.location.href.split("/")[5];
@@ -75,19 +83,19 @@ function CompanyView() {
       store.dispatch(getVessel(formData)).then((res: any) => {
         setOnload(true);
         if (res && res.payload) {
-         
+          setId(res.payload.vessel.id);
+
           setTitle(res.payload.vessel.title);
 
           setCompanyName(res.payload.vessel.company.title);
-          setId(res.payload.vessel.id);
-          setCompanyName(res.payload.company.title);
-
-          setShowImages(res?.payload?.vessel?.media_url?.picture);
+       setCompanyName(res.payload.company.title);
+     setShowImages(res?.payload?.vessel?.media_url?.picture);
         }
       });
+      
     }
-  });
-  
+  }, []);
+
   const [dirtyFields, setDirtyFields] = useState({
     state: false,
     company_id: false,
@@ -113,10 +121,12 @@ function CompanyView() {
   const handleClose = () => {
     setOpen(false);
   };
-  function formatDate(dateString:any) {
+  function formatDate(dateString: any) {
     const date = new Date(dateString);
     // const formattedDate = `${date.getMonth() + 1}-${date.getDate()}-${date.getFullYear()}`;
-    const formattedDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+    const formattedDate = `${date.getFullYear()}-${
+      date.getMonth() + 1
+    }-${date.getDate()}`;
 
     return formattedDate;
   }
@@ -137,22 +147,22 @@ function CompanyView() {
     store.dispatch(statusAuditVessel(formData)).then((res: any) => {
       if (res.payload.status == true) {
         toast.success(res.payload.message);
-        getVesselData();
+        statusUpdategetnew();
       } else {
         toast.error(res.payload.message);
       }
     });
   };
 
-  const getVesselData =()=>{
+  const getVesselData = () => {
     store.dispatch(getAuditVessels()).then((res: any) => {
       if (res.payload.status == true) {
         setCompanies(res.payload.vessels_audit);
-      }else{
-        toast.error(res.payload.message)
+      } else {
+        toast.error(res.payload.message);
       }
-    }); 
-  }
+    });
+  };
   const deleteId = (e: any) => {
     Swal.fire({
       title: "Are you sure want to delete?",
@@ -169,9 +179,9 @@ function CompanyView() {
         };
         store.dispatch(deleteVesselAudit(formdata)).then((res: any) => {
           if (res.payload.status == true) {
-            getCategoryList();
-            getVesselData()
+            statusUpdategetnew();
             toast.success(res.payload.message);
+            statusUpdategetnew();
           } else {
             toast.error(res.payload.message);
           }
@@ -179,6 +189,18 @@ function CompanyView() {
       }
     });
   };
+  console.log(audit, "dfsalfj")
+  const statusUpdategetnew = () => {
+    const formData = { vessel_id: companyId };
+    store.dispatch(vesselwithAudit(formData)).then((res: any) => {
+      console.log(res, "res");
+      setOnload(true);
+      if (res && res.payload) {
+        setAudit(res.payload.vessels_audits);
+      }
+    });
+  };
+
   const dateString = selectedDate;
   const formattedDate = formatDate(dateString);
   var token = localStorage.getItem("access_token");
@@ -190,11 +212,13 @@ function CompanyView() {
     };
     const formData = new FormData();
     formData.append("title", state);
-    formData.append("category_id",  category);
+    formData.append("category_id", category);
     formData.append("vessel_id", id);
     formData.append("audit_date", formattedDate);
-    formData.append("picture", src);
-    formData.append("owner_user_id", '4');
+    for (let i = 0; i < src.length; i++) {
+      formData.append(`picture[${i}]`, src[i]);
+    }
+    formData.append("owner_user_id", "4");
     const imageFile = document.getElementById(
       "imageId"
     ) as HTMLInputElement | null;
@@ -211,84 +235,134 @@ function CompanyView() {
       .then((res: any) => {
         if (res.data.status == true) {
           toast.success(res.data.message);
-          handleClose()
-          getVesselData()
+          handleClose();
+          statusUpdategetnew();
         } else {
           toast.error(res.data.message);
         }
       });
   };
-  useEffect(() =>{
-    getCategoryList()
-    getVesselData()
-  }, [])
+  useEffect(() => {
+    getCategoryList();
+    getVesselData();
+    statusUpdategetnew();
+  }, []);
+
+  const filteredAudits = companies.filter(
+    (company: any) => company.company_title === title
+  );
+
   const columns: GridColDef[] = [
-    { field: 'id',
-     headerName: 'S.No.',
+    {
+      field: "id",
+      headerName: "S.No.",
       width: 100,
-      renderCell: (index:any) => index.api.getRowIndex(index.row.id) + 1,
+      renderCell: (index: any) => index.api.getRowIndex(index.row.id) + 1,
     },
     {
-      field: 'title',
-      headerName: 'Title',
+      field: "title",
+      headerName: "Title",
       width: 180,
     },
-  
+
     {
-      field: 'company_title',
-      headerName: 'Vessel Name',
+      field: "vessel_title",
+      headerName: "Vessel Name",
       width: 240,
     },
     {
-      field: 'category_title',
-      headerName: 'Category',
+      field: "category_title",
+      headerName: "Category",
       width: 240,
     },
-   
-     {
-      field: 'is_active',
-      headerName: 'Status',
+
+    {
+      field: "is_active",
+      headerName: "Status",
       width: 130,
       sortable: false,
       renderCell: (params) => {
         return (
           <>
-           {params.row.is_active == '1' && <button type="button" className="btn btn-link"  
-           onClick={()=>{statusUpdateCompany(params.row.id)}}
-            ><span className='badge badge-success'>Active</span></button>}
-            {params.row.is_active == '0' &&  <button type="button" className="btn btn-link" 
-            onClick={()=>{statusUpdateCompany(params.row.id)}} 
-            ><span className='badge badge-danger'>Inactive</span></button>}
-          
+            {params.row.is_active == "1" && (
+              <button
+                type="button"
+                className="btn btn-link"
+                onClick={() => {
+                  statusUpdateCompany(params.row.id);
+                }}
+              >
+                <span className="badge badge-success">Active</span>
+              </button>
+            )}
+            {params.row.is_active == "0" && (
+              <button
+                type="button"
+                className="btn btn-link"
+                onClick={() => {
+                  statusUpdateCompany(params.row.id);
+                }}
+              >
+                <span className="badge badge-danger">Inactive</span>
+              </button>
+            )}
           </>
         );
-     }
+      },
     },
     {
-      field: 'action',
-      headerName: 'Action',
+      field: "action",
+      headerName: "Action",
       width: 180,
       sortable: false,
       flex: 1,
       renderCell: (params) => {
         return (
           <>
-            <Button sx={{ minWidth: 40 }} component={Link} to={'/vesselaudit/edit/' + params.row.id}>
+            <Button
+              sx={{ minWidth: 40 }}
+              component={Link}
+              to={`/vessel/audit/${companyId}` + "/" + params.row.id}
+            >
               <EditIcon />
             </Button>
-            <Button sx={{ minWidth: 40 }} component={Link} to={'/vesselaudit/view/' + params.row.id}>
+            <Button
+              sx={{ minWidth: 40 }}
+              component={Link}
+              to={`/vessel/view/${companyId}` + "/" + params.row.id}
+            >
               <VisibilityIcon />
             </Button>
-            <Button 
-            onClick={() => { deleteId(params.row.id) }}
-             sx={{ minWidth: 40 }}>
+            <Button
+              onClick={() => {
+                deleteId(params.row.id);
+              }}
+              sx={{ minWidth: 40 }}
+            >
               <DeleteIcon />
             </Button>
           </>
         );
       },
     },
-  ];  
+  ];
+
+  useEffect(() => {
+    // Update the search results whenever the search term or data changes
+    const results = audit.filter((item: any) =>
+      item.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setSearchResults(results);
+
+    // Save the search term to local storage
+    localStorage.setItem("searchTerm", searchTerm);
+  }, [searchTerm, audit]);
+
+  const handleSearch = (event: any) => {
+    const value = event.target.value;
+    setSearchTerm(value);
+  };
+
   const theme = useTheme();
   const fileInput = useRef<any | null>(null);
   return (
@@ -360,29 +434,47 @@ function CompanyView() {
                 </Paper>
               </Grid>
             </Grid>
-            <Grid item xs={12} sx={{mt:4}}>
-                <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+            <Grid item xs={12} sx={{ mt: 4 }}>
+              <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
                 <Box className="headingbutton" sx={{ mb: 1 }}>
-                  <Typography component="h2" variant="h6" color="primary" gutterBottom>
-                  Vessel Audits
-                    </Typography>
-                    <Button variant="contained"
-                    onClick={handleOpen}
-                     >
-            Add{" "}
-            </Button>
+                  <Typography
+                    component="h2"
+                    variant="h6"
+                    color="primary"
+                    gutterBottom
+                  >
+                    Vessel Audits
+                  </Typography>
+                  <Box sx={{ display: "flex" }}>
+                    <Box sx={{ mx: 2 }}>
+                      <TextField
+                        variant="outlined"
+                        placeholder="Enter a vessel name"
+                        size="small"
+                        fullWidth
+                        InputProps={{
+                          startAdornment: <SearchIcon />,
+                        }}
+                        value={searchTerm}
+                        onChange={handleSearch}
+                      />
+                    </Box>
+                    <Button variant="contained" onClick={handleOpen}>
+                      Add{" "}
+                    </Button>
+                  </Box>
                 </Box>
                 <Divider />
-                <Box sx={{ height: 300, width: '100%' }}>
+                <Box sx={{ height: 300, width: "100%" }}>
                   <DataGrid
-                    rows={companies}
+                    rows={searchResults}
                     columns={columns}
                     pageSize={5}
                     rowsPerPageOptions={[5]}
                   />
                 </Box>
-                </Paper>
-              </Grid>
+              </Paper>
+            </Grid>
             <Footer />
           </Container>
         </Box>
@@ -436,8 +528,7 @@ function CompanyView() {
           </FormControl>
         </Grid>
         <Grid item xs={6} sm={6} mt={1} sx={{ px: 3 }}>
-          
-        {/* <LocalizationProvider dateAdapter={AdapterDateFns}>
+          {/* <LocalizationProvider dateAdapter={AdapterDateFns}>
       <DatePicker
         label="Select a date"
         value={selectedDate}
@@ -446,31 +537,30 @@ function CompanyView() {
       />
     </LocalizationProvider> */}
         </Grid>
-        <Grid item xs={6} sm={6} mt={1}  sx={{ px: 3 }}>
-        <DatePicker
-        selected={selectedDate}
-        onChange={handleDateChange}
-        dateFormat="yyyy-MM-dd"
-     placeholderText="Select a Audit date"
-    />
-    
+        <Grid item xs={6} sm={6} mt={1} sx={{ px: 3 }}>
+          <DatePicker
+            selected={selectedDate}
+            onChange={handleDateChange}
+            dateFormat="yyyy-MM-dd"
+            placeholderText="Select a Audit date"
+          />
         </Grid>
-        <Grid item xs={6} sm={6}  mt={1}  sx={{ px: 3 }}>
-                        <input
-                          type="file"
-                          ref={fileInput}
-                          onChange={(e: any) => {
-                            setSrc(e.target.files[0]);
-                          }}
-                          className="form-control"
-                        />
-                      </Grid>
-                      
+        <Grid item xs={6} sm={6} mt={1} sx={{ px: 3 }}>
+          <input
+            type="file"
+            accept=".pdf, .xls, .xlsx, .csv"
+            ref={fileInput}
+            multiple
+            onChange={(e: any) => {
+              setSrc(e.target.files);
+            }}
+            className="form-control"
+          />
+        </Grid>
+
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button
-           onClick={handleSubmit}
-             color="primary" autoFocus>
+          <Button onClick={handleSubmit} color="primary" autoFocus>
             Submit
           </Button>
         </DialogActions>

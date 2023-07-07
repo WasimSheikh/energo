@@ -21,6 +21,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import { DataGrid, GridColDef, GridValueGetterParams } from "@mui/x-data-grid";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import DeleteIcon from "@mui/icons-material/Delete";
+import TextField from "@mui/material/TextField";
 import {
   deleteCompany,
   getCompanies,
@@ -35,13 +36,15 @@ import { toast } from "react-toastify";
 import { randomInt, randomUserName } from "@mui/x-data-grid-generator";
 import capitalizeFirstLetter from "../utils/FormUtils";
 import { useSelector } from "react-redux";
-
+import SearchIcon from "@mui/icons-material/Search";
 function CompanyList() {
   const currentUser: any = useSelector((state: any) => state.user.currUser);
   const [companiesss, setCompanies] = useState([]);
   const [companyAdd, setCompanyAdd] = useState(false);
   const [companyEdit, setCompanyEdit] = useState(false);
   const [companyDelete, setCompanyDelete] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
   const [companyView, setCompanyView] = useState(false);
   var permission: any = localStorage.getItem("permissions");
   const getCompanyData = () => {
@@ -76,7 +79,7 @@ function CompanyList() {
     }
     // });
   }
-
+console.log(companiesss, "companiesss");
   useEffect(() => {
     getCompanyData();
     addPermission();
@@ -199,6 +202,7 @@ function CompanyList() {
   ];
 
   const statusUpdateCompany = (e: any) => {
+
     const formData = {
       id: e,
     };
@@ -240,6 +244,29 @@ function CompanyList() {
       }
     });
   };
+  useEffect(() => {
+    // Retrieve the search term from local storage
+    const savedSearchTerm = localStorage.getItem('searchTerm');
+    if (savedSearchTerm) {
+      setSearchTerm(savedSearchTerm);
+    }
+  }, []);
+
+  useEffect(() => {
+    // Update the search results whenever the search term or data changes
+    const results = companiesss.filter((item:any) =>
+      item.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setSearchResults(results);
+
+    // Save the search term to local storage
+    localStorage.setItem('searchTerm', searchTerm);
+  }, [searchTerm, companiesss]);
+
+  const handleSearch = (event:any) => {
+    const value = event.target.value;
+    setSearchTerm(value);
+  };
 
   return (
     <ThemeProvider theme={mdTheme}>
@@ -273,7 +300,21 @@ function CompanyList() {
                     >
                       Companies
                     </Typography>
-                    {companyAdd == true && (
+                    <Box sx={{ display: "flex" }}>
+                    <Box sx={{mx:2}}>
+                      <TextField
+                        variant="outlined"
+                        placeholder="Enter a company name"
+                        size="small"
+                        fullWidth
+                        InputProps={{
+                          startAdornment: <SearchIcon />,
+                        }}
+                        value={searchTerm}
+                        onChange={handleSearch}
+                      />
+                    </Box>
+                      {companyAdd == true && (
                       <Button
                         variant="contained"
                         component={Link}
@@ -282,11 +323,13 @@ function CompanyList() {
                         Add
                       </Button>
                     )}
+                    </Box>
+                   
                   </Box>
                   <Divider />
                   <Box sx={{ height: 400, width: "100%" }}>
                     <DataGrid
-                      rows={companiesss}
+                      rows={searchResults}
                       columns={columns}
                       pageSize={5}
                       rowsPerPageOptions={[5]}

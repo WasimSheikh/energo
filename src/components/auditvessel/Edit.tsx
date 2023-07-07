@@ -39,6 +39,7 @@ import { toast } from "react-toastify";
 const mdTheme = createTheme();
 
 function VesselEdit() {
+  const params = useParams(); 
   const navigate = useNavigate();
   const [id, setId] = useState("");
   const [companyName, setCompanyName] = useState("");
@@ -54,9 +55,10 @@ function VesselEdit() {
   const [errorMessages, setErrorMessages] = useState("");
   const [category, setCategory] = useState("");
   const [cities, setCities] = useState([]);
-  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [src, setSrc] = useState("");
-  const {companyId} = useParams();
+  const [date, setDate] = useState('');
+  const companyId = window.location.href.split("/")[5];
   const [dirtyFields, setDirtyFields] = useState({
     state: false,
     company_id: false,
@@ -83,7 +85,10 @@ function VesselEdit() {
     formData.append("id", id);
     formData.append("vessel_id", "4");
      formData.append("title", state);
-    formData.append("picture", src);
+     for (let i = 0; i < src.length; i++) {
+      formData.append('picture', src[i]);
+    }
+
     formData.append("audit_date", formattedDate);
     formData.append("category_id",  category);
     store.dispatch(updateAuditVessel(formData)).then((res: any) => {
@@ -95,12 +100,17 @@ function VesselEdit() {
       }
     });
   };
+  const defaultDate:any = new Date();
+  console.log(defaultDate, "defaultDate");
+  useEffect(() => {
+    setSelectedDate(defaultDate);
+  }, []);
   const handleDateChange = (date: any) => {
     setSelectedDate(date);
   };
   function getCategoryList() {
     store.dispatch(getCategory()).then((res: any) => {
-      console.log(res);
+     
       if (res.payload.status == true) {
         setCities(res.payload?.vessels_audit);
       } else {
@@ -125,21 +135,21 @@ function VesselEdit() {
       </span>
     );
   };
-
+  const auditnewId = window.location.href.split("/")[5];
   useEffect(() => {
     if (onload == false) {
       setOnload(true);
-      const auditId = window.location.href.split("/")[5];
-      const formData = { id: auditId };
+      let vesselauditId = params.auditId;
+      const formData = { id: vesselauditId };
       store.dispatch(getvesselAudit(formData)).then((res: any) => {
-   
+        console.log(res, "55555555555");
         
           setId(res?.payload?.vessel_audit.id);
           setVessel(res?.payload?.vessel_audit?.vessel_id);
           setState(res?.payload?.vessel_audit?.title);
           setImage(res?.payload?.vessel_audit?.picture);
           setCategory(res?.payload?.vessel_audit?.category_id);
-    
+          setDate(res?.payload?.vessel_audit?.audit_date);
       });
       store.dispatch(getCompanies()).then((res: any) => {
         if (res && res.payload.companies) {
@@ -148,7 +158,7 @@ function VesselEdit() {
       });
     }
   });
-console.log(id, state, vessel, category, "dfsffds");
+console.log(date, "datesadfdd");
   const handleChangeImgUrl = (e: any) => {
     setImagebinary(e.target.files);
     setImage(URL.createObjectURL(e.target.files[0]));
@@ -245,29 +255,24 @@ console.log(id, state, vessel, category, "dfsffds");
                       </Grid>
                       <Grid item xs={6} sm={6} mt={1} sx={{ px: 3 }}>
                         <DatePicker
-                          value={selectedDate}
+                          selected={selectedDate}
                           onChange={handleDateChange}
                           placeholderText="Select a Audit date"
                           className="date_new"
                         />
                       </Grid>
                       <Grid item xs={6} sm={6} mt={1} sx={{ px: 3 }}>
-                        <input
+                      <input
                           type="file"
+                          accept=".pdf, .xls, .xlsx, .csv"
                           ref={fileInput}
+                          multiple
                           onChange={(e: any) => {
-                            setSrc(e.target.files[0]);
+                            setSrc(e.target.files);
                           }}
                           className="form-control"
                         />
-
-                        <img
-                          src={image}
-                          alt="img"
-                          style={{ height: "100px", width: "auto" }}
-                          className="mt-3 mb-2 my-src-setup img-thumbnail"
-                        />
-                        <br />
+                      
                       </Grid>
                     </Grid>
                     <Divider sx={{ mt: 2 }} />

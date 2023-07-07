@@ -28,13 +28,16 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import EditIcon from "@mui/icons-material/Edit";
 import Modal from "react-modal";
 import {
+  companywithAudit,
   deleteCategory,
+  deleteCompanyaudit,
   getCategory,
   getCompaniesAudit,
   getCompany,
   getDocuments,
   getVessels,
   statusCategory,
+  statusCompanyAudit,
 } from "../../redux/store/reducers/slices/UserSlice";
 import { store } from "../../redux/store";
 import { ToastContainer, toast } from "react-toastify";
@@ -45,17 +48,23 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import MenuItem from "@mui/material/MenuItem";
+import { styled, alpha } from "@mui/material/styles";
+
 import FileCopyIcon from "@mui/icons-material/FileCopy";
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import DatePicker from 'react-datepicker';
+import DatePicker from "react-datepicker";
 import axios from "axios";
-import 'react-datepicker/dist/react-datepicker.css';
+import "react-datepicker/dist/react-datepicker.css";
 import Swal from "sweetalert2";
+
+import SearchIcon from "@mui/icons-material/Search";
+
 function CompanyView() {
   const mdTheme = createTheme();
+  const params = useParams();
   const [id, setId] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [vessels, setVessels] = useState([]);
@@ -77,21 +86,21 @@ function CompanyView() {
   const [RemoveuserIsOpen, setIsRemoveuserOpen] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const [openFolder, setFolder] = React.useState(false);
-  const [folder, setCompanyFolder] = useState([]);
+  const [audit, setAudit] = useState([]);
   const [title, setTitle] = useState("");
   const [state, setState] = useState("");
-  const [companies,setCompanies] = useState([]);
+  const [companies, setCompanies] = useState([]);
   const [category, setCategory] = useState("");
-  const [start_date, setStartDate] = useState<any> (dayjs(""));
-  const [src, setSrc] = useState("");
-
+  const [start_date, setStartDate] = useState<any>(dayjs(""));
+  const [src, setSrc] = useState<any>([]);
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [errorMessages, setErrorMessages] = useState("");
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-
+  const [searchTerm, setSearchTerm] = useState("");
   const handleDateChange = (date: Date | null) => {
     setSelectedDate(date);
   };
-
 
   const [dirtyFields, setDirtyFields] = useState({
     state: false,
@@ -112,11 +121,20 @@ function CompanyView() {
       </span>
     );
   };
-  const companyId = window.location.href.split("/")[5];
+  const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      const filesArray = Array.from(event.target.files).slice(0, 5);
+      setSrc(filesArray);
+      const previewsArray = filesArray.map((file) => URL.createObjectURL(file));
+    }
+  };
+  let companyId = window.location.href.split("/")[5];
   useEffect(() => {
     if (onload == false) {
       const companyId = window.location.href.split("/")[5];
       const formData = { id: companyId };
+      const data = { company_id: companyId };
+
       store.dispatch(getCompany(formData)).then((res: any) => {
         setOnload(true);
         if (res && res.payload) {
@@ -130,7 +148,8 @@ function CompanyView() {
           setCity(res.payload.company?.address?.city);
           setCountry(res.payload.company?.address?.country);
           setPostalCode(res.payload.company?.address?.zipcode);
-          setLogo(res.payload.company?.media_url);
+
+          setLogo(res?.payload?.company?.logopath);
           if (res.payload.company?.is_headquater == 1) {
             setIsHeadauator("Yes");
           } else {
@@ -138,6 +157,7 @@ function CompanyView() {
           }
         }
       });
+
       store.dispatch(getVessels()).then((res: any) => {
         if (res.payload.status == true) {
           setVessels(res.payload.vessels);
@@ -147,18 +167,18 @@ function CompanyView() {
       });
     }
   });
-  const getVesselData =()=>{
+  console.log(vessels, "safdmk");
+  const getVesselData = () => {
     store.dispatch(getCompaniesAudit()).then((res: any) => {
       if (res.payload.status == true) {
         setCompanies(res.payload.companies_audit);
-      }else{
-        toast.error(res.payload.message)
+      } else {
+        toast.error(res.payload.message);
       }
-    }); 
-  }
+    });
+  };
   function getCategoryList() {
     store.dispatch(getCategory()).then((res: any) => {
-      console.log(res);
       if (res.payload.status == true) {
         setCities(res.payload?.vessels_audit);
       } else {
@@ -171,19 +191,22 @@ function CompanyView() {
   const handleOpen = () => {
     setOpen(true);
   };
-  function formatDate(dateString:any) {
+  function formatDate(dateString: any) {
     const date = new Date(dateString);
     // const formattedDate = `${date.getMonth() + 1}-${date.getDate()}-${date.getFullYear()}`;
-    const formattedDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+    const formattedDate = `${date.getFullYear()}-${
+      date.getMonth() + 1
+    }-${date.getDate()}`;
 
     return formattedDate;
   }
-  
+
   const dateString = selectedDate;
   const formattedDate = formatDate(dateString);
   const handleClose = () => {
     setOpen(false);
   };
+  console.log(src);
   const handleSubmit = (e: any) => {
     e.preventDefault();
     const headers = {
@@ -192,11 +215,14 @@ function CompanyView() {
     };
     const formData = new FormData();
     formData.append("title", state);
-    formData.append("category_id",  category);
+    formData.append("category_id", category);
     formData.append("company_id", id);
     formData.append("audit_date", formattedDate);
-    formData.append("picture", src);
-    formData.append("owner_user_id", '4');
+    // formData.append("picture", src);
+    for (let i = 0; i < src.length; i++) {
+      formData.append(`picture[${i}]`, src[i]);
+    }
+    formData.append("owner_user_id", "4");
     const imageFile = document.getElementById(
       "imageId"
     ) as HTMLInputElement | null;
@@ -213,15 +239,16 @@ function CompanyView() {
       .then((res: any) => {
         if (res.data.status == true) {
           toast.success(res.data.message);
-          handleClose()
-          getCategoryList()
+          handleClose();
+          companyauthGet();
+          getVesselData();
         } else {
           toast.error(res.data.message);
         }
       });
   };
 
- 
+
   const deleteId = (e: any) => {
     Swal.fire({
       title: "Are you sure want to delete?",
@@ -236,9 +263,9 @@ function CompanyView() {
         const formdata = {
           id: e,
         };
-        store.dispatch(deleteCategory(formdata)).then((res: any) => {
+        store.dispatch(deleteCompanyaudit(formdata)).then((res: any) => {
           if (res.payload.status == true) {
-            getCategoryList();
+            companyauthGet();
             toast.success(res.payload.message);
           } else {
             toast.error(res.payload.message);
@@ -247,32 +274,7 @@ function CompanyView() {
       }
     });
   };
-  const customStyles = {
-    content: {
-      top: "50%",
-      left: "50%",
-      right: "auto",
-      bottom: "auto",
-      marginRight: "-50%",
-      transform: "translate(-50%, -50%)",
-    },
-  };
 
-  const statusUpdateCompany = (e: any) => {
-    const formData = {
-      id: e,
-    };
-    store.dispatch(statusCategory(formData)).then((res: any) => {
-      if (res.payload.status == true) {
-        toast.success(res.payload.message);
-        getCategoryList();
-      } else {
-        toast.error(res.payload.message);
-      }
-    });
-  };
-
- 
   interface Vessel {
     company_title: string;
     // other properties of the vessel object
@@ -280,18 +282,42 @@ function CompanyView() {
   const filteredCompanies = vessels.filter(
     (company: Vessel) => company.company_title === companyName
   );
-  console.log(filteredCompanies, "vessels");
+  console.log(filteredCompanies, "sadffdssdf");
+  const companyauthGet = () => {
+    const data = { company_id: companyId };
+    store.dispatch(companywithAudit(data)).then((res: any) => {
+      setOnload(true);
+      if (res && res.payload) {
+        setAudit(res.payload.companies_audit);
+      }
+    });
+  };
+  const statusUpdateCompany = (e: any) => {
+    const formData = {
+      id: e,
+    };
+    store.dispatch(statusCompanyAudit(formData)).then((res: any) => {
+      if (res.payload.status == true) {
+        toast.success(res.payload.message);
+        companyauthGet();
+      } else {
+        toast.error(res.payload.message);
+      }
+    });
+  };
+
   const theme = useTheme();
 
   const columns: GridColDef[] = [
-    { field: 'id',
-     headerName: 'S.No.',
+    {
+      field: "id",
+      headerName: "S.No.",
       width: 100,
-      renderCell: (index:any) => index.api.getRowIndex(index.row.id) + 1,
+      renderCell: (index: any) => index.api.getRowIndex(index.row.id) + 1,
     },
     {
-      field: 'title',
-      headerName: 'Title',
+      field: "title",
+      headerName: "Title",
       width: 250,
       renderCell: (params) => {
         return (
@@ -305,60 +331,98 @@ function CompanyView() {
     },
   
     {
-      field: 'category_title',
-      headerName: 'Category',
+      field: 'company_title',
+      headerName: 'Company Name',
+      width: 240,
+    },
+    {
+      field: "category_title",
+      headerName: "Category",
       width: 200,
     },
-   
-     {
-      field: 'is_active',
-      headerName: 'Status',
+
+    {
+      field: "is_active",
+      headerName: "Status",
       width: 130,
       sortable: false,
       renderCell: (params) => {
         return (
           <>
-           {params.row.is_active == '1' && <button type="button" className="btn btn-link"  onClick={()=>{statusUpdateCompany(params.row.id)}} ><span className='badge badge-success'>Active</span></button>}
-            {params.row.is_active == '0' &&  <button type="button" className="btn btn-link"  onClick={()=>{statusUpdateCompany(params.row.id)}} ><span className='badge badge-danger'>Inactive</span></button>}
-          
+            {params.row.is_active == "1" && (
+              <button
+                type="button"
+                className="btn btn-link"
+                onClick={() => {
+                  statusUpdateCompany(params.row.id);
+                }}
+              >
+                <span className="badge badge-success">Active</span>
+              </button>
+            )}
+            {params.row.is_active == "0" && (
+              <button
+                type="button"
+                className="btn btn-link"
+                onClick={() => {
+                  statusUpdateCompany(params.row.id);
+                }}
+              >
+                <span className="badge badge-danger">Inactive</span>
+              </button>
+            )}
           </>
         );
-     }
+      },
     },
     {
-      field: 'action',
-      headerName: 'Action',
+      field: "action",
+      headerName: "Action",
       width: 180,
       sortable: false,
       flex: 1,
       renderCell: (params) => {
         return (
           <>
-            <Button sx={{ minWidth: 40 }} component={Link} to={'/inspection/edit/' + params.row.id}>
+            <Button
+              sx={{ minWidth: 40 }}
+              component={Link}
+              to={`/companies/auditedit/${companyId}` + "/" + params.row.id}
+            >
               <EditIcon />
             </Button>
-            <Button sx={{ minWidth: 40 }} component={Link} to={'/inspection/view/' + params.row.id}>
+            <Button
+              sx={{ minWidth: 40 }}
+              component={Link}
+              to={`/companies/view/${companyId}` + "/" + params.row.id}
+            >
               <VisibilityIcon />
             </Button>
-            <Button onClick={() => { deleteId(params.row.id) }} sx={{ minWidth: 40 }}>
+            <Button
+              onClick={() => {
+                deleteId(params.row.id);
+              }}
+              sx={{ minWidth: 40 }}
+            >
               <DeleteIcon />
-            </Button>
-            <Button  component={Link} to={'/inspection/share/' + params.row.id} sx={{ minWidth: 40 }}>
-            <FileCopyIcon />{" "}
             </Button>
           </>
         );
       },
     },
-  ];  
+  ];
   useEffect(() => {
     getCategoryList();
     getVesselData();
+    companyauthGet();
   }, []);
-
- 
-  console.log(cities, 'cityies');
-  const fileInput = useRef<any | null>(null);
+ const fileInput = useRef<any | null>(null);
+const num = [2, 4, 6, 8, 12];
+let sum = 0;
+for(let i = 0; i < num.length; i++){
+  sum += num[i];
+}
+console.log(sum);
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: "flex" }}>
@@ -465,7 +529,6 @@ function CompanyView() {
                 HSSE Specifications Questionnaire
               </Typography>
             </Grid>
-<<<<<<< Updated upstream
             <Grid>
               <Box component="div" sx={{ mt: 4, mb: 4 }}></Box>
               <Typography
@@ -491,9 +554,11 @@ function CompanyView() {
                           height: 200,
                         }}
                       >
+                        {/* picture_urls */}
+
                         <Box component="div">{items.title}</Box>
                         <img
-                          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6jNdWPUoDo1W-E5JaTjFzU60l0hPtfg_GZcopUow7mqztXjZ-Vgn_dgzx8CPAkrLoFx4&usqp=CAU"
+                          src={items.logopath}
                           className="img-deshboard"
                           alt="img-text"
                         />
@@ -503,48 +568,47 @@ function CompanyView() {
                 })}
               </Grid>
             )}
-          
-           
-            
-            <Grid item xs={12} sx={{mt:4}}>
-                <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+
+            <Grid item xs={12} sx={{ mt: 4 }}>
+              <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
                 <Box className="headingbutton" sx={{ mb: 1 }}>
-                  <Typography component="h2" variant="h6" color="primary" gutterBottom>
+                  <Typography
+                    component="h2"
+                    variant="h6"
+                    color="primary"
+                    gutterBottom
+                  >
                     Company Audits
-                    </Typography>
-                    <Button variant="contained" onClick={handleOpen} >
-              Add Inspections{" "}
-            </Button>
+                  </Typography>
+                  <Box sx={{ display: "flex" }}>
+                    {/* <Box sx={{ mx: 3 }}>
+                      <TextField
+                        variant="outlined"
+                        placeholder="Enter a company name"
+                        size="small"
+                        fullWidth
+                        InputProps={{
+                          startAdornment: <SearchIcon />,
+                        }}
+                        value={searchTerm}
+                        // onChange={handleSearch}
+                      />
+                    </Box> */}
+
+                    <Button variant="contained" onClick={handleOpen}>
+                      Add Inspections{" "}
+                    </Button>
+                  </Box>
                 </Box>
                 <Divider />
-                <Box sx={{ height: 400, width: '100%' }}>
+                <Box sx={{ height: 400, width: "100%" }}>
                   <DataGrid
-                    rows={companies}
+                    rows={audit}
                     columns={columns}
                     pageSize={5}
                     rowsPerPageOptions={[5]}
                   />
                 </Box>
-=======
-        
-        {vessels.length>0 &&
-            <Grid container spacing={2}>
-              {vessels.map((items:any) =>{
-                return  <Grid item xs={12} md={3} lg={3} key={items.id}>
-                <Paper  
-                  sx={{
-                    p: 2,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    height: 200,
-                  }}
-                >
-                  <Box component="div">{items.title}</Box>
-                  <Box component="div" fontSize={10}>IMO / MMSI	9214898 / 219031419</Box>
-                  
-                 <img src="https://static.vesselfinder.net/ship-photo/9214898-563084700-ea8cfb9432515c6132748b230c591a35/1?v1" className="img-deshboard" alt="img-text"/>
-                  
->>>>>>> Stashed changes
                 </Paper>
               </Grid>
             <Footer />
@@ -599,43 +663,35 @@ function CompanyView() {
             </Select>
           </FormControl>
         </Grid>
+        <Grid item xs={6} sm={6} mt={1} sx={{ px: 3 }}></Grid>
         <Grid item xs={6} sm={6} mt={1} sx={{ px: 3 }}>
+          <DatePicker
+            selected={selectedDate}
+            onChange={handleDateChange}
+            dateFormat="yyyy-MM-dd"
+            placeholderText="Select a Audit date"
+          />
         </Grid>
-        <Grid item xs={6} sm={6} mt={1}  sx={{ px: 3 }}>
-        <DatePicker
-         selected={selectedDate}
-         onChange={handleDateChange}
-         dateFormat="yyyy-MM-dd"
-      placeholderText="Select a Audit date"
-    />
-    
+        <Grid item xs={6} sm={6} mt={1} sx={{ px: 3 }}>
+          <input
+            type="file"
+            ref={fileInput}
+            onChange={handleImageSelect}
+            className="form-control"
+            multiple
+          />
         </Grid>
-        <Grid item xs={6} sm={6}  mt={1}  sx={{ px: 3 }}>
-                        <input
-                          type="file"
-                          ref={fileInput}
-                          onChange={(e: any) => {
-                            setSrc(e.target.files[0]);
-                          }}
-                          className="form-control"
-                        />
-                      </Grid>
-                      
+
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleSubmit}  color="primary" autoFocus>
+          <Button onClick={handleSubmit} color="primary" autoFocus>
             Submit
           </Button>
         </DialogActions>
       </Dialog>
-       
     </ThemeProvider>
   );
 }
 export default function Add() {
   return <CompanyView />;
 }
-
-
-
-

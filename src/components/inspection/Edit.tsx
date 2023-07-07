@@ -37,6 +37,7 @@ import { toast } from "react-toastify";
 const mdTheme = createTheme();
 
 function VesselEdit() {
+  const params = useParams(); 
   const navigate = useNavigate();
   const [id, setId] = useState("");
   const [companyName, setCompanyName] = useState("");
@@ -82,7 +83,9 @@ function VesselEdit() {
     formData.append("id", id);
     formData.append("company_id", company_id);
      formData.append("title", state);
-    formData.append("picture", src);
+     for (let i = 0; i < src.length; i++) {
+      formData.append('picture', src[i]);
+    }
     formData.append("audit_date", formattedDate);
     formData.append("category_id",  category);
     store.dispatch(updateInspection(formData)).then((res: any) => {
@@ -94,8 +97,11 @@ function VesselEdit() {
       }
     });
   };
-  const dateTimeString = date;
-  const dateOnly = dateTimeString.split(' ')[0];
+  const defaultDate:any = new Date();
+  console.log(defaultDate, "defaultDate");
+  useEffect(() => {
+    setSelectedDate(defaultDate);
+  }, []);
   const handleDateChange = (date: any) => {
     setSelectedDate(date);
   };
@@ -130,7 +136,7 @@ function VesselEdit() {
   useEffect(() => {
     if (onload == false) {
       setOnload(true);
-      const auditId = window.location.href.split("/")[5];
+      const auditId = params.auditId;
       const formData = { id: auditId };
       store.dispatch(getinspectionAudit(formData)).then((res: any) => {
         if (res && res.payload) {
@@ -250,18 +256,20 @@ function VesselEdit() {
                         <DatePicker
                     selected={selectedDate} 
                     onChange={handleDateChange}
-                    dateFormat="yyyy-MM-dd"
+               
                           placeholderText="Select a Audit date"
                           className="date_new"
                         />
                       </Grid>
                       <Grid item xs={6} sm={6} mt={1} sx={{ px: 3 }}>
                         <input
-                          type="file"
-                          ref={fileInput}
-                          onChange={(e: any) => {
-                            setSrc(e.target.files[0]);
-                          }}
+                           type="file"
+                           accept=".pdf, .xls, .xlsx, .csv"
+                           ref={fileInput}
+                           multiple
+                           onChange={(e: any) => {
+                             setSrc(e.target.files);
+                           }}
                           className="form-control"
                         />
 

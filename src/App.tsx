@@ -138,11 +138,11 @@ function App() {
           <Route path="auditcategories/view/:categoryId" element={<AuditCateView/>} />
           <Route path="inspection" element={<InspectionAdd/>} />
           <Route path="inspection/list" element={<Inspection/>} />
-          <Route path="inspection/edit/:auditId" element={<InspectionEdit/>} />
-          <Route path="inspection/view/:auditId" element={<InspectionView/>} />
+          <Route path="companies/auditedit/:companyId/:auditId" element={<InspectionEdit/>} />
+          <Route path="companies/view/:companyId/:auditId" element={<InspectionView/>} />
           <Route path="inspection/share/:auditId" element={<DucumentAudit shareData={documenets}/>} />
-          <Route path="vesselaudit/edit/:vesselauditId" element={<AuditVesselEdit/>} />
-          <Route path="vesselaudit/view/:vesselauditId" element={<AuditVesselView/>} />
+          <Route path="vessel/audit/:vessel/:auditId" element={<AuditVesselEdit/>} />
+          <Route path="vessel/view/:vesselId/:auditId" element={<AuditVesselView/>} />
           <Route path="*" element={<PageNotFound />} />
           </>
         }

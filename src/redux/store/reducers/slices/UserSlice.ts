@@ -293,6 +293,32 @@ export const getCompany = createAsyncThunk('get_Company', async (company: Compan
         return res.json()
     });
 })
+export const companywithAudit = createAsyncThunk('audit_Company', async (company: any) => {
+    return await fetch(apiEndPoint+'/getCompanyAuditInspection', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+              'Authorization': `${token}`,
+        },
+        body: JSON.stringify(company)
+    }).then(res => {
+        return res.json()
+    });
+})
+export const vesselwithAudit = createAsyncThunk('audit_vessel', async (company: any) => {
+    return await fetch(apiEndPoint+'/getVesselAuditInspection', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+              'Authorization': `${token}`,
+        },
+        body: JSON.stringify(company)
+    }).then(res => {
+        return res.json()
+    });
+})
 export const getVessel = createAsyncThunk('get_Company', async (Vessel: Vessel) => {
     return await fetch(apiEndPoint+'/getVessel', {
         method: 'POST',
@@ -670,6 +696,19 @@ export const statusCategory = createAsyncThunk('status_category', async (data:an
         return res.json()
     });
 })
+export const statusCompanyAudit = createAsyncThunk('status_company', async (data:any) => {
+    return await fetch(apiEndPoint+'/statusCompanyAudit', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+              'Authorization': `${token}`,
+        },
+        body: JSON.stringify(data)
+    }).then(res => {
+        return res.json()
+    });
+})
 export const statusAuditVessel = createAsyncThunk('status_audit', async (data:any) => {
     return await fetch(apiEndPoint+'/statusVesselAudit', {
         method: 'POST',
@@ -887,8 +926,22 @@ export const deleteCity = createAsyncThunk('deleteCity', async (data:any) => {
         return res.json()
     });
 })
+// deleteCompanyAudit
 export const deleteCategory = createAsyncThunk('deleteCategory', async (data:any) => {
     return await fetch(apiEndPoint+'/deleteAuditCategory', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+              'Authorization': `${token}`,
+        },
+        body: JSON.stringify(data)
+    }).then(res => {
+        return res.json()
+    });
+})
+export const deleteCompanyaudit = createAsyncThunk('deleteCompany', async (data:any) => {
+    return await fetch(apiEndPoint+'/deleteCompanyAudit', {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
