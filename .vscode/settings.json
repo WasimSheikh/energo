@@ -1,0 +1,5 @@
+{
+    "terminal.integrated.localEchoEnabled": "auto",
+    "terminal.integrated.enableBell": false,
+    "terminal.integrated.defaultLocation": "view"
+}

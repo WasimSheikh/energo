@@ -12,7 +12,10 @@
     animation: App-logo-float infinite 3s ease-in-out;
   }
 }
+.css-37hgmf-MuiFormControlLabel-root .MuiFormControlLabel-label {
+  font-size: 15px;
 
+}
 .App-header {
   min-height: 100vh;
   display: flex;
@@ -25,7 +28,11 @@
 .App-link {
   color: rgb(112, 76, 182);
 }
-
+.headingbutton{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 @keyframes App-logo-float {
   0% {
     transform: translateY(0);
@@ -36,4 +43,66 @@
   100% {
     transform: translateY(0px);
   }
+}
+.documentselect {
+  width: 100%;
+  position: absolute !important;
+  max-width: 59px;
+  opacity: 0;
+}
+.Active {
+  background-color: #0168d6 !important;
+}
+.Active h6 , .Active p ,.Active svg{
+  color: #fff;
+}
+
+.MuiDataGrid-cell.MuiDataGrid-cell--textLeft {
+  outline: none !important;
+}
+
+input#checkBox {
+  width: 36px;
+  height: 17px;
+}
+.rolecheckbox{
+  width: 36px;
+  height: 16px;
+}
+.my-src-setup{
+  height: 100px;
+  width: auto;
+}
+.icons-color{
+  color: #0168d6 !important;
+}
+.my-cardItem{
+padding: 0.25rem !important;
+}
+.rapiImg{
+  margin: 8px;
+  width: auto;
+  height: 128px;
+}
+.react-datepicker__input-container{
+  border: 1px solid #c4c4c4;
+  width: 490px !important;
+  height: 53px;
+  border-radius: 3px;
+
+}
+.date_new .react-datepicker__input-container{
+  border: 1px solid #c4c4c4;
+  width: 400px !important;
+  height: 53px;
+  border-radius: 3px;
+
+}
+.react-datepicker__input-container input{
+  border: none !important;
+  outline: none;
+  margin: 12px;
+}
+.react-datepicker__input-container input:focus-visible{
+  border: none !important;
 }
