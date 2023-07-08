@@ -46,7 +46,6 @@ function CompanyView() {
     if (onload == false) {
       const formData = { id: auditId };
       store.dispatch(getvesselAudit(formData)).then((res: any) => {
-        console.log(res, 'res');
         setOnload(true);
         if (res && res.payload) {
          

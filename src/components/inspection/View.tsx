@@ -49,7 +49,6 @@ function CompanyView() {
      // const auditId = params.auditId;
      // const formData = { id:  auditId };
       store.dispatch(getinspectionAudit(formData)).then((res: any) => {
-        console.log(res, "res");
         setOnload(true);
         if (res && res.payload) {
           setTitle(res.payload.companies_audit.title);

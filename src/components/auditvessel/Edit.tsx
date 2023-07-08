@@ -76,7 +76,6 @@ function VesselEdit() {
 
     return formattedDate;
   }
-  console.log(companyId, 'companies');
   const dateString = selectedDate;
   const formattedDate = formatDate(dateString);
   const handleSubmit = (e: any) => {
@@ -101,7 +100,6 @@ function VesselEdit() {
     });
   };
   const defaultDate:any = new Date();
-  console.log(defaultDate, "defaultDate");
   useEffect(() => {
     setSelectedDate(defaultDate);
   }, []);
@@ -142,8 +140,6 @@ function VesselEdit() {
       let vesselauditId = params.auditId;
       const formData = { id: vesselauditId };
       store.dispatch(getvesselAudit(formData)).then((res: any) => {
-        console.log(res, "55555555555");
-        
           setId(res?.payload?.vessel_audit.id);
           setVessel(res?.payload?.vessel_audit?.vessel_id);
           setState(res?.payload?.vessel_audit?.title);
@@ -158,7 +154,6 @@ function VesselEdit() {
       });
     }
   });
-console.log(date, "datesadfdd");
   const handleChangeImgUrl = (e: any) => {
     setImagebinary(e.target.files);
     setImage(URL.createObjectURL(e.target.files[0]));

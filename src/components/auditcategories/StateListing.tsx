@@ -35,7 +35,6 @@ export default function StatesList() {
 
   function getCategoryList() {
     store.dispatch(getCategory()).then((res: any) => {
-      console.log(res);
       if (res.payload.status == true) {
         setCities(res.payload?.vessels_audit);
       } else {

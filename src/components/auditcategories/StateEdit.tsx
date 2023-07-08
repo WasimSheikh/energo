@@ -126,7 +126,6 @@ export default function StateEdit() {
     getCountrieData();
     getCityById();
   }, []);
-  console.log(title, "audit_category");
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: "flex" }}>

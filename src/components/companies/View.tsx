@@ -167,7 +167,6 @@ function CompanyView() {
       });
     }
   });
-  console.log(vessels, "safdmk");
   const getVesselData = () => {
     store.dispatch(getCompaniesAudit()).then((res: any) => {
       if (res.payload.status == true) {
@@ -206,7 +205,6 @@ function CompanyView() {
   const handleClose = () => {
     setOpen(false);
   };
-  console.log(src);
   const handleSubmit = (e: any) => {
     e.preventDefault();
     const headers = {
@@ -282,7 +280,6 @@ function CompanyView() {
   const filteredCompanies = vessels.filter(
     (company: Vessel) => company.company_title === companyName
   );
-  console.log(filteredCompanies, "sadffdssdf");
   const companyauthGet = () => {
     const data = { company_id: companyId };
     store.dispatch(companywithAudit(data)).then((res: any) => {
@@ -422,7 +419,6 @@ let sum = 0;
 for(let i = 0; i < num.length; i++){
   sum += num[i];
 }
-console.log(sum);
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: "flex" }}>

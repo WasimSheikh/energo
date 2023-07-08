@@ -74,7 +74,6 @@ const Navigation = (): JSX.Element => {
   function addPermission(){
         var permissions:any = localStorage.getItem('permissions')
         var allPermission:any =JSON.parse(permissions)?JSON.parse(permissions):[];
-        console.log(allPermission, "permission");
         if(allPermission.length != 0){
         allPermission.forEach((per:any) => {
           if(capitalizeFirstLetter(per.flag) == "Companies"){

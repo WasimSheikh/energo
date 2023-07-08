@@ -1197,10 +1197,10 @@ export const UserMgmtSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder.addCase(createUser.fulfilled, (state, response) => {
-            console.log('createUser success' + response.payload)
+            //console.log('createUser success' + response.payload)
         })
         builder.addCase(createUser.rejected, (state, response) => {
-            console.log('createUser failed' + response)
+            //console.log('createUser failed' + response)
         })
 
     }

@@ -143,7 +143,6 @@ export default function DocumentList(props:data) {
       // }else{
       //   setDisabled(false)
       // }
-      console.log(newArray,"newArray",foldersData,"foldersData");
       }
 
     const handleClickOpen = () => {

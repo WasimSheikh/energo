@@ -132,7 +132,6 @@ function CompanyView() {
   }
   function getCategoryList() {
     store.dispatch(getCategory()).then((res: any) => {
-      console.log(res);
       if (res.payload.status == true) {
         setCities(res.payload?.vessels_audit);
       } else {
@@ -189,11 +188,9 @@ function CompanyView() {
       }
     });
   };
-  console.log(audit, "dfsalfj")
   const statusUpdategetnew = () => {
     const formData = { vessel_id: companyId };
     store.dispatch(vesselwithAudit(formData)).then((res: any) => {
-      console.log(res, "res");
       setOnload(true);
       if (res && res.payload) {
         setAudit(res.payload.vessels_audits);

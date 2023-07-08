@@ -50,7 +50,6 @@ const getVesselData =()=>{
 
 
 // function addPermission(){
-//   console.log(JSON.parse(permission),"roles permission");
 //   // var role_id:any = localStorage.getItem('role_id')
 //   // const formData={
 //   //   role_id:role_id
@@ -59,8 +58,6 @@ const getVesselData =()=>{
 //   //   var allPermission:any = res.payload?.data;
   
 //     var allPermission:any =  JSON.parse(permission);
-//     // console.log(res,"permission");
-
 //     // if(allPermission.length != 0){
 //     //   allPermission.forEach((per:any) => {
 //     //     if(capitalizeFirstLetter(per.flag) == "Companies"){

@@ -104,7 +104,6 @@ export default function StateAdd() {
   useEffect(() => {
     getCountrieData();
   });
-console.log(title, 'title')
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: "flex" }}>

@@ -29,7 +29,6 @@ type shareData={
 
 
 export default function Share(props:shareData): JSX.Element {
-  console.log(props, 'shareData');
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');

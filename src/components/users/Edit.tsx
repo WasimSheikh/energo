@@ -252,7 +252,6 @@ const handleChangeImgUrl = (e: any) => {
     getCountrieData();
 
   }, []);
-  console.log(city, 'city')
   return (
     <ThemeProvider theme={mdTheme}> 
       <Box sx={{ display: 'flex' }}>

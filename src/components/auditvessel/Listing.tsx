@@ -45,10 +45,8 @@ const getVesselData =()=>{
     }
   }); 
 }
-console.log(companies, 'dsfggfg');
 
 // function addPermission(){
-//   console.log(JSON.parse(permission),"roles permission");
 //   // var role_id:any = localStorage.getItem('role_id')
 //   // const formData={
 //   //   role_id:role_id
@@ -57,7 +55,6 @@ console.log(companies, 'dsfggfg');
 //   //   var allPermission:any = res.payload?.data;
   
 //     var allPermission:any =  JSON.parse(permission);
-//     // console.log(res,"permission");
 
 //     // if(allPermission.length != 0){
 //     //   allPermission.forEach((per:any) => {

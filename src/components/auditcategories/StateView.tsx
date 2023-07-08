@@ -44,7 +44,6 @@ import {
         store.dispatch(getCoatery(formData)).then((res: any) => {
           setOnload(true);
           if (res && res.payload) {
-           console.log(res, 'dfsggfgdfgdfg')
             setTitle(res.payload.audit_category.title);
   
        

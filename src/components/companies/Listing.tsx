@@ -58,8 +58,6 @@ function CompanyList() {
   };
 
   function addPermission() {
-    console.log(JSON.parse(permission), "roles permission");
-
     var allPermission: any = JSON.parse(permission);
 
     if (allPermission.length != 0) {
@@ -79,7 +77,6 @@ function CompanyList() {
     }
     // });
   }
-console.log(companiesss, "companiesss");
   useEffect(() => {
     getCompanyData();
     addPermission();

@@ -98,7 +98,6 @@ function VesselEdit() {
     });
   };
   const defaultDate:any = new Date();
-  console.log(defaultDate, "defaultDate");
   useEffect(() => {
     setSelectedDate(defaultDate);
   }, []);
@@ -107,7 +106,6 @@ function VesselEdit() {
   };
   function getCategoryList() {
     store.dispatch(getCategory()).then((res: any) => {
-      console.log(res);
       if (res.payload.status == true) {
         setCities(res.payload?.vessels_audit);
       } else {
@@ -140,7 +138,6 @@ function VesselEdit() {
       const formData = { id: auditId };
       store.dispatch(getinspectionAudit(formData)).then((res: any) => {
         if (res && res.payload) {
-          console.log(res, "res");
           setId(res.payload.companies_audit?.id);
           setCompanyId(res.payload.companies_audit?.company_id);
           setState(res?.payload?.companies_audit?.title);
@@ -156,8 +153,6 @@ function VesselEdit() {
       });
     }
   });
-
-  console.log(date, "image");
   const handleChangeImgUrl = (e: any) => {
     setImagebinary(e.target.files);
     setImage(URL.createObjectURL(e.target.files[0]));
